@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 45 20% 97%;
+    --foreground: 45 10% 15%;
+    --card: 45 25% 95%;
+    --card-foreground: 45 10% 15%;
+    --popover: 45 25% 95%;
+    --popover-foreground: 45 10% 15%;
+    --primary: 88 17% 58%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 36 21% 89%;
+    --secondary-foreground: 45 10% 15%;
+    --muted: 45 15% 92%;
+    --muted-foreground: 45 8% 45%;
+    --accent: 45 25% 90%;
+    --accent-foreground: 45 10% 15%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 45 12% 85%;
+    --input: 45 12% 85%;
+    --ring: 88 17% 58%;
+    --radius: 0.75rem;
+    --chart-1: 88 17% 58%;
+    --chart-2: 30 35% 55%;
+    --chart-3: 47 65% 55%;
+    --chart-4: 45 25% 70%;
+    --chart-5: 88 25% 45%;
+  }
+
+  .dark {
+    --background: 45 20% 8%;
+    --foreground: 45 15% 90%;
+    --card: 45 20% 10%;
+    --card-foreground: 45 15% 90%;
+    --popover: 45 20% 10%;
+    --popover-foreground: 45 15% 90%;
+    --primary: 88 17% 58%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 45 15% 20%;
+    --secondary-foreground: 45 15% 90%;
+    --muted: 45 15% 15%;
+    --muted-foreground: 45 8% 65%;
+    --accent: 45 15% 20%;
+    --accent-foreground: 45 15% 90%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 45 15% 20%;
+    --input: 45 15% 20%;
+    --ring: 88 17% 58%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  .luxury-gradient {
+    @apply bg-gradient-to-br from-sage-50 via-cream-50 to-earth-50;
+  }
+  
+  .luxury-border {
+    @apply border-sage-200 border-2;
+  }
+  
+  .luxury-shadow {
+    @apply shadow-lg shadow-sage-200/20;
+  }
+  
+  .luxury-button {
+    @apply bg-sage-600 hover:bg-sage-700 text-white transition-all duration-300 ease-in-out transform hover:scale-105;
+  }
+  
+  .luxury-text {
+    @apply text-sage-800;
+  }
+  
+  .luxury-accent {
+    @apply text-luxury-600;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-cream-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-sage-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-sage-400;
+}
