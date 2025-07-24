@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { CartItem, Product, User, CartState, AuthState } from '../types';
+import { Product, User, CartState, AuthState } from '../types';
 
 interface Store extends CartState, AuthState {
   // Cart actions

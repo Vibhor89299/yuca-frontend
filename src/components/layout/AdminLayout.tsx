@@ -2,12 +2,10 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { LogOut, Package, PackagePlus, Home, LineChart, ShoppingCart } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
 
 const AdminLayout = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const handleLogout = () => {
     logout();
