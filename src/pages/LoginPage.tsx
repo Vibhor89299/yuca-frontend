@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { useStore } from '@/store/useStore';
+import { useAppDispatch } from '@/store/store';
+import { login as loginAction } from '@/store/slices/authSlice';
 
 export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -14,26 +15,23 @@ export function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useStore();
+  const dispatch = useAppDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      // Mock successful login
-      login({
-        id: '1',
-        email: email,
-        firstName: 'Demo',
-        lastName: 'User',
-        avatar: undefined,
-      });
-      
+    try {
+      const resultAction = await dispatch(loginAction({ email, password }));
+      if (loginAction.fulfilled.match(resultAction)) {
+        // Login successful
+        navigate('/');
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+    } finally {
       setLoading(false);
-      navigate('/');
-    }, 1000);
+    }
   };
 
   return (

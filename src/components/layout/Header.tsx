@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingBag, User, Menu, X, Leaf } from 'lucide-react';
+import { Search, ShoppingBag, User, Menu, X, Leaf, LogOut, LogIn, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -11,14 +11,17 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { useStore } from '@/store/useStore';
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import { logout as logoutAction } from '@/store/slices/authSlice';
 import { categories } from '@/data/mockData';
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
-  const { itemCount, isAuthenticated, user, logout } = useStore();
+  const dispatch = useAppDispatch();
+  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
+  const itemCount = useAppSelector((state) => state.cart.items?.length || 0);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +32,7 @@ export function Header() {
   };
 
   const handleLogout = () => {
-    logout();
+    dispatch(logoutAction());
     navigate('/');
   };
 
@@ -74,33 +77,70 @@ export function Header() {
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="luxury-text">
-                  <User className="h-5 w-5" />
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="luxury-text hover:bg-sage-50/50 rounded-full px-3"
+                >
+                  <div className="h-8 w-8 rounded-full bg-sage-100 flex items-center justify-center">
+                    {isAuthenticated && user?.name ? (
+                      <span className="text-sage-800 font-medium">
+                        {user.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                      </span>
+                    ) : (
+                      <User className="h-4 w-4 text-sage-600" />
+                    )}
+                  </div>
                   <span className="hidden sm:inline ml-2">
-                    {isAuthenticated ? user?.firstName : 'Account'}
+                    {isAuthenticated ? user?.name?.split(' ')[0] || 'Account' : 'Account'}
                   </span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="w-56 p-2">
                 {isAuthenticated ? (
                   <>
-                    <DropdownMenuItem onClick={() => navigate('/profile')}>
-                      My Profile
+                    <div className="px-2 py-1.5">
+                      <p className="text-sm font-medium text-sage-900">{user?.name}</p>
+                      <p className="text-xs text-sage-500 truncate">{user?.email}</p>
+                    </div>
+                    <DropdownMenuItem 
+                      onClick={() => navigate('/profile')}
+                      className="cursor-pointer rounded-md px-2 py-1.5 text-sm hover:bg-sage-50"
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      <span>My Profile</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/orders')}>
-                      My Orders
+                    <DropdownMenuItem 
+                      onClick={() => navigate('/orders')}
+                      className="cursor-pointer rounded-md px-2 py-1.5 text-sm hover:bg-sage-50"
+                    >
+                      <ShoppingBag className="mr-2 h-4 w-4" />
+                      <span>My Orders</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleLogout}>
-                      Sign Out
+                    <div className="h-px bg-sage-100 my-1" />
+                    <DropdownMenuItem 
+                      onClick={handleLogout}
+                      className="cursor-pointer rounded-md px-2 py-1.5 text-sm text-red-600 hover:bg-red-50"
+                    >
+                      <LogOut  className="mr-2 h-4 w-4" />
+                      <span>Sign Out</span>
                     </DropdownMenuItem>
                   </>
                 ) : (
                   <>
-                    <DropdownMenuItem onClick={() => navigate('/login')}>
-                      Sign In
+                    <DropdownMenuItem 
+                      onClick={() => navigate('/login')}
+                      className="cursor-pointer rounded-md px-2 py-1.5 text-sm hover:bg-sage-50"
+                    >
+                      <LogIn className="mr-2 h-4 w-4" />
+                      <span>Sign In</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/register')}>
-                      Create Account
+                    <DropdownMenuItem 
+                      onClick={() => navigate('/register')}
+                      className="cursor-pointer rounded-md px-2 py-1.5 text-sm hover:bg-sage-50"
+                    >
+                      <UserPlus className="mr-2 h-4 w-4" />
+                      <span>Create Account</span>
                     </DropdownMenuItem>
                   </>
                 )}
