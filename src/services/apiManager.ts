@@ -99,6 +99,42 @@ export const orderAPI = {
   },
 };
 
+// Cart API endpoints
+export const cartAPI = {
+  // Add item to cart
+  addToCart: async (cartData: {
+    productId: string;
+    quantity: number;
+  }) => {
+    const response = await axiosInstance.post('/cart', cartData);
+    return response.data;
+  },
+
+  // Get user's cart
+  getCart: async () => {
+    const response = await axiosInstance.get('/cart');
+    return response.data;
+  },
+
+  // Update cart item quantity
+  updateCartItem: async (productId: string, quantity: number) => {
+    const response = await axiosInstance.put(`/cart/${productId}`, { quantity });
+    return response.data;
+  },
+
+  // Remove item from cart
+  removeFromCart: async (productId: string) => {
+    const response = await axiosInstance.delete(`/cart/${productId}`);
+    return response.data;
+  },
+
+  // Clear entire cart
+  clearCart: async () => {
+    const response = await axiosInstance.delete('/cart');
+    return response.data;
+  },
+};
+
 // Admin API endpoints (for admin users)
 export const adminAPI = {
   // Create product

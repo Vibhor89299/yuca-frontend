@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShoppingBag, User, Menu , Leaf, LogOut, LogIn, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { logout as logoutAction } from '@/store/slices/authSlice';
+import { fetchCart } from '@/store/slices/cartSlice';
 import { categories } from '@/data/mockData';
 
 export function Header() {
@@ -21,7 +22,10 @@ export function Header() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { isAuthenticated, user } = useAppSelector((state) => state.auth);
-  const itemCount = useAppSelector((state) => state.cart.items?.length || 0);
+  const { itemCount, guestItems } = useAppSelector((state) => state.cart);
+  const totalItemCount = isAuthenticated 
+    ? itemCount || 0 
+    : guestItems.reduce((total, item) => total + item.quantity, 0);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +39,13 @@ export function Header() {
     dispatch(logoutAction());
     navigate('/');
   };
+
+  // Fetch cart when user is authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchCart());
+    }
+  }, [isAuthenticated, dispatch]);
 
   return (
     <header className="luxury-gradient border-b luxury-border sticky top-0 z-50 backdrop-blur-sm">
@@ -155,9 +166,9 @@ export function Header() {
               className="relative luxury-text"
             >
               <ShoppingBag className="h-5 w-5" />
-              {itemCount > 0 && (
+              {totalItemCount > 0 && (
                 <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-luxury-600 text-xs">
-                  {itemCount}
+                  {totalItemCount}
                 </Badge>
               )}
               <span className="hidden sm:inline ml-2">Cart</span>

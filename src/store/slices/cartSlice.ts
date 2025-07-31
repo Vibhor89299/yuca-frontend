@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { cartAPI } from '../../services/apiManager';
 
 interface CartItem {
   id: string;
@@ -23,6 +24,43 @@ const loadCartFromLocalStorage = (): CartItem[] => {
   }
   return [];
 };
+
+// Async thunks for cart operations
+export const fetchCart = createAsyncThunk(
+  'cart/fetchCart',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await cartAPI.getCart();
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch cart');
+    }
+  }
+);
+
+export const addToCartAsync = createAsyncThunk(
+  'cart/addToCartAsync',
+  async ({ productId, quantity }: { productId: string; quantity: number }, { rejectWithValue }) => {
+    try {
+      const response = await cartAPI.addToCart({ productId, quantity });
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to add to cart');
+    }
+  }
+);
+
+export const removeFromCartAsync = createAsyncThunk(
+  'cart/removeFromCartAsync',
+  async (productId: string, { rejectWithValue }) => {
+    try {
+      await cartAPI.removeFromCart(productId);
+      return productId;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to remove from cart');
+    }
+  }
+);
 
 const initialState: CartState = {
   items: [],
@@ -143,6 +181,51 @@ const cartSlice = createSlice({
         localStorage.removeItem('guestCart');
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      // Fetch cart
+      .addCase(fetchCart.fulfilled, (state, action) => {
+        state.items = action.payload.items || [];
+        state.itemCount = state.items.reduce((total, item) => total + item.quantity, 0);
+        state.total = action.payload.total || 0;
+      })
+      .addCase(fetchCart.rejected, (_state) => {
+        // Handle error silently for now
+      })
+      // Add to cart
+      .addCase(addToCartAsync.fulfilled, (state, action) => {
+        const product = action.payload.product;
+        if (product) {
+          const existingItem = state.items.find(item => item.id === product.id);
+          if (existingItem) {
+            existingItem.quantity += product.quantity;
+          } else {
+            state.items.push({
+              id: product.id,
+              name: product.name,
+              price: product.price,
+              quantity: product.quantity,
+              image: product.image,
+              stock: 999 // Default stock value
+            });
+          }
+          state.itemCount = state.items.reduce((total, item) => total + item.quantity, 0);
+          state.total = state.items.reduce((total, item) => total + item.price * item.quantity, 0);
+        }
+      })
+      .addCase(addToCartAsync.rejected, (_state) => {
+        // Handle error silently for now
+      })
+      // Remove from cart
+      .addCase(removeFromCartAsync.fulfilled, (state, action) => {
+        state.items = state.items.filter(item => item.id !== action.payload);
+        state.itemCount = state.items.reduce((total, item) => total + item.quantity, 0);
+        state.total = state.items.reduce((total, item) => total + item.price * item.quantity, 0);
+      })
+      .addCase(removeFromCartAsync.rejected, (_state) => {
+        // Handle error silently for now
+      });
   },
 });
 

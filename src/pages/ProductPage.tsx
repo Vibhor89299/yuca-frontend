@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Star, ShoppingBag, Heart, ArrowLeft, Shield, Truck, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,12 +6,14 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { products } from '@/data/mockData';
-import { useStore } from '@/store/useStore';
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import { addToCartAsync, addToGuestCart } from '@/store/slices/cartSlice';
 
 export function ProductPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { addToCart } = useStore();
+  const dispatch = useAppDispatch();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
@@ -27,7 +29,19 @@ export function ProductPage() {
   }
 
   const handleAddToCart = () => {
-    addToCart(product, quantity);
+    if (isAuthenticated) {
+      // For authenticated users, use API
+      dispatch(addToCartAsync({ productId: product.id, quantity }));
+    } else {
+      // For guest users, use local storage
+      dispatch(addToGuestCart({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+        stock: product.inStock ? 999 : 0
+      }));
+    }
   };
 
   return (
