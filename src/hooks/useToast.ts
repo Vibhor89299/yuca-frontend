@@ -7,13 +7,7 @@ export const useToast = () => {
     title: string;
     description?: string;
     variant?: 'default' | 'destructive' | 'success';
-  }) => {
-    shadcnToast({
-      title: options.title,
-      description: options.description,
-      variant: options.variant || 'default',
-    });
-  };
+  }) => {};
 
   return { toast };
 };

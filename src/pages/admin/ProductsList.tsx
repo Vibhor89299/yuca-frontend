@@ -52,11 +52,6 @@ const ProductsList = () => {
       setProducts(data.products);
       setTotalPages(data.pages);
     } catch (error) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to load products",
-        variant: "destructive"
-      });
     } finally {
       setLoading(false);
     }
@@ -78,19 +73,10 @@ const ProductsList = () => {
       });
       
       if (!response.ok) throw new Error('Failed to delete product');
-      
-      toast({
-        title: "Success",
-        description: "Product deleted successfully"
-      });
+ 
       
       fetchProducts();
     } catch (error) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to delete product",
-        variant: "destructive"
-      });
     }
   };
 

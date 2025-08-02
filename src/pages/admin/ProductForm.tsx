@@ -68,11 +68,6 @@ const ProductForm = () => {
         });
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Failed to load product';
-        toast({
-          title: "Error",
-          description: errorMessage,
-          variant: "destructive"
-        });
         navigate("/admin/products");
       } finally {
         setLoading(false);
@@ -104,22 +99,9 @@ const ProductForm = () => {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to save product');
       }
-      
-      toast({
-        title: "Success",
-        description: isEditMode 
-          ? "Product updated successfully" 
-          : "Product created successfully"
-      });
-      
       navigate("/admin/products");
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to save product';
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive"
-      });
     } finally {
       setLoading(false);
     }
