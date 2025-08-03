@@ -1,9 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Filter, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ProductGrid } from '@/components/product/ProductGrid';
-import { products, categories } from '@/data/mockData';
+import { productAPI } from '@/services/apiManager';
+import { Product, ProductFilters, ProductCategory } from '@/types/product';
+import { transformProductsData } from '@/utils/productTransforms';
+import { useToast } from '@/hooks/useToast';
+import { categories } from '@/data/categories';
 import {
   Select,
   SelectContent,
@@ -13,43 +17,129 @@ import {
 } from '@/components/ui/select';
 
 export function CategoryPage() {
-  const { category, subcategory } = useParams();
-  const [sortBy, setSortBy] = useState('featured');
-  const [loading, setLoading] = useState(false);
+  const { category } = useParams<{ category: string }>();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [sortValue, setSortValue] = useState('newest');
+  const [filters, setFilters] = useState<ProductFilters>({
+    category: category as ProductCategory,
+    sortBy: 'createdAt',
+    sortOrder: 'desc',
+    page: 1,
+    limit: 12
+  });
+  const { toast } = useToast();
 
   const categoryData = categories.find(cat => cat.slug === category);
-  
-  const filteredProducts = useMemo(() => {
-    let filtered = products.filter(product => {
-      if (subcategory) {
-        return product.category.toLowerCase() === categoryData?.name.toLowerCase() &&
-               product.subcategory?.toLowerCase() === subcategory.replace('-', ' ');
-      }
-      return product.category.toLowerCase() === categoryData?.name.toLowerCase();
-    });
 
-    // Sort products
-    switch (sortBy) {
+  useEffect(() => {
+    const loadProducts = async () => {
+      if (!categoryData) return;
+      
+      try {
+        setLoading(true);
+        const response = await productAPI.getProducts(filters);
+        setProducts(transformProductsData(response.products));
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: 'Failed to load products',
+          variant: 'destructive',
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, [filters, toast, categoryData]);
+
+  const handleSortChange = (value: string) => {
+    setSortValue(value);
+    let sortBy: ProductFilters['sortBy'] = 'createdAt';
+    let sortOrder: ProductFilters['sortOrder'] = 'desc';
+
+    switch (value) {
       case 'price-low':
-        filtered.sort((a, b) => a.price - b.price);
+        sortBy = 'price';
+        sortOrder = 'asc';
         break;
       case 'price-high':
-        filtered.sort((a, b) => b.price - a.price);
+        sortBy = 'price';
+        sortOrder = 'desc';
         break;
-      case 'rating':
-        filtered.sort((a, b) => b.rating - a.rating);
+      case 'name':
+        sortBy = 'name';
+        sortOrder = 'asc';
         break;
       case 'newest':
-        // In a real app, this would sort by creation date
-        filtered.sort((a, b) => a.name.localeCompare(b.name));
+        sortBy = 'createdAt';
+        sortOrder = 'desc';
         break;
-      default:
-        // Featured first
-        filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
     }
 
-    return filtered;
-  }, [category, subcategory, sortBy, categoryData]);
+    setFilters(prev => ({
+      ...prev,
+      sortBy,
+      sortOrder,
+      page: 1 // Reset to first page when sorting changes
+    }));
+  };
+
+  if (!categoryData) {
+    return (
+      <div className="container mx-auto px-4 py-16">
+        <p className="text-center text-gray-500">Category not found</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-white">
+      <div className="bg-sage-50 py-8">
+        <div className="container mx-auto px-4">
+          <h1 className="text-4xl font-serif font-bold luxury-text mb-4">
+            {categoryData.name}
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            {categoryData.description}
+          </p>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <div className="flex items-center gap-2">
+            <Filter className="h-5 w-5" />
+            <span className="text-sm text-muted-foreground">
+              {products.length} products
+            </span>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <Select value={sortValue} onValueChange={handleSortChange}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="featured">Featured</SelectItem>
+                <SelectItem value="newest">Newest</SelectItem>
+                <SelectItem value="price-low">Price: Low to High</SelectItem>
+                <SelectItem value="price-high">Price: High to Low</SelectItem>
+                <SelectItem value="name">Name</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Button variant="outline" size="icon">
+              <SlidersHorizontal className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        <ProductGrid products={products} loading={loading} />
+      </div>
+    </div>
+  );
 
   if (!categoryData) {
     return (

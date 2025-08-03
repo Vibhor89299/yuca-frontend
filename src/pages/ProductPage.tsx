@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Star, ShoppingBag, Heart, ArrowLeft, Shield, Truck, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { products } from '@/data/mockData';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { addToCartAsync, addToGuestCart } from '@/store/slices/cartSlice';
+import { productAPI } from '@/services/apiManager';
+import { useToast } from '@/hooks/useToast';
+import type { Product } from '@/types';
 
 export function ProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -16,8 +18,37 @@ export function ProductPage() {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
-  const product = products.find(p => p.id === id);
+  useEffect(() => {
+    const loadProduct = async () => {
+      try {
+        const productData = await productAPI.getProduct(id!);
+        setProduct(productData);
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: 'Failed to load product',
+          variant: 'destructive',
+        });
+        navigate(-1);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProduct();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <div className="animate-spin h-8 w-8 border-4 border-sage-500 rounded-full border-t-transparent mx-auto"></div>
+      </div>
+    );
+  }
 
   if (!product) {
     return (

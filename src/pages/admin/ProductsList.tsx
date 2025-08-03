@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/useToast";
 import { Pencil, Trash2, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/utils";
-import { useAuth } from "@/hooks/useAuth";
+import { adminAPI } from "@/services/apiManager";
 
 interface Product {
   _id: string;
@@ -29,24 +29,18 @@ const ProductsList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const { toast } = useToast();
-  const { token } = useAuth();
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const queryParams = new URLSearchParams({
-        page: currentPage.toString(),
-        ...(searchTerm && { keyword: searchTerm }),
-        ...(categoryFilter && { category: categoryFilter })
-      });
-
-      const response = await fetch(`/api/admin/products?${queryParams}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const { products: productsList, totalPages: pages } = await adminAPI.products.getAll({
+        page: currentPage,
+        search: searchTerm,
+        category: categoryFilter || undefined
       });
       
-      if (!response.ok) throw new Error('Failed to fetch products');
+      setProducts(productsList);
+      setTotalPages(pages);
       
       const data = await response.json();
       setProducts(data.products);
@@ -58,25 +52,41 @@ const ProductsList = () => {
   };
 
   useEffect(() => {
-    fetchProducts();
+    const delayDebounceFn = setTimeout(() => {
+      fetchProducts();
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
   }, [currentPage, searchTerm, categoryFilter]);
 
-  const handleDelete = async (productId: string) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
-    
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleCategoryChange = (value: string) => {
+    setCategoryFilter(value);
+    setCurrentPage(1);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this product?')) return;
+
     try {
-      const response = await fetch(`/api/admin/products/${productId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      await adminAPI.products.delete(id);
+
+      toast({
+        title: "Success",
+        description: "Product deleted successfully",
       });
-      
-      if (!response.ok) throw new Error('Failed to delete product');
- 
-      
+
       fetchProducts();
     } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete product",
+        variant: "destructive",
+      });
     }
   };
 

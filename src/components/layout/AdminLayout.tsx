@@ -1,7 +1,8 @@
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { LogOut, Package, PackagePlus, Home, LineChart, ShoppingCart } from "lucide-react";
+import { LogOut, Package, PackagePlus, Home, LineChart, ShoppingCart, ClipboardList } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const AdminLayout = () => {
   const { logout } = useAuth();
@@ -30,10 +31,19 @@ const AdminLayout = () => {
             className="w-full justify-start gap-2"
             asChild
           >
-            <Link to="/admin">
+            <NavLink
+              to="/admin"
+              end
+              className={({ isActive }) =>
+                cn(
+                  "flex items-center gap-2",
+                  isActive && "bg-accent text-accent-foreground"
+                )
+              }
+            >
               <Home className="h-4 w-4" />
               Dashboard
-            </Link>
+            </NavLink>
           </Button>
           
           <Button
@@ -41,12 +51,57 @@ const AdminLayout = () => {
             className="w-full justify-start gap-2"
             asChild
           >
-            <Link to="/admin/products">
+            <NavLink
+              to="/admin/products"
+              className={({ isActive }) =>
+                cn(
+                  "flex items-center gap-2",
+                  isActive && "bg-accent text-accent-foreground"
+                )
+              }
+            >
               <Package className="h-4 w-4" />
               Products
-            </Link>
+            </NavLink>
           </Button>
-          
+
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-2"
+            asChild
+          >
+            <NavLink
+              to="/admin/orders"
+              className={({ isActive }) =>
+                cn(
+                  "flex items-center gap-2",
+                  isActive && "bg-accent text-accent-foreground"
+                )
+              }
+            >
+              <ShoppingCart className="h-4 w-4" />
+              Orders
+            </NavLink>
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-2"
+            asChild
+          >
+            <NavLink
+              to="/admin/inventory"
+              className={({ isActive }) =>
+                cn(
+                  "flex items-center gap-2",
+                  isActive && "bg-accent text-accent-foreground"
+                )
+              }
+            >
+              <ClipboardList className="h-4 w-4" />
+              Inventory
+            </NavLink>
+          </Button>
           <Button
             variant="ghost"
             className="w-full justify-start gap-2"

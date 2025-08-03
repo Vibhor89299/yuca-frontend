@@ -1,11 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ProductGrid } from '@/components/product/ProductGrid';
-import { featuredProducts } from '@/data/mockData';
+import { productAPI } from '@/services/apiManager';
+import { Product } from '@/types/product';
+import { useToast } from '@/hooks/useToast';
+import { transformProductsData } from '@/utils/productTransforms';
 
 export function FeaturedProducts() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadFeaturedProducts = async () => {
+      try {
+        const featuredProducts = await productAPI.getFeaturedProducts();
+        if (mounted) {
+          setProducts(transformProductsData(featuredProducts));
+        }
+      } catch (error) {
+        if (mounted) {
+          toast({
+            title: 'Error',
+            description: 'Failed to load featured products',
+            variant: 'destructive',
+          });
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadFeaturedProducts();
+
+    return () => {
+      mounted = false;
+    };
+  }, []); // Remove toast from dependencies
+
   return (
     <section className="py-16 bg-sage-50">
       <div className="container mx-auto px-4">
@@ -27,7 +65,7 @@ export function FeaturedProducts() {
           </Button>
         </div>
 
-        <ProductGrid products={featuredProducts} />
+        <ProductGrid products={products} loading={loading} />
 
         <div className="text-center mt-8 sm:hidden">
           <Button variant="outline" asChild className="border-sage-200 text-sage-800 hover:bg-sage-100">

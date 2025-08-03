@@ -1,9 +1,10 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import AdminLayout from "@/components/layout/AdminLayout";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
-import ProductsList from "@/pages/admin/ProductsList";
+import { ProductList } from "@/pages/admin/ProductList";
 import ProductForm from "@/pages/admin/ProductForm";
 import InventoryManagement from "@/pages/admin/InventoryManagement";
+import { OrdersPage } from "@/pages/admin/OrdersPage";
 import useAuth from "@/hooks/useAuth";
 
 const AdminRoutes = () => {
@@ -24,11 +25,11 @@ const AdminRoutes = () => {
     <Routes>
       <Route element={<AdminLayout />}>
         <Route index element={<AdminDashboard />} />
-        <Route path="products" element={<ProductsList />} />
+        <Route path="products" element={<ProductList />} />
         <Route path="products/new" element={<ProductForm />} />
         <Route path="products/:id/edit" element={<ProductForm />} />
         <Route path="inventory" element={<InventoryManagement />} />
-        <Route path="orders" element={<div>Orders Management - Coming Soon</div>} />
+        <Route path="orders" element={<OrdersPage />} />
         <Route path="reports" element={<div>Reports - Coming Soon</div>} />
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Route>

@@ -43,23 +43,48 @@ export const authAPI = {
   },
 };
 
+import { Product, ProductFilters, CreateProductData, UpdateProductData } from '../types/product';
+
 // Product API endpoints
 export const productAPI = {
-  // Get all products
-  getProducts: async (params?: {
-    category?: string;
-    subcategory?: string;
-    search?: string;
-    page?: number;
-    limit?: number;
-  }) => {
-    const response = await axiosInstance.get('/admin/products', { params });
+  // Get all products with enhanced filtering
+  getProducts: async (filters?: ProductFilters): Promise<{ 
+    products: Product[];
+    page: number;
+    totalPages: number;
+    totalProducts: number;
+  }> => {
+    const response = await axiosInstance.get('/products', { params: filters });
     return response.data;
   },
 
   // Get single product
-  getProduct: async (id: string) => {
-    const response = await axiosInstance.get(`/admin/products/${id}`);
+  getProduct: async (id: string): Promise<Product> => {
+    const response = await axiosInstance.get(`/products/${id}`);
+    return response.data;
+  },
+
+  // Get products by category
+  getProductsByCategory: async (category: string): Promise<Product[]> => {
+    const response = await axiosInstance.get(`/products/category/${category}`);
+    return response.data;
+  },
+
+  // Get featured products
+  getFeaturedProducts: async (): Promise<Product[]> => {
+    const response = await axiosInstance.get('/products/featured');
+    return response.data;
+  },
+
+  // Get new arrivals
+  getNewArrivals: async (limit: number = 8): Promise<Product[]> => {
+    const response = await axiosInstance.get(`/products/new-arrivals?limit=${limit}`);
+    return response.data;
+  },
+
+  // Search products
+  searchProducts: async (query: string): Promise<Product[]> => {
+    const response = await axiosInstance.get(`/products/search?q=${query}`);
     return response.data;
   },
 };
@@ -137,35 +162,107 @@ export const cartAPI = {
 
 // Admin API endpoints (for admin users)
 export const adminAPI = {
-  // Create product
-  createProduct: async (productData: FormData) => {
-    const response = await axiosInstance.post('/admin/products', productData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    return response.data;
+  // Product Management
+  products: {
+    getAll: async (params?: { 
+      page?: number; 
+      search?: string; 
+      category?: string;
+      limit?: number;
+      sortBy?: string;
+    }): Promise<{
+      products: Product[];
+      page: number;
+      totalPages: number;
+      totalProducts: number;
+    }> => {
+      const queryParams = new URLSearchParams();
+      if (params?.page) queryParams.set('page', params.page.toString());
+      if (params?.search) queryParams.set('search', params.search);
+      if (params?.category) queryParams.set('category', params.category);
+      
+      const response = await axiosInstance.get(`/admin/products?${queryParams}`);
+      return response.data;
+    },
+
+    create: async (productData: CreateProductData): Promise<Product> => {
+      const formData = new FormData();
+      Object.entries(productData).forEach(([key, value]) => {
+        if (value !== undefined) {
+          if (key === 'image' && value instanceof File) {
+            formData.append('image', value);
+          } else {
+            formData.append(key, value.toString());
+          }
+        }
+      });
+
+      const response = await axiosInstance.post('/admin/products', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return response.data;
+    },
+
+    update: async (productData: UpdateProductData): Promise<Product> => {
+      const { id, ...data } = productData;
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        if (value !== undefined) {
+          if (key === 'image' && value instanceof File) {
+            formData.append('image', value);
+          } else {
+            formData.append(key, value.toString());
+          }
+        }
+      });
+
+      const response = await axiosInstance.put(`/admin/products/${id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return response.data;
+    },
+
+    delete: async (id: string): Promise<{ success: boolean; message: string }> => {
+      const response = await axiosInstance.delete(`/admin/products/${id}`);
+      return response.data;
+    },
+
+    updateInventory: async (id: string, countInStock: number): Promise<Product> => {
+      const response = await axiosInstance.put(`/admin/products/${id}/inventory`, { countInStock });
+      return response.data;
+    },
+
+    bulkDelete: async (ids: string[]): Promise<{ success: boolean; message: string }> => {
+      const response = await axiosInstance.post('/admin/products/bulk-delete', { ids });
+      return response.data;
+    },
+
+    bulkUpdateStatus: async (ids: string[], status: 'active' | 'inactive'): Promise<{ success: boolean; message: string }> => {
+      const response = await axiosInstance.post('/admin/products/bulk-status', { ids, status });
+      return response.data;
+    }
   },
 
-  // Update product
-  updateProduct: async (id: string, productData: FormData) => {
-    const response = await axiosInstance.put(`/admin/products/${id}`, productData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    return response.data;
-  },
+  // Order Management (Admin)
+  orders: {
+    getAll: async () => {
+      const response = await axiosInstance.get('/admin/orders');
+      return response.data;
+    },
 
-  // Delete product
-  deleteProduct: async (id: string) => {
-    const response = await axiosInstance.delete(`/admin/products/${id}`);
-    return response.data;
-  },
+    getById: async (id: string) => {
+      const response = await axiosInstance.get(`/admin/orders/${id}`);
+      return response.data;
+    },
 
-  // Get all orders (admin)
-  getAllOrders: async () => {
-    const response = await axiosInstance.get('/admin/orders');
-    return response.data;
-  },
+    updateStatus: async (id: string, status: string) => {
+      const response = await axiosInstance.put(`/admin/orders/${id}`, { status });
+      return response.data;
+    },
+
+    getStats: async () => {
+      const response = await axiosInstance.get('/admin/orders/stats');
+      return response.data;
+    }
+  }
 };
