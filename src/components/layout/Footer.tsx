@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Leaf, Instagram, Facebook, Twitter, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';

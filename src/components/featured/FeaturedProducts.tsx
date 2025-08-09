@@ -1,79 +1,60 @@
-import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Star, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { ProductGrid } from '@/components/product/ProductGrid';
-import { productAPI } from '@/services/apiManager';
-import { Product } from '@/types/product';
-import { useToast } from '@/hooks/useToast';
-import { transformProductsData } from '@/utils/productTransforms';
+import { featuredProducts } from '@/data/mockData';
 
 export function FeaturedProducts() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    let mounted = true;
-
-    const loadFeaturedProducts = async () => {
-      try {
-        const featuredProducts = await productAPI.getFeaturedProducts();
-        if (mounted) {
-          setProducts(transformProductsData(featuredProducts));
-        }
-      } catch (error) {
-        if (mounted) {
-          toast({
-            title: 'Error',
-            description: 'Failed to load featured products',
-            variant: 'destructive',
-          });
-        }
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadFeaturedProducts();
-
-    return () => {
-      mounted = false;
-    };
-  }, []); // Remove toast from dependencies
-
   return (
-    <section className="py-16 bg-sage-50">
+    <section className="py-20 bg-gradient-to-br from-sage-50 via-cream-50 to-earth-50">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between mb-12">
-          <div>
+        <div className="text-center mb-16">
+          <div className="flex items-center justify-center space-x-2 mb-4">
+            <Badge className="bg-luxury-100 text-luxury-800 border-luxury-200">
+              <Award className="h-3 w-3 mr-1" />
+              Curated Selection
+            </Badge>
+          </div>
+          
+          <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl lg:text-4xl font-serif font-bold luxury-text mb-4">
               Featured Products
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-muted-foreground mb-6">
               Handpicked favorites that embody our commitment to luxury and sustainability
             </p>
+            
+            <div className="flex items-center justify-center space-x-6 text-sm text-muted-foreground">
+              <div className="flex items-center space-x-1">
+                <Star className="h-4 w-4 text-luxury-600" />
+                <span>Premium Quality</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <div className="w-2 h-2 bg-sage-400 rounded-full"></div>
+                <span>Sustainable Materials</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <div className="w-2 h-2 bg-earth-400 rounded-full"></div>
+                <span>Artisan Crafted</span>
+              </div>
+            </div>
           </div>
-          
-          <Button variant="outline" asChild className="hidden sm:flex border-sage-200 text-sage-800 hover:bg-sage-100">
-            <Link to="/products">
-              View All
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
         </div>
 
-        <ProductGrid products={products} loading={loading} />
+        <ProductGrid products={featuredProducts} />
 
-        <div className="text-center mt-8 sm:hidden">
-          <Button variant="outline" asChild className="border-sage-200 text-sage-800 hover:bg-sage-100">
-            <Link to="/products">
+        <div className="text-center mt-12">
+          <Button asChild className="luxury-button" size="lg">
+            <Link to="/category/living">
               View All Products
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
+          
+          <p className="text-sm text-muted-foreground mt-4">
+            Discover our complete collection of luxury sustainable products
+          </p>
         </div>
       </div>
     </section>

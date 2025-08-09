@@ -1,57 +1,20 @@
-export type ProductCategory =
-  | 'Electronics'
-  | 'Cameras'
-  | 'Laptops'
-  | 'Accessories'
-  | 'Headphones'
-  | 'Food'
-  | 'Books'
-  | 'Clothes/Shoes'
-  | 'Beauty/Health'
-  | 'Sports'
-  | 'Outdoor'
-  | 'Home';
-
-export type ProductStatus = 'active' | 'inactive';
-
 export interface Product {
-  _id: string;
   id: string;
   name: string;
   description: string;
   price: number;
-  countInStock: number;
-  category: ProductCategory;
   image: string;
   images: string[];
+  category: string;
+  subcategory?: string;
   inStock: boolean;
   featured: boolean;
-  status: ProductStatus;
-  averageRating: number;
-  numReviews: number;
-  sales: number;
   tags: string[];
   rating: number;
   reviewCount: number;
   brand: string;
   sku: string;
   variants?: ProductVariant[];
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface CreateProductData {
-  name: string;
-  description: string;
-  price: number;
-  countInStock: number;
-  category: ProductCategory;
-  status: ProductStatus;
-  image?: File;
-}
-
-export interface UpdateProductData extends CreateProductData {
-  id: string;
 }
 
 export interface ProductVariant {
@@ -72,7 +35,8 @@ export interface CartItem {
 export interface User {
   id: string;
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   avatar?: string;
   addresses?: Address[];
   orders?: Order[];
