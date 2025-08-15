@@ -107,7 +107,18 @@ export default {
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        serif: ['Playfair Display', 'serif'],
+        serif: ['Butler', 'Playfair Display', 'serif'],
+        butler: ['Butler', 'serif'],
+      },
+      fontWeight: {
+        'ultralight': '200',
+        'light': '300',
+        'normal': '400',
+        'medium': '500',
+        'semibold': '600',
+        'bold': '700',
+        'extrabold': '800',
+        'black': '900',
       },
       keyframes: {
         'accordion-down': {

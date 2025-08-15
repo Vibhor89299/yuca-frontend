@@ -2,95 +2,120 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Leaf, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import video from "../../assets/banner.mp4"
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden luxury-gradient min-h-[80vh] flex items-center">
-      <div className="container mx-auto px-4 py-16 lg:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Content */}
-          <div className="space-y-8 animate-fade-in">
-            <div className="space-y-4">
-              <Badge className="bg-sage-100 text-sage-800 border-sage-200">
-                <Leaf className="h-3 w-3 mr-1" />
-                Sustainable Luxury
-              </Badge>
-              
-              <h1 className="text-4xl lg:text-6xl font-serif font-bold luxury-text leading-tight">
-                Where Luxury{' '}
-                <span className="luxury-accent">Grows</span>{' '}
-                With You
-              </h1>
-              
-              <p className="text-lg text-muted-foreground max-w-lg">
-                Discover our curated collection of sustainable luxury products that blend 
-                natural beauty with sophisticated design. Every piece tells a story of 
-                craftsmanship and conscious living.
-              </p>
-            </div>
+    <section className="relative overflow-hidden min-h-screen flex items-end justify-center">
+      {/* Background Video */}
+      <div className="absolute inset-0 z-0">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="w-full h-full object-cover"
+        >
+          <source src={video} type="video/mp4" />
+          {/* Fallback image if video fails to load */}
+          <img
+            src="https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg"
+            alt="Luxury sustainable living"
+            className="w-full h-full object-cover"
+          />
+        </video>
+        {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/40" />
+      </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button asChild className="luxury-button" size="lg">
-                <Link to="/category/living">
-                  Explore Collection
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              
-              <Button variant="outline" size="lg" className="border-sage-200 text-sage-800 hover:bg-sage-50">
-                <Link to="/about">
-                  Our Story
-                </Link>
-              </Button>
-            </div>
-
-            {/* Features */}
-            <div className="flex flex-wrap gap-6 pt-4">
-              <div className="flex items-center space-x-2">
-                <div className="bg-sage-100 p-2 rounded-full">
-                  <Leaf className="h-4 w-4 text-sage-600" />
-                </div>
-                <span className="text-sm font-medium luxury-text">Eco-Friendly</span>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <div className="bg-sage-100 p-2 rounded-full">
-                  <Sparkles className="h-4 w-4 text-sage-600" />
-                </div>
-                <span className="text-sm font-medium luxury-text">Premium Quality</span>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <div className="bg-sage-100 p-2 rounded-full">
-                  <Sparkles className="h-4 w-4 text-sage-600" />
-                </div>
-                <span className="text-sm font-medium luxury-text">Fast Shipping</span>
-              </div>
-            </div>
+      {/* Content */}
+       <div className="relative z-10 container mx-auto px-4 py-16 pb-24 text-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild className="bg-white text-sage-800 hover:bg-sage-50" size="lg">
+              <Link to="/category/living">
+                Explore Collection
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+            
+            <Button variant="outline" size="lg" className="border-white/50 text-white bg-white/10 hover:bg-white/10 hover:text-white hover:backdrop-blur-sm">
+              <Link to="/about">
+                Our Story
+              </Link>
+            </Button>
+          </div>
+       </div>
+      
+      {/* <div className="relative z-10 container mx-auto px-4 py-16 lg:py-24 text-center">
+        <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
+          <div className="space-y-6">
+            <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
+              <Leaf className="h-3 w-3 mr-1" />
+              Sustainable Luxury
+            </Badge>
+            
+            <h1 className="text-5xl lg:text-7xl font-serif font-bold text-white leading-tight">
+              Where Luxury{' '}
+              <span className="text-sage-300">Grows</span>{' '}
+              With You
+            </h1>
+            
+            <p className="text-xl lg:text-2xl text-white/90 max-w-3xl mx-auto">
+              Discover our curated collection of sustainable luxury products that blend 
+              natural beauty with sophisticated design. Every piece tells a story of 
+              craftsmanship and conscious living.
+            </p>
           </div>
 
-          {/* Hero Image */}
-          <div className="relative">
-            <div className="relative overflow-hidden rounded-2xl luxury-shadow transform hover:scale-105 transition-transform duration-700">
-              <img
-                src="https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg"
-                alt="Luxury sustainable living"
-                className="w-full h-[500px] lg:h-[600px] object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-sage-900/20 to-transparent" />
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild className="bg-white text-sage-800 hover:bg-sage-50" size="lg">
+              <Link to="/category/living">
+                Explore Collection
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+            
+            <Button variant="outline" size="lg" className="border-white/50 text-white hover:bg-white/10 backdrop-blur-sm">
+              <Link to="/about">
+                Our Story
+              </Link>
+            </Button>
+          </div>
+
+          
+          <div className="flex flex-wrap gap-8 justify-center pt-8">
+            <div className="flex items-center space-x-3">
+              <div className="bg-white/20 p-3 rounded-full backdrop-blur-sm">
+                <Leaf className="h-5 w-5 text-white" />
+              </div>
+              <span className="text-lg font-medium text-white">Eco-Friendly</span>
             </div>
             
-            {/* Floating Elements */}
-            <div className="absolute -top-4 -right-4 bg-white p-4 rounded-full luxury-shadow animate-pulse">
-              <Leaf className="h-6 w-6 text-sage-600" />
+            <div className="flex items-center space-x-3">
+              <div className="bg-white/20 p-3 rounded-full backdrop-blur-sm">
+                <Sparkles className="h-5 w-5 text-white" />
+              </div>
+              <span className="text-lg font-medium text-white">Premium Quality</span>
             </div>
             
-            <div className="absolute -bottom-4 -left-4 bg-luxury-600 text-white p-4 rounded-full luxury-shadow animate-pulse">
-              <Sparkles className="h-6 w-6" />
+            <div className="flex items-center space-x-3">
+              <div className="bg-white/20 p-3 rounded-full backdrop-blur-sm">
+                <Sparkles className="h-5 w-5 text-white" />
+              </div>
+              <span className="text-lg font-medium text-white">Fast Shipping</span>
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
+
+      {/* Floating Elements */}
+      {/* <div className="absolute top-20 right-20 bg-white/20 p-4 rounded-full backdrop-blur-sm animate-pulse hidden lg:block">
+        <Leaf className="h-6 w-6 text-white" />
+      </div> */}
+      
+      {/* <div className="absolute bottom-20 left-20 bg-sage-600/80 text-white p-4 rounded-full backdrop-blur-sm animate-pulse hidden lg:block">
+        <Sparkles className="h-6 w-6" />
+      </div> */}
     </section>
   );
 }
