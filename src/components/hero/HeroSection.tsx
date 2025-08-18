@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Leaf, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import video from "../../assets/banner.mp4"
 
 export function HeroSection() {

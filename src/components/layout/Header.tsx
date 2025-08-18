@@ -17,7 +17,6 @@ import { categories } from '@/data/mockData';
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
   const { itemCount, isAuthenticated, user, logout } = useStore();
@@ -27,7 +26,6 @@ export function Header() {
       const scrollY = window.scrollY;
       const isCurrentlyScrolled = scrollY > 50;
       
-      setIsScrolled(isCurrentlyScrolled);
       setIsVisible(isCurrentlyScrolled);
     };
 
