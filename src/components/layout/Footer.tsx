@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Leaf, Instagram, Facebook, Twitter, Mail } from 'lucide-react';
+import {Instagram, Facebook, Twitter, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import YucaLogo from '../../assets/logo.jpg';
