@@ -13,6 +13,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useStore } from '@/store/useStore';
 import { categories } from '@/data/mockData';
+import YucaLogo from '../../assets/logo.jpg';
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -60,13 +61,13 @@ export function Header() {
           : '-translate-y-full bg-transparent'
       }`}
     >
-      <div className="container mx-auto px-4 py-3">
+      <div className="container mx-auto px-4 py-2">
         {/* Compact Header */}
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 flex-shrink-0">
-            <div className="bg-autumnFern p-1.5 rounded-full">
-              <Leaf className="h-4 w-4 text-blanket" />
+          <Link to="/" className="flex items-center  flex-shrink-0">
+            <div className="rounded-full h-14 w-14 overflow-hidden">
+              <img src={YucaLogo} alt="Yuca Logo" className="h-full w-full object-cover rounded-full" />
             </div>
             <div>
               <h1 className="text-lg font-serif text-blanket">YUCA</h1>

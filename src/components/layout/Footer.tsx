@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { Leaf, Instagram, Facebook, Twitter, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import YucaLogo from '../../assets/logo.jpg';
+
 
 export function Footer() {
   return (
@@ -10,9 +12,9 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand Section */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <div className="bg-autumnFern p-2 rounded-full">
-                <Leaf className="h-5 w-5 text-blanket" />
+            <div className="flex items-center">
+              <div className="rounded-full">
+                <img src={YucaLogo} alt="Yuca Logo" className="h-16 w-16 object-cover rounded-full" />
               </div>
               <div>
                 <h3 className="text-xl font-serif font-bold text-blanket">YUCA</h3>
