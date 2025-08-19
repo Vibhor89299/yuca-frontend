@@ -21,7 +21,7 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <Card className="group overflow-hidden luxury-shadow hover:shadow-2xl border-sage-200 transition-all duration-500 transform hover:-translate-y-2 bg-white">
+    <Card className="group overflow-hidden shadow-lg hover:shadow-2xl border-oak/30 transition-all duration-500 transform hover:-translate-y-2 bg-mushroom">
       <Link to={`/product/${product.id}`}>
         <div className="relative overflow-hidden">
           <img
@@ -30,10 +30,10 @@ export function ProductCard({ product }: ProductCardProps) {
             className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110"
           />
           
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-t from-kimber/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           
           {product.featured && (
-            <Badge className="absolute top-3 left-3 bg-luxury-600 text-white shadow-lg">
+            <Badge className="absolute top-3 left-3 bg-autumnFern text-blanket shadow-lg">
               Featured
             </Badge>
           )}
@@ -47,7 +47,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <Button
             variant="ghost"
             size="sm"
-            className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 bg-white/90 hover:bg-white shadow-lg transform translate-y-2 group-hover:translate-y-0"
+            className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 bg-blanket/90 hover:bg-blanket shadow-lg transform translate-y-2 group-hover:translate-y-0"
           >
             <Heart className="h-4 w-4" />
           </Button>
@@ -56,7 +56,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
             <Button
               onClick={handleAddToCart}
-              className="w-full luxury-button shadow-lg"
+              className="w-full bg-autumnFern hover:bg-autumnFern-600 text-blanket shadow-lg"
               size="sm"
               disabled={!product.inStock}
             >
@@ -69,7 +69,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <CardContent className="p-6">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <Badge variant="outline" className="text-xs border-sage-200 text-sage-700">
+              <Badge variant="outline" className="text-xs border-oak/30 text-oak">
                 {product.category}
               </Badge>
               <div className="flex items-center">
@@ -78,8 +78,8 @@ export function ProductCard({ product }: ProductCardProps) {
                     key={i}
                     className={`h-3 w-3 ${
                       i < Math.floor(product.rating)
-                        ? 'text-luxury-600 fill-current'
-                        : 'text-sage-300'
+                        ? 'text-autumnFern fill-current'
+                        : 'text-khakiMoss'
                     }`}
                   />
                 ))}
@@ -89,7 +89,7 @@ export function ProductCard({ product }: ProductCardProps) {
               </div>
             </div>
 
-            <h3 className="font-serif font-semibold luxury-text group-hover:luxury-accent transition-colors text-lg leading-tight">
+            <h3 className="font-serif font-semibold text-kimber group-hover:text-autumnFern transition-colors text-lg leading-tight">
               {product.name}
             </h3>
 
@@ -99,7 +99,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
             <div className="flex items-end justify-between pt-3">
               <div className="space-y-1">
-                <span className="text-xl font-bold luxury-text">
+                <span className="text-xl font-bold text-autumnFern">
                   ${product.price.toFixed(2)}
                 </span>
                 <p className="text-xs text-muted-foreground">
@@ -109,7 +109,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
               <Button
                 onClick={handleAddToCart}
-                className="luxury-button shadow-md"
+                className="bg-autumnFern hover:bg-autumnFern-600 text-blanket shadow-md"
                 size="sm"
                 disabled={!product.inStock}
               >

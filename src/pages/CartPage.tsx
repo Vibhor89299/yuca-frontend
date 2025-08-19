@@ -11,13 +11,13 @@ export function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-16 bg-blanket min-h-screen">
         <div className="text-center space-y-6">
-          <div className="bg-sage-100 p-6 rounded-full w-24 h-24 mx-auto flex items-center justify-center">
-            <ShoppingBag className="h-12 w-12 text-sage-600" />
+          <div className="bg-mushroom p-6 rounded-full w-24 h-24 mx-auto flex items-center justify-center">
+            <ShoppingBag className="h-12 w-12 text-autumnFern" />
           </div>
-          <h1 className="text-2xl font-serif font-bold luxury-text">Your Cart is Empty</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl luxury-heading">Your Cart is Empty</h1>
+          <p className="luxury-text-muted">
             Discover our beautiful collection of sustainable luxury products
           </p>
           <Button asChild className="luxury-button">
@@ -29,16 +29,16 @@ export function CartPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 bg-blanket min-h-screen">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" onClick={() => navigate(-1)} className="p-0">
+          <Button variant="ghost" onClick={() => navigate(-1)} className="p-0 luxury-button-ghost">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Continue Shopping
           </Button>
         </div>
-        <h1 className="text-2xl font-serif font-bold luxury-text">
+        <h1 className="text-2xl luxury-heading">
           Shopping Cart ({itemCount})
         </h1>
       </div>
@@ -47,7 +47,7 @@ export function CartPage() {
         {/* Cart Items */}
         <div className="lg:col-span-2 space-y-4">
           {items.map((item) => (
-            <Card key={item.id} className="luxury-shadow border-sage-200">
+            <Card key={item.id} className="luxury-card">
               <CardContent className="p-6">
                 <div className="flex space-x-4">
                   <div className="flex-shrink-0">
@@ -62,10 +62,10 @@ export function CartPage() {
                     <h3 className="font-serif font-semibold luxury-text mb-1">
                       {item.product.name}
                     </h3>
-                    <p className="text-sm text-muted-foreground mb-2">
+                    <p className="text-sm luxury-text-muted mb-2">
                       {item.product.brand}
                     </p>
-                    <p className="text-lg font-bold luxury-text">
+                    <p className="text-lg font-bold luxury-accent">
                       ${item.product.price.toFixed(2)}
                     </p>
                   </div>
@@ -86,12 +86,12 @@ export function CartPage() {
                         size="sm"
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
                         disabled={item.quantity <= 1}
-                        className="h-8 w-8 p-0"
+                        className="h-8 w-8 p-0 luxury-button-secondary"
                       >
                         <Minus className="h-3 w-3" />
                       </Button>
                       
-                      <span className="w-8 text-center font-medium">
+                      <span className="w-8 text-center font-medium luxury-text">
                         {item.quantity}
                       </span>
                       
@@ -99,13 +99,13 @@ export function CartPage() {
                         variant="outline"
                         size="sm"
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="h-8 w-8 p-0"
+                        className="h-8 w-8 p-0 luxury-button-secondary"
                       >
                         <Plus className="h-3 w-3" />
                       </Button>
                     </div>
                     
-                    <p className="text-sm font-medium luxury-text">
+                    <p className="text-sm font-medium luxury-accent">
                       ${(item.product.price * item.quantity).toFixed(2)}
                     </p>
                   </div>
@@ -117,31 +117,31 @@ export function CartPage() {
 
         {/* Order Summary */}
         <div className="space-y-6">
-          <Card className="luxury-shadow border-sage-200">
+          <Card className="luxury-card">
             <CardContent className="p-6">
-              <h2 className="text-xl font-serif font-semibold luxury-text mb-4">
+              <h2 className="text-xl luxury-heading mb-4">
                 Order Summary
               </h2>
               
               <div className="space-y-3">
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-sm luxury-text">
                   <span>Subtotal ({itemCount} items)</span>
                   <span>${total.toFixed(2)}</span>
                 </div>
                 
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-sm luxury-text">
                   <span>Shipping</span>
-                  <span className="text-sage-600">Free</span>
+                  <span className="text-khakiMoss">Free</span>
                 </div>
                 
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-sm luxury-text">
                   <span>Tax</span>
                   <span>${(total * 0.08).toFixed(2)}</span>
                 </div>
                 
-                <Separator />
+                <Separator className="luxury-divider" />
                 
-                <div className="flex justify-between text-lg font-bold luxury-text">
+                <div className="flex justify-between text-lg font-bold luxury-accent">
                   <span>Total</span>
                   <span>${(total * 1.08).toFixed(2)}</span>
                 </div>
@@ -158,9 +158,9 @@ export function CartPage() {
           </Card>
           
           {/* Security Badge */}
-          <Card className="luxury-shadow border-sage-200">
+          <Card className="luxury-card">
             <CardContent className="p-4 text-center">
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs luxury-text-muted">
                 Secure checkout powered by industry-leading encryption
               </p>
             </CardContent>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@300;400;500;600;700&family=Merriweather:wght@300;400;500;600;700&display=swap');
 @import url('./fonts/Butler_Webfont/stylesheet.css');
 @tailwind base;
 @tailwind components;
@@ -6,53 +6,54 @@
 
 @layer base {
   :root {
-    --background: 45 20% 97%;
-    --foreground: 45 10% 15%;
-    --card: 45 25% 95%;
-    --card-foreground: 45 10% 15%;
-    --popover: 45 25% 95%;
-    --popover-foreground: 45 10% 15%;
-    --primary: 88 17% 58%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 36 21% 89%;
-    --secondary-foreground: 45 10% 15%;
-    --muted: 45 15% 92%;
-    --muted-foreground: 45 8% 45%;
-    --accent: 45 25% 90%;
-    --accent-foreground: 45 10% 15%;
+    /* New YUCA Brand Color System */
+    --background: 34 29% 90%;  /* blanket as main background */
+    --foreground: 15 17% 17%;  /* kimber for text */
+    --card: 26 20% 82%;        /* mushroom for card backgrounds */
+    --card-foreground: 15 17% 17%; /* kimber for card text */
+    --popover: 26 20% 82%;     /* mushroom for popover */
+    --popover-foreground: 15 17% 17%; /* kimber for popover text */
+    --primary: 20 51% 33%;     /* autumnFern for primary actions */
+    --primary-foreground: 34 29% 90%; /* blanket for primary text */
+    --secondary: 34 29% 55%;   /* oak for secondary elements */
+    --secondary-foreground: 15 17% 17%; /* kimber for secondary text */
+    --muted: 26 20% 82%;       /* mushroom for muted backgrounds */
+    --muted-foreground: 21 15% 53%; /* khakiMoss for muted text */
+    --accent: 34 29% 55%;      /* oak for accents */
+    --accent-foreground: 15 17% 17%; /* kimber for accent text */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 45 12% 85%;
-    --input: 45 12% 85%;
-    --ring: 88 17% 58%;
+    --border: 34 29% 55%;      /* oak for borders */
+    --input: 26 20% 82%;       /* mushroom for inputs */
+    --ring: 20 51% 33%;        /* autumnFern for focus rings */
     --radius: 0.75rem;
-    --chart-1: 88 17% 58%;
-    --chart-2: 30 35% 55%;
-    --chart-3: 47 65% 55%;
-    --chart-4: 45 25% 70%;
-    --chart-5: 88 25% 45%;
+    --chart-1: 20 51% 33%;     /* autumnFern */
+    --chart-2: 34 29% 55%;     /* oak */
+    --chart-3: 21 15% 53%;     /* khakiMoss */
+    --chart-4: 26 20% 82%;     /* mushroom */
+    --chart-5: 15 17% 17%;     /* kimber */
   }
 
   .dark {
-    --background: 45 20% 8%;
-    --foreground: 45 15% 90%;
-    --card: 45 20% 10%;
-    --card-foreground: 45 15% 90%;
-    --popover: 45 20% 10%;
-    --popover-foreground: 45 15% 90%;
-    --primary: 88 17% 58%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 45 15% 20%;
-    --secondary-foreground: 45 15% 90%;
-    --muted: 45 15% 15%;
-    --muted-foreground: 45 8% 65%;
-    --accent: 45 15% 20%;
-    --accent-foreground: 45 15% 90%;
+    --background: 15 17% 17%;  /* kimber for dark background */
+    --foreground: 34 29% 90%;  /* blanket for dark text */
+    --card: 21 15% 53%;        /* khakiMoss for dark cards */
+    --card-foreground: 34 29% 90%; /* blanket for dark card text */
+    --popover: 21 15% 53%;     /* khakiMoss for dark popover */
+    --popover-foreground: 34 29% 90%; /* blanket for dark popover text */
+    --primary: 20 51% 33%;     /* autumnFern stays same */
+    --primary-foreground: 34 29% 90%; /* blanket for primary text */
+    --secondary: 34 29% 55%;   /* oak for secondary */
+    --secondary-foreground: 34 29% 90%; /* blanket for secondary text */
+    --muted: 21 15% 53%;       /* khakiMoss for dark muted */
+    --muted-foreground: 26 20% 82%; /* mushroom for dark muted text */
+    --accent: 34 29% 55%;      /* oak for dark accents */
+    --accent-foreground: 34 29% 90%; /* blanket for dark accent text */
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 45 15% 20%;
-    --input: 45 15% 20%;
-    --ring: 88 17% 58%;
+    --border: 34 29% 55%;      /* oak for dark borders */
+    --input: 21 15% 53%;       /* khakiMoss for dark inputs */
+    --ring: 20 51% 33%;        /* autumnFern for dark focus rings */
   }
 }
 
@@ -61,36 +62,165 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-blanket text-kimber font-sans;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-butler;
+    @apply font-serif text-oak;
+  }
+  a {
+    @apply text-autumnFern hover:underline transition-colors duration-200;
   }
 }
 
 @layer components {
+  /* YUCA Luxury Nature-Inspired Brand Components */
+  
+  /* Gradients */
   .luxury-gradient {
-    @apply bg-gradient-to-br from-sage-50 via-cream-50 to-earth-50;
+    @apply bg-gradient-to-br from-blanket via-mushroom to-blanket;
   }
   
+  .luxury-gradient-hero {
+    @apply bg-gradient-to-br from-blanket-50 via-mushroom-100 to-blanket;
+  }
+  
+  .luxury-gradient-section {
+    @apply bg-gradient-to-br from-mushroom-50 via-blanket-100 to-mushroom-100;
+  }
+  
+  /* Borders & Shadows */
   .luxury-border {
-    @apply border-sage-200 border-2;
+    @apply border border-oak/30;
+  }
+  
+  .luxury-border-accent {
+    @apply border border-autumnFern/50;
   }
   
   .luxury-shadow {
-    @apply shadow-lg shadow-sage-200/20;
+    @apply shadow-lg shadow-oak/20;
   }
   
+  .luxury-shadow-soft {
+    @apply shadow-md shadow-mushroom/30;
+  }
+  
+  /* Buttons */
   .luxury-button {
-    @apply bg-sage-600 hover:bg-sage-700 text-white transition-all duration-300 ease-in-out transform hover:scale-105;
+    @apply bg-autumnFern hover:bg-autumnFern-600 text-blanket transition-all duration-300 ease-in-out transform hover:scale-105 font-medium shadow-md hover:shadow-lg;
   }
   
+  .luxury-button-secondary {
+    @apply text-oak border border-oak hover:bg-mushroom transition-all duration-300 ease-in-out font-medium bg-transparent hover:text-kimber;
+  }
+  
+  .luxury-button-ghost {
+    @apply text-kimber hover:text-autumnFern hover:bg-mushroom/50 transition-all duration-200;
+  }
+  
+  /* Typography */
   .luxury-text {
-    @apply text-sage-800;
+    @apply text-kimber;
+  }
+  
+  .luxury-text-muted {
+    @apply text-khakiMoss;
   }
   
   .luxury-accent {
-    @apply text-luxury-600;
+    @apply text-autumnFern;
+  }
+
+  .luxury-heading {
+    @apply text-oak font-serif font-semibold;
+  }
+  
+  .luxury-heading-primary {
+    @apply text-autumnFern font-serif font-bold;
+  }
+  
+  .luxury-subheading {
+    @apply text-kimber font-sans font-medium;
+  }
+
+  /* Cards */
+  .luxury-card {
+    @apply bg-mushroom border border-oak/30 shadow-sm hover:shadow-md transition-all duration-300 rounded-xl;
+  }
+  
+  .luxury-card-elevated {
+    @apply bg-mushroom border border-oak/30 shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl;
+  }
+  
+  .luxury-card-featured {
+    @apply bg-gradient-to-br from-mushroom to-mushroom-200 border border-autumnFern/30 shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl;
+  }
+
+  /* Navigation */
+  .luxury-navbar {
+    @apply bg-kimber/95 backdrop-blur-lg text-blanket border-b border-oak/30;
+  }
+  
+  .luxury-nav-link {
+    @apply text-blanket hover:text-oak transition-colors duration-200 font-medium;
+  }
+  
+  .luxury-nav-link-active {
+    @apply text-autumnFern border-b-2 border-autumnFern;
+  }
+
+  /* Footer */
+  .luxury-footer {
+    @apply bg-kimber text-blanket border-t border-oak;
+  }
+  
+  /* Sections */
+  .luxury-section {
+    @apply py-16 lg:py-24;
+  }
+  
+  .luxury-section-alt {
+    @apply py-16 lg:py-24 bg-mushroom-50;
+  }
+  
+  .luxury-hero-section {
+    @apply min-h-screen bg-gradient-to-br from-blanket via-mushroom-100 to-blanket-200;
+  }
+  
+  /* Forms */
+  .luxury-input {
+    @apply bg-blanket border-oak/30 focus:border-autumnFern focus:ring-autumnFern/20 transition-colors duration-200;
+  }
+  
+  .luxury-textarea {
+    @apply bg-blanket border-oak/30 focus:border-autumnFern focus:ring-autumnFern/20 transition-colors duration-200 resize-none;
+  }
+  
+  /* Badges */
+  .luxury-badge {
+    @apply bg-autumnFern text-blanket font-medium px-3 py-1 rounded-full text-sm;
+  }
+  
+  .luxury-badge-outline {
+    @apply border border-oak text-oak bg-transparent font-medium px-3 py-1 rounded-full text-sm;
+  }
+  
+  .luxury-badge-eco {
+    @apply bg-khakiMoss text-blanket font-medium px-3 py-1 rounded-full text-sm;
+  }
+  
+  /* Dividers */
+  .luxury-divider {
+    @apply border-oak/30;
+  }
+  
+  /* Links */
+  .luxury-link {
+    @apply text-autumnFern hover:text-autumnFern-600 hover:underline transition-colors duration-200 font-medium;
+  }
+  
+  .luxury-link-subtle {
+    @apply text-kimber hover:text-autumnFern transition-colors duration-200;
   }
 
   /* Butler font weight utilities */
@@ -130,19 +260,19 @@
   }
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar with new colors */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-cream-100;
+  @apply bg-mushroom;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-sage-300 rounded-full;
+  @apply bg-oak rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-sage-400;
+  @apply bg-oak-600;
 }

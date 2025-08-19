@@ -37,24 +37,24 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen luxury-gradient flex items-center justify-center py-12 px-4">
+    <div className="min-h-screen bg-blanket flex items-center justify-center py-12 px-4">
       <div className="w-full max-w-md space-y-6">
         {/* Logo */}
         <div className="text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="bg-sage-600 p-3 rounded-full">
-              <Leaf className="h-8 w-8 text-white" />
+            <div className="bg-autumnFern p-3 rounded-full">
+              <Leaf className="h-8 w-8 text-blanket" />
             </div>
             <div>
-              <h1 className="text-3xl font-serif font-bold luxury-text">YUCA</h1>
-              <p className="text-sm luxury-accent">Where Luxury Grows With You</p>
+              <h1 className="text-3xl font-serif font-bold text-oak">YUCA</h1>
+              <p className="text-sm text-autumnFern">Where Luxury Grows With You</p>
             </div>
           </div>
         </div>
 
-        <Card className="luxury-shadow border-sage-200">
+        <Card className="shadow-lg shadow-oak/20 border-oak/30">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-serif luxury-text">Welcome Back</CardTitle>
+            <CardTitle className="text-2xl font-serif text-oak">Welcome Back</CardTitle>
             <CardDescription>
               Sign in to your account to continue your luxury journey
             </CardDescription>
@@ -71,7 +71,7 @@ export function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="border-sage-200 focus:ring-sage-600"
+                  className="border-oak/30 focus:ring-autumnFern"
                 />
               </div>
               
@@ -85,7 +85,7 @@ export function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="border-sage-200 focus:ring-sage-600 pr-10"
+                    className="border-oak/30 focus:ring-autumnFern pr-10"
                   />
                   <Button
                     type="button"
@@ -106,7 +106,7 @@ export function LoginPage() {
               <div className="flex items-center justify-between">
                 <Link 
                   to="/forgot-password" 
-                  className="text-sm luxury-accent hover:underline"
+                  className="text-sm text-autumnFern hover:underline"
                 >
                   Forgot password?
                 </Link>
@@ -114,7 +114,7 @@ export function LoginPage() {
 
               <Button 
                 type="submit" 
-                className="w-full luxury-button" 
+                className="w-full bg-autumnFern hover:bg-autumnFern-600 text-blanket font-medium" 
                 size="lg"
                 disabled={loading}
               >
@@ -136,7 +136,7 @@ export function LoginPage() {
             <div className="space-y-3">
               <Button 
                 variant="outline" 
-                className="w-full border-sage-200 hover:bg-sage-50"
+                className="w-full border-oak/30 hover:bg-mushroom text-oak"
                 disabled={loading}
               >
                 Continue with Google
@@ -144,7 +144,7 @@ export function LoginPage() {
               
               <Button 
                 variant="outline" 
-                className="w-full border-sage-200 hover:bg-sage-50"
+                className="w-full border-oak/30 hover:bg-mushroom text-oak"
                 disabled={loading}
               >
                 Continue with Apple
@@ -154,7 +154,7 @@ export function LoginPage() {
             <div className="text-center">
               <span className="text-sm text-muted-foreground">
                 Don't have an account?{' '}
-                <Link to="/register" className="luxury-accent hover:underline font-medium">
+                <Link to="/register" className="text-autumnFern hover:underline font-medium">
                   Create one
                 </Link>
               </span>
