@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 function toStartCase(str: string) {
   return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 }
-import { useParams } from 'react-router-dom';
-import { ShoppingBag, Heart, Star } from 'lucide-react';
+// import { useParams } from 'react-router-dom';
+import { ShoppingBag, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -17,26 +17,26 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useStore();
-  const { category, subcategory } = useParams();
+  // const { category, subcategory } = useParams();
 
   // Handle backwards compatibility between old and new schema
-  const productId = product._id || product.id;
+  // const productId = product._id || product.id;
   const inStock = product.inStock ?? (product.countInStock ? product.countInStock > 0 : true);
-  const reviewCount = product.reviewCount || product.numReviews || 0;
+  // const reviewCount = product.reviewCount || product.numReviews || 0;
   const productBrand = product.brand || 'YUCA';
 
   // Build the product URL based on current route context
-  const getProductUrl = () => {
-    // If we're on a category page, build nested URL
-    if (category) {
-      if (subcategory) {
-        return `/category/${category}/${subcategory}/product/${productId}`;
-      }
-      return `/category/${category}/product/${productId}`;
-    }
-    // Default to standalone product URL
-    return `/product/${productId}`;
-  };
+  // const getProductUrl = () => {
+  //   // If we're on a category page, build nested URL
+  //   if (category) {
+  //     if (subcategory) {
+  //       return `/category/${category}/${subcategory}/product/${productId}`;
+  //     }
+  //     return `/category/${category}/product/${productId}`;
+  //   }
+  //   // Default to standalone product URL
+  //   return `/product/${productId}`;
+  // };
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();

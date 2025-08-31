@@ -31,27 +31,29 @@ export const useStore = create<Store>()(
       // Cart actions
       addToCart: (product: Product, quantity = 1) => {
         const { items } = get();
-        const existingItem = items.find(item => item.id === product.id);
-        
+        // Always use a string id for cart items
+        const productId = product.id || product._id || '';
+        const existingItem = items.find(item => item.id === productId);
+
         if (existingItem) {
           set(state => ({
             items: state.items.map(item =>
-              item.id === product.id
+              item.id === productId
                 ? { ...item, quantity: item.quantity + quantity }
                 : item
             ),
           }));
         } else {
           set(state => ({
-            items: [...state.items, { id: product.id, product, quantity }],
+            items: [...state.items, { id: productId, product, quantity }],
           }));
         }
-        
+
         // Update totals
         const newItems = get().items;
         const newTotal = newItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
         const newItemCount = newItems.reduce((sum, item) => sum + item.quantity, 0);
-        
+
         set({ total: newTotal, itemCount: newItemCount });
       },
       
