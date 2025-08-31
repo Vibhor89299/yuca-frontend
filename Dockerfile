@@ -1,21 +1,16 @@
-# Use official Node.js image
-FROM node:18-alpine
 
-# Set working directory
+# Build stage
+FROM node:18-alpine as build
 WORKDIR /app
-
-# Copy package.json and install dependencies
 COPY package*.json ./
 RUN npm install
-
-# Copy all source code
 COPY . .
-
-# Build the app
 RUN npm run build
 
-# Expose the Vite preview port
-EXPOSE 4173
-
-# Run Vite preview server
-CMD ["npm", "run", "preview", "--", "--host"]
+# Production stage
+FROM nginx:1.25-alpine as production
+COPY --from=build /app/dist /usr/share/nginx/html
+# Optionally copy a custom nginx.conf:
+# COPY nginx.conf /etc/nginx/nginx.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
