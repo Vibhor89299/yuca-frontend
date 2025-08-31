@@ -45,13 +45,13 @@ export function ProductPage() {
         <div className="space-y-4">
           <div className="aspect-square overflow-hidden rounded-lg luxury-shadow">
             <img
-              src={product.images[selectedImage] || product.image}
+              src={product.images?.[selectedImage] ?? product.image}
               alt={product.name}
               className="w-full h-full object-cover"
             />
           </div>
           
-          {product.images.length > 1 && (
+          {product.images && product.images.length > 1 && (
             <div className="flex space-x-2">
               {product.images.map((image, index) => (
                 <button
@@ -195,7 +195,7 @@ export function ProductPage() {
                 <div className="mt-6">
                   <h4 className="font-semibold mb-2">Key Features:</h4>
                   <ul className="space-y-1 text-sm text-muted-foreground">
-                    {product.tags.map((tag, index) => (
+                    {product.tags?.map((tag, index) => (
                       <li key={index}>• {tag.charAt(0).toUpperCase() + tag.slice(1)}</li>
                     ))}
                   </ul>

@@ -1,19 +1,26 @@
 export interface Product {
-  id: string;
+  _id?: string;
+  id?: string; // For backwards compatibility
   name: string;
   description: string;
   price: number;
-  image: string;
-  images: string[];
+  countInStock: number;
   category: string;
-  subcategory?: string;
-  inStock: boolean;
-  featured: boolean;
-  tags: string[];
+  image: string;
   rating: number;
-  reviewCount: number;
-  brand: string;
-  sku: string;
+  numReviews: number;
+  user?: string;
+  featured?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  // Legacy fields for compatibility
+  images?: string[];
+  subcategory?: string;
+  inStock?: boolean;
+  tags?: string[];
+  reviewCount?: number;
+  brand?: string;
+  sku?: string;
   variants?: ProductVariant[];
 }
 

@@ -35,7 +35,7 @@ export function CategorySection() {
               <Link to={`/category/${category.slug}`}>
                 <div className="relative overflow-hidden">
                   <img
-                    src={category.image}
+                    src="https://i.pinimg.com/736x/1e/75/55/1e7555a65f6e0b34358ad110ae31f562.jpg"
                     alt={category.name}
                     className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
                   />

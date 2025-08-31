@@ -2,58 +2,65 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Star, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ProductGrid } from '@/components/product/ProductGrid';
-import { featuredProducts } from '@/data/mockData';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { fetchProducts } from '@/services/actions';
 
 export function FeaturedProducts() {
+
+  const dispatch = useAppDispatch();
+  const { products, loading, error, page, totalPages } = useAppSelector((state) => state.products);
+  useEffect(() => {
+    dispatch(fetchProducts(page));
+  }, [dispatch, page]);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      dispatch(fetchProducts(newPage));
+    }
+  };
+
   return (
     <section className="luxury-section luxury-gradient-section">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="luxury-badge-eco">
-              <Award className="h-3 w-3 mr-1 inline" />
-              Curated Selection
-            </div>
-          </div>
-          
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl lg:text-4xl luxury-heading mb-4">
-              Featured Products
+        {/* Kosha Collection Header with Image */}
+        <div className="relative flex flex-col items-center justify-center mb-16">
+          <img
+            src="https://i.pinimg.com/736x/1e/75/55/1e7555a65f6e0b34358ad110ae31f562.jpg"
+            alt="Kosha Collection"
+            className="w-full max-h-64 object-cover rounded-xl shadow-lg mb-6"
+            style={{ objectPosition: 'center' }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-xl" />
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center">
+            <h2 className="text-4xl lg:text-5xl font-serif font-bold text-white drop-shadow-lg mb-2">
+              Kosha Collection
             </h2>
-            <p className="text-lg luxury-text-muted mb-6">
-              Handpicked favorites that embody our commitment to luxury and sustainability
+            <p className="text-lg text-white/90 max-w-2xl mx-auto drop-shadow">
+              Discover thoughtfully curated Kosha products that bring luxury and sustainability together
             </p>
-            
-            <div className="flex items-center justify-center space-x-6 text-sm luxury-text-muted">
-              <div className="flex items-center space-x-1">
-                <Star className="h-4 w-4 text-autumnFern" />
-                <span>Premium Quality</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <div className="w-2 h-2 bg-khakiMoss rounded-full"></div>
-                <span>Sustainable Materials</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <div className="w-2 h-2 bg-oak rounded-full"></div>
-                <span>Artisan Crafted</span>
-              </div>
-            </div>
           </div>
         </div>
-
-        <ProductGrid products={featuredProducts} />
-
-        <div className="text-center mt-12">
-          <Button asChild className="luxury-button" size="lg">
-            <Link to="/category/living">
-              View All Products
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
+        {error && <div className="text-red-500 text-center">{error}</div>}
+        <ProductGrid products={products} loading={loading} />
+        {/* Pagination Controls */}
+        <div className="flex justify-center items-center gap-2 mt-8">
+          <Button size="sm" variant="outline" onClick={() => handlePageChange(page - 1)} disabled={page === 1}>
+            Previous
           </Button>
-          
-          <p className="text-sm luxury-text-muted mt-4">
-            Discover our complete collection of luxury sustainable products
-          </p>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <Button
+              key={i + 1}
+              size="sm"
+              variant={page === i + 1 ? 'default' : 'outline'}
+              onClick={() => handlePageChange(i + 1)}
+            >
+              {i + 1}
+            </Button>
+          ))}
+          <Button size="sm" variant="outline" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages}>
+            Next
+          </Button>
         </div>
       </div>
     </section>
