@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 function toStartCase(str: string) {
   return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 }
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { ShoppingBag, Heart, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
