@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useStore } from '@/store/useStore';
-import { categories } from '@/data/mockData';
+// import { categories } from '@/data/mockData';
 import YucaLogo from '../../assets/logo.jpg';
 
 export function Header() {
