@@ -76,40 +76,7 @@ export function Header() {
 
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-6">
-            <Link
-              to="/"
-              className="text-sm font-medium text-blanket hover:text-oak transition-colors"
-            >
-              Home
-            </Link>
-            <Link
-              to="/products"
-              className="text-sm font-medium text-blanket hover:text-oak transition-colors"
-            >
-              Products
-            </Link>
-            {categories.slice(0, 3).map((category) => (
-              <DropdownMenu key={category.id}>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="text-sm font-medium text-blanket hover:text-oak h-auto p-1">
-                    {category.name}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-mushroom/95 backdrop-blur-lg border-oak/50">
-                  <DropdownMenuItem onClick={() => navigate(`/category/${category.slug}`)}>
-                    All {category.name}
-                  </DropdownMenuItem>
-                  {category.subcategories?.map((sub) => (
-                    <DropdownMenuItem
-                      key={sub.id}
-                      onClick={() => navigate(`/category/${category.slug}/${sub.slug}`)}
-                    >
-                      {sub.name}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ))}
+            {/* Navigation links removed as requested */}
           </nav>
 
           {/* Actions */}
@@ -209,32 +176,7 @@ export function Header() {
                     </Button>
                   </form>
 
-                  <Link
-                    to="/"
-                    className="text-lg font-medium text-kimber hover:text-autumnFern transition-colors"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    Home
-                  </Link>
-
-                  <Link
-                    to="/products"
-                    className="text-lg font-medium text-kimber hover:text-autumnFern transition-colors"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    Products
-                  </Link>
-
-                  {categories.map((category) => (
-                    <Link
-                      key={category.id}
-                      to={`/category/${category.slug}`}
-                      className="text-lg font-medium text-kimber hover:text-autumnFern transition-colors"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {category.name}
-                    </Link>
-                  ))}
+                  {/* Navigation links removed as requested */}
                 </nav>
               </SheetContent>
             </Sheet>
