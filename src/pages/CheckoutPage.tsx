@@ -15,7 +15,7 @@ import { placeOrder } from '@/store/slices/orderSlice';
 export function CheckoutPage() {
   const dispatch = useAppDispatch();
   const { items, total } = useAppSelector(state => state.cart);
-  const { loading: orderLoading, error: orderError, currentOrder } = useAppSelector(state => state.order);
+  const { loading: orderLoading, error: orderError } = useAppSelector(state => state.order);
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
