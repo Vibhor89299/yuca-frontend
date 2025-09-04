@@ -9,14 +9,18 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Product } from '@/types';
-import { useStore } from '@/store/useStore';
+// import { useStore } from '@/store/useStore';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { addToCart, addGuestCartItem } from '@/store/slices/cartSlice';
 
 interface ProductCardProps {
   product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { addToCart } = useStore();
+  const dispatch = useAppDispatch();
+  const { isAuthenticated } = useAppSelector(state => state.auth);
+  // const { addToCart: addToCartLegacy } = useStore();
   // const { category, subcategory } = useParams();
 
   // Handle backwards compatibility between old and new schema
@@ -41,7 +45,18 @@ export function ProductCard({ product }: ProductCardProps) {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart(product);
+    const productId = product._id || product.id;
+    if (!productId) {
+      console.error('Product ID is missing');
+      return;
+    }
+    if (isAuthenticated) {
+      // Authenticated: call backend API via Redux thunk
+      dispatch(addToCart({ productId, quantity: 1 }));
+    } else {
+      // Guest: update Redux/localStorage
+      dispatch(addGuestCartItem({ product, quantity: 1 }));
+    }
   };
 
   const [imgIdx, setImgIdx] = useState(0);

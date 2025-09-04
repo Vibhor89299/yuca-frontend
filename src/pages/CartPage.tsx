@@ -1,17 +1,37 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Minus, Plus, X, ShoppingBag, ArrowLeft } from 'lucide-react';
+import { formatIndianPrice } from '@/utils/currency';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { useStore } from '@/store/useStore';
+import { useAppSelector, useAppDispatch } from '@/store/hooks';
+import { updateCartItem, removeFromCart, fetchCart, setGuestCart, updateGuestCartItem, removeGuestCartItem } from '@/store/slices/cartSlice';
+import { useEffect } from 'react';
 
 export function CartPage() {
-  const { items, total, itemCount, updateQuantity, removeFromCart } = useStore();
+  const dispatch = useAppDispatch();
+  const { items, total, itemCount } = useAppSelector(state => state.cart);
+  const { isAuthenticated } = useAppSelector(state => state.auth);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchCart());
+    } else {
+      // Load guest cart from localStorage
+      const data = localStorage.getItem('yuca_guest_cart');
+      if (data) {
+        try {
+          const parsed = JSON.parse(data);
+          dispatch(setGuestCart(parsed));
+        } catch {}
+      }
+    }
+  }, [dispatch, isAuthenticated]);
 
   if (items.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-16 bg-blanket min-h-screen">
+      <div className="container mx-auto px-4 py-16 min-h-screen bg-mushroom/95 backdrop-blur-sm">
         <div className="text-center space-y-6">
           <div className="bg-mushroom p-6 rounded-full w-24 h-24 mx-auto flex items-center justify-center">
             <ShoppingBag className="h-12 w-12 text-autumnFern" />
@@ -28,8 +48,31 @@ export function CartPage() {
     );
   }
 
+  const handleUpdateQuantity = (id: string, quantity: number) => {
+    if (isAuthenticated) {
+      if (quantity > 0) dispatch(updateCartItem({ productId: id, quantity }));
+    } else {
+      if (quantity > 0) dispatch(updateGuestCartItem({ id, quantity }));
+    }
+  };
+  const handleRemove = (id: string) => {
+    if (isAuthenticated) {
+      dispatch(removeFromCart(id));
+    } else {
+      dispatch(removeGuestCartItem(id));
+    }
+  };
+
+  const handleCheckout = () => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: '/checkout' } });
+    } else {
+      navigate('/checkout');
+    }
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8 bg-blanket min-h-screen">
+    <div className="container mx-auto px-4 py-8 min-h-screen bg-mushroom/95 backdrop-blur-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-4">
@@ -66,7 +109,7 @@ export function CartPage() {
                       {item.product.brand}
                     </p>
                     <p className="text-lg font-bold luxury-accent">
-                      ${item.product.price.toFixed(2)}
+                      {formatIndianPrice(item.product.price)}
                     </p>
                   </div>
                   
@@ -74,7 +117,7 @@ export function CartPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => removeFromCart(item.id)}
+                      onClick={() => handleRemove(item.id)}
                       className="text-destructive hover:text-destructive"
                     >
                       <X className="h-4 w-4" />
@@ -84,7 +127,7 @@ export function CartPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
                         disabled={item.quantity <= 1}
                         className="h-8 w-8 p-0 luxury-button-secondary"
                       >
@@ -98,7 +141,7 @@ export function CartPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
                         className="h-8 w-8 p-0 luxury-button-secondary"
                       >
                         <Plus className="h-3 w-3" />
@@ -106,7 +149,7 @@ export function CartPage() {
                     </div>
                     
                     <p className="text-sm font-medium luxury-accent">
-                      ${(item.product.price * item.quantity).toFixed(2)}
+                      {formatIndianPrice(item.product.price * item.quantity)}
                     </p>
                   </div>
                 </div>
@@ -141,16 +184,26 @@ export function CartPage() {
                 
                 <Separator className="luxury-divider" />
                 
+                                  <span>Subtotal</span>
+                  <span>{formatIndianPrice(total)}</span>
+                </div>
+
+                <div className="flex justify-between luxury-text">
+                  <span>GST (18%)</span>
+                  <span>{formatIndianPrice(total * 0.18)}</span>
+                </div>
+                
+                <Separator className="luxury-divider" />
+                
                 <div className="flex justify-between text-lg font-bold luxury-accent">
                   <span>Total</span>
-                  <span>${(total * 1.08).toFixed(2)}</span>
-                </div>
+                  <span>{formatIndianPrice(total * 1.18)}</span>
               </div>
               
               <Button 
                 className="w-full luxury-button mt-6" 
                 size="lg"
-                onClick={() => navigate('/checkout')}
+                onClick={handleCheckout}
               >
                 Proceed to Checkout
               </Button>

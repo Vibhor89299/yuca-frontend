@@ -5,11 +5,19 @@ import { HomePage } from '@/pages/HomePage';
 import { ProductPage } from '@/pages/ProductPage';
 import { CategoryPage } from '@/pages/CategoryPage';
 import { CartPage } from '@/pages/CartPage';
-import { LoginPage } from '@/pages/LoginPage';
+import LoginPage from './pages/LoginPage';
+
 import { CheckoutPage } from '@/pages/CheckoutPage';
 import { Toaster } from '@/components/ui/sonner';
+import RegisterPage from './pages/RegisterPage';
+import ProtectedRoute from '@/components/ProtectedRoute';
+
+import { useAuthCheck } from '@/hooks/useAuthCheck';
 
 function App() {
+  // Check authentication status on app load
+  useAuthCheck();
+
   return (
     <Router>
       <div className="min-h-screen flex flex-col">
@@ -22,7 +30,12 @@ function App() {
             <Route path="/category/:category/:subcategory" element={<CategoryPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/checkout" element={
+              <ProtectedRoute>
+                <CheckoutPage />
+              </ProtectedRoute>
+            } />
           </Routes>
         </main>
         <Footer />

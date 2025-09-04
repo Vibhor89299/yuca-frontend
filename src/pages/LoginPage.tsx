@@ -6,34 +6,46 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { useStore } from '@/store/useStore';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { loginUser } from '@/store/slices/authSlice';
+import { syncGuestCart } from '@/store/slices/syncGuestCartThunk';
+import { clearGuestCart, fetchCart } from '@/store/slices/cartSlice';
 
-export function LoginPage() {
+
+export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { login } = useStore();
+  const { loading, error, isAuthenticated } = useAppSelector(state => state.auth);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      // Mock successful login
-      login({
-        id: '1',
-        email: email,
-        firstName: 'Demo',
-        lastName: 'User',
-        avatar: undefined,
-      });
-      
-      setLoading(false);
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      // Check for guest cart in localStorage
+      const guestCart = localStorage.getItem('yuca_guest_cart');
+      if (guestCart) {
+        try {
+          const parsed = JSON.parse(guestCart);
+          if (parsed.items && parsed.items.length > 0) {
+            // First sync the guest cart
+            dispatch(syncGuestCart(parsed.items)).then(() => {
+              // Clear guest cart from localStorage and Redux
+              dispatch(clearGuestCart());
+              localStorage.removeItem('yuca_guest_cart');
+              // Fetch the updated cart to refresh header and other components
+              dispatch(fetchCart());
+            });
+          }
+        } catch {}
+      }
       navigate('/');
-    }, 1000);
+    }
+  }, [isAuthenticated, navigate, dispatch]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    dispatch(loginUser({ email, password }));
   };
 
   return (
@@ -52,7 +64,7 @@ export function LoginPage() {
           </div>
         </div>
 
-        <Card className="shadow-lg shadow-oak/20 border-oak/30">
+        <Card className="shadow-lg shadow-oak/20 border-oak/30 bg-white/90">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-serif text-oak">Welcome Back</CardTitle>
             <CardDescription>
@@ -112,6 +124,9 @@ export function LoginPage() {
                 </Link>
               </div>
 
+              {error && (
+                <div className="text-red-500 text-sm text-center">{error}</div>
+              )}
               <Button 
                 type="submit" 
                 className="w-full bg-autumnFern hover:bg-autumnFern-600 text-blanket font-medium" 

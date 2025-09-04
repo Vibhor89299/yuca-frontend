@@ -11,7 +11,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { useStore } from '@/store/useStore';
+import { useAppSelector, useAppDispatch } from '@/store/hooks';
+import { logout } from '@/store/slices/authSlice';
 // import { categories } from '@/data/mockData';
 import YucaLogo from '../../assets/logo.jpg';
 
@@ -20,7 +21,17 @@ export function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
-  const { itemCount, isAuthenticated, user, logout } = useStore();
+  const itemCount = useAppSelector(state => state.cart.itemCount);
+  const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
+  const user = useAppSelector(state => state.auth.user);
+  const dispatch = useAppDispatch();
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/');
+  };
+  // TODO: Implement logout via Redux if needed
+  // const dispatch = useAppDispatch();
+  // const handleLogout = () => { dispatch(logoutUser()); navigate('/'); };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,10 +59,8 @@ export function Header() {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+  // TODO: Implement logout via Redux if needed
+  // const handleLogout = () => { dispatch(logoutUser()); navigate('/'); };
 
   return (
     <header 

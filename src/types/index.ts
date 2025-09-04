@@ -95,3 +95,13 @@ export interface CartState {
   total: number;
   itemCount: number;
 }
+
+export interface Reviews {
+  id: string;
+  productId: string;
+  userId: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  updatedAt: string;
+}
