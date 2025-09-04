@@ -13,6 +13,6 @@ export default defineConfig({
     exclude: ['lucide-react'],
   },
   preview: {
-    allowedHosts: ['www.yucalifestyle.com'],
+    allowedHosts: ['www.yucalifestyle.com' , 'yucalifestyle.com'],
   },
 });
