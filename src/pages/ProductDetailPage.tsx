@@ -109,10 +109,10 @@ export function ProductDetailPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 min-h-screen bg-mushroom/95 backdrop-blur-sm">
+    <div className="container mx-auto px-4 mt-4 py-8 min-h-screen bg-white rounded backdrop-blur-sm">
       {/* Breadcrumb */}
       <div className="flex items-center space-x-2 mb-8">
-        <Button variant="ghost" onClick={() => navigate(-1)} className="p-0 luxury-button-ghost">
+        <Button variant="ghost" onClick={() => navigate(-1)} className="px-2 py-0 luxury-button-ghost">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back
         </Button>
