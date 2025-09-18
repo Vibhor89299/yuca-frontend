@@ -64,11 +64,7 @@ export function CartPage() {
   };
 
   const handleCheckout = () => {
-    if (!isAuthenticated) {
-      navigate('/login', { state: { from: '/checkout' } });
-    } else {
-      navigate('/checkout');
-    }
+    navigate('/checkout');
   };
 
   return (

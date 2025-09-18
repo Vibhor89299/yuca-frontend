@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const axiosinstance = axios.create({
-  baseURL: 'https://api.yucalifestyle.com',
-  // baseURL: 'http://localhost:5001',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001',
+  // baseURL: 'https://api.yucalifestyle.com', // Production URL
 });
 
 // Add token if it exists in localStorage

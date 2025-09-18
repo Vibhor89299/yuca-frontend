@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CreditCard, Lock, ArrowLeft } from 'lucide-react';
+import { CreditCard, Lock, ArrowLeft, User, Mail } from 'lucide-react';
 import { formatIndianPrice } from '@/utils/currency';                  
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,20 +9,28 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
-import { clearCart, fetchCart } from '@/store/slices/cartSlice';
+import { clearCart, fetchCart, clearGuestCart } from '@/store/slices/cartSlice';
 import { placeOrder } from '@/store/slices/orderSlice';
+import { paymentService } from '@/services/paymentService';
 
 export function CheckoutPage() {
   const dispatch = useAppDispatch();
   const { items, total } = useAppSelector(state => state.cart);
   const { loading: orderLoading, error: orderError } = useAppSelector(state => state.order);
+  const [processingPayment, setProcessingPayment] = useState(false);
   const [form, setForm] = useState({
+    // Guest information
+    guestEmail: '',
+    guestName: '',
+    guestPhone: '',
+    // Shipping information
     firstName: '',
     lastName: '',
     address: '',
     city: '',
     state: '',
     zip: '',
+    // Payment information
     paymentMethod: 'card',
     cardNumber: '',
     expiry: '',
@@ -49,24 +57,82 @@ export function CheckoutPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const shippingAddress = {
-      firstName: form.firstName,
-      lastName: form.lastName,
-      address: form.address,
-      city: form.city,
-      state: form.state,
-      zip: form.zip,
-    };
-    const orderResult = await dispatch(placeOrder({
-      items: items.map(item => ({ productId: item.product._id || item.product.id, quantity: item.quantity, price: item.product.price })),
-      shippingAddress,
-      paymentMethod: form.paymentMethod,
-      totalPrice: finalTotal,
-    }));
     
-    if (placeOrder.fulfilled.match(orderResult)) {
-      dispatch(clearCart()); // Clear the cart after successful order
-      navigate('/order-confirmation');
+    if (form.paymentMethod !== 'razorpay') {
+      // Handle other payment methods (if any)
+      alert('Only Razorpay payment is currently supported');
+      return;
+    }
+
+    setProcessingPayment(true);
+    
+    try {
+      const shippingAddress = {
+        firstName: form.firstName,
+        lastName: form.lastName,
+        address: form.address,
+        city: form.city,
+        state: form.state,
+        zip: form.zip,
+      };
+
+      const orderData: any = {
+        items: items.map(item => ({ 
+          productId: item.product._id || item.product.id, 
+          quantity: item.quantity, 
+          price: item.product.price 
+        })),
+        shippingAddress,
+        paymentMethod: 'razorpay',
+        totalPrice: finalTotal,
+      };
+
+      // Add guest information if not authenticated
+      let guestInfo;
+      if (!isAuthenticated) {
+        guestInfo = {
+          email: form.guestEmail,
+          name: form.guestName,
+          phone: form.guestPhone,
+        };
+        orderData.guestInfo = guestInfo;
+      }
+
+      // Create order first
+      const orderResult = await dispatch(placeOrder(orderData));
+      
+      if (placeOrder.fulfilled.match(orderResult)) {
+        const orderId = orderResult.payload.order.id;
+        
+        // Prepare user info for Razorpay
+        const userInfo = isAuthenticated ? {
+          name: `${form.firstName} ${form.lastName}`,
+          email: form.guestEmail, // This should come from user profile in real app
+          phone: form.guestPhone, // This should come from user profile in real app
+        } : undefined;
+
+        // Open Razorpay checkout
+        const paymentResult = await paymentService.openRazorpayCheckout(
+          orderId,
+          userInfo,
+          guestInfo
+        );
+
+        if (paymentResult.payment.status === 'paid') {
+          // Clear the appropriate cart based on authentication status
+          if (isAuthenticated) {
+            dispatch(clearCart());
+          } else {
+            dispatch(clearGuestCart());
+          }
+          navigate(`/order/${orderId}`);
+        }
+      }
+    } catch (error: any) {
+      console.error('Payment failed:', error);
+      alert(`Payment failed: ${error.message}`);
+    } finally {
+      setProcessingPayment(false);
     }
   };
 
@@ -77,10 +143,8 @@ export function CheckoutPage() {
     if (items.length === 0) {
       navigate('/cart');
     }
-    if (!isAuthenticated) {
-      navigate('/login', { state: { from: '/checkout' } });
-    }
-  }, [items.length, isAuthenticated, navigate]);
+    // Remove the authentication requirement - allow guest checkout
+  }, [items.length, navigate]);
 
   return (
     <div className="container mx-auto px-4 py-8 animate-fade-in bg-mushroom/95 backdrop-blur-sm min-h-screen">
@@ -93,6 +157,60 @@ export function CheckoutPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Checkout Form */}
         <div className="space-y-6">
+          {/* Guest Information Form (only show if not authenticated) */}
+          {!isAuthenticated && (
+            <Card className="luxury-card">
+              <CardHeader>
+                <CardTitle className="font-serif luxury-text flex items-center">
+                  <User className="h-5 w-5 mr-2" />
+                  Guest Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="guestName">Full Name</Label>
+                    <Input 
+                      id="guestName" 
+                      placeholder="John Doe" 
+                      value={form.guestName} 
+                      onChange={handleChange} 
+                      required 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="guestEmail">Email</Label>
+                    <Input 
+                      id="guestEmail" 
+                      type="email" 
+                      placeholder="john@example.com" 
+                      value={form.guestEmail} 
+                      onChange={handleChange} 
+                      required 
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="guestPhone">Phone Number</Label>
+                  <Input 
+                    id="guestPhone" 
+                    type="tel" 
+                    placeholder="9876543210" 
+                    value={form.guestPhone} 
+                    onChange={handleChange} 
+                    required 
+                  />
+                </div>
+                <div className="p-4 bg-sage-50 rounded-lg">
+                  <p className="text-sm luxury-text-muted">
+                    <Mail className="h-4 w-4 inline mr-2" />
+                    We'll send your order confirmation and tracking details to this email address.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           <Card className="luxury-card">
             <CardHeader>
               <CardTitle className="font-serif luxury-text">Shipping Address</CardTitle>
@@ -131,43 +249,29 @@ export function CheckoutPage() {
                 <CardTitle className="font-serif luxury-text">Payment Method</CardTitle>
                 <RadioGroup value={form.paymentMethod} onValueChange={handlePaymentMethod}>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="card" id="card" />
-                    <Label htmlFor="card" className="flex items-center">
+                    <RadioGroupItem value="razorpay" id="razorpay" />
+                    <Label htmlFor="razorpay" className="flex items-center">
                       <CreditCard className="h-4 w-4 mr-2" />
-                      Credit Card
+                      Razorpay (Cards, UPI, Net Banking, Wallets)
                     </Label>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="paypal" id="paypal" />
-                    <Label htmlFor="paypal">PayPal</Label>
-                  </div>
                 </RadioGroup>
-                {form.paymentMethod === 'card' && (
-                  <div className="space-y-4 mt-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="cardNumber">Card Number</Label>
-                      <Input id="cardNumber" placeholder="1234 5678 9012 3456" value={form.cardNumber} onChange={handleChange} required />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="expiry">Expiry Date</Label>
-                        <Input id="expiry" placeholder="MM/YY" value={form.expiry} onChange={handleChange} required />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="cvv">CVV</Label>
-                        <Input id="cvv" placeholder="123" value={form.cvv} onChange={handleChange} required />
-                      </div>
-                    </div>
+                {form.paymentMethod === 'razorpay' && (
+                  <div className="p-4 bg-sage-50 rounded-lg">
+                    <p className="text-sm luxury-text-muted">
+                      <Lock className="h-4 w-4 inline mr-2" />
+                      Secure payment powered by Razorpay. You'll be redirected to a secure payment page.
+                    </p>
                   </div>
                 )}
                 {orderError && <div className="text-red-500 text-sm text-center font-medium">{orderError}</div>}
                 <Button
                   type="submit"
                   className="w-full luxury-button text-lg py-3 rounded-xl shadow-md mt-4"
-                  disabled={orderLoading}
+                  disabled={orderLoading || processingPayment}
                 >
                   <Lock className="h-4 w-4 mr-2" />
-                  {orderLoading ? 'Processing...' : `Pay ${formatIndianPrice(finalTotal)}`}
+                  {processingPayment ? 'Processing Payment...' : orderLoading ? 'Creating Order...' : `Pay ${formatIndianPrice(finalTotal)}`}
                 </Button>
               </form>
             </CardContent>

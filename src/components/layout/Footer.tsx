@@ -1,7 +1,5 @@
-import { Link } from 'react-router-dom';
-import {Instagram, Facebook, Twitter, Mail } from 'lucide-react';
+import {Instagram, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import YucaLogo from '../../assets/logo.jpg';
 
 
@@ -25,20 +23,17 @@ export function Footer() {
               Sustainable luxury lifestyle products that connect you with nature's beauty and your inner well-being.
             </p>
             <div className="flex space-x-4">
-              <Button variant="ghost" size="sm" className="p-2 text-blanket hover:text-oak">
+              <Button variant="ghost" size="sm" className="p-2 text-blanket hover:text-oak" onClick={() => window.open('https://www.instagram.com/yuca.lifestyle/', '_blank')}>
                 <Instagram className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="sm" className="p-2 text-blanket hover:text-oak">
-                <Facebook className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="sm" className="p-2 text-blanket hover:text-oak">
-                <Twitter className="h-4 w-4" />
+              <Button variant="ghost" size="sm" className="p-2 text-blanket hover:text-oak" onClick={() => window.open('mailto:enquire@yucalifestyle.com', '_blank')}>
+                <Mail  className="h-4 w-4" />
               </Button>
             </div>
           </div>
 
           {/* Shop Section */}
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             <h4 className="font-serif font-semibold text-blanket">Shop</h4>
             <div className="space-y-2">
               <Link to="/category/living" className="block text-sm text-blanket/70 hover:text-oak transition-colors">
@@ -54,10 +49,10 @@ export function Footer() {
                 Garden
               </Link>
             </div>
-          </div>
+          </div> */}
 
           {/* Support Section */}
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             <h4 className="font-serif font-semibold text-blanket">Support</h4>
             <div className="space-y-2">
               <Link to="/help" className="block text-sm text-blanket/70 hover:text-oak transition-colors">
@@ -73,10 +68,10 @@ export function Footer() {
                 Contact Us
               </Link>
             </div>
-          </div>
+          </div> */}
 
           {/* Newsletter Section */}
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             <h4 className="font-serif font-semibold text-blanket">Stay Connected</h4>
             <p className="text-sm text-blanket/70">
               Subscribe to receive exclusive offers and updates on our latest sustainable luxury products.
@@ -91,14 +86,14 @@ export function Footer() {
                 <Mail className="h-4 w-4" />
               </Button>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="border-t border-oak mt-8 pt-8 flex flex-col md:flex-row items-center justify-between">
           <p className="text-sm text-blanket/70">
-            © 2024 YUCA. All rights reserved.
+            © 2025 YUCA. All rights reserved.
           </p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
+          {/* <div className="flex space-x-6 mt-4 md:mt-0">
             <Link to="/privacy" className="text-sm text-blanket/70 hover:text-oak transition-colors">
               Privacy Policy
             </Link>
@@ -108,7 +103,7 @@ export function Footer() {
             <Link to="/sustainability" className="text-sm text-blanket/70 hover:text-oak transition-colors">
               Sustainability
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
     </footer>

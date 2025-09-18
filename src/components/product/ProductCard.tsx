@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 // Utility to convert a string to start case
 function toStartCase(str: string) {
   return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 }
-// import { useParams } from 'react-router-dom';
 import { ShoppingBag, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Product } from '@/types';
-// import { useStore } from '@/store/useStore';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { addToCart, addGuestCartItem } from '@/store/slices/cartSlice';
 
@@ -24,23 +23,15 @@ export function ProductCard({ product }: ProductCardProps) {
   // const { category, subcategory } = useParams();
 
   // Handle backwards compatibility between old and new schema
-  // const productId = product._id || product.id;
+  const productId = product._id || product.id;
   const inStock = product.inStock ?? (product.countInStock ? product.countInStock > 0 : true);
-  // const reviewCount = product.reviewCount || product.numReviews || 0;
   const productBrand = product.brand || 'YUCA';
 
-  // Build the product URL based on current route context
-  // const getProductUrl = () => {
-  //   // If we're on a category page, build nested URL
-  //   if (category) {
-  //     if (subcategory) {
-  //       return `/category/${category}/${subcategory}/product/${productId}`;
-  //     }
-  //     return `/category/${category}/product/${productId}`;
-  //   }
-  //   // Default to standalone product URL
-  //   return `/product/${productId}`;
-  // };
+  // Build the product URL
+  const getProductUrl = () => {
+    if (!productId) return '#';
+    return `/product/${productId}`;
+  };
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -74,7 +65,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Card className="group overflow-hidden shadow-lg hover:shadow-2xl border-oak/30 transition-all duration-500 transform hover:-translate-y-2 bg-mushroom">
-      {/* <Link to={getProductUrl()}> */}
+      <Link to={getProductUrl()} className="block">
         <div className="relative overflow-hidden">
           <img
             src={images[imgIdx]}
@@ -185,7 +176,7 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
           </div>
         </CardContent>
-      {/* </Link> */}
+      </Link>
     </Card>
   );
 }
