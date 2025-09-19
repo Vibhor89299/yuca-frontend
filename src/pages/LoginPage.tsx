@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Leaf } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { loginUser } from '@/store/slices/authSlice';
 import { syncGuestCart } from '@/store/slices/syncGuestCartThunk';
 import { clearGuestCart, fetchCart } from '@/store/slices/cartSlice';
+import YucaLogo from '../assets/logo.jpg';
 
 
 export default function LoginPage() {
@@ -53,21 +53,34 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-6">
         {/* Logo */}
         <div className="text-center">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="bg-autumnFern p-3 rounded-full">
-              <Leaf className="h-8 w-8 text-blanket" />
+          <div className="flex flex-col items-center space-y-4 mb-6">
+            <div className="relative">
+              <div className="rounded-full h-20 w-20 overflow-hidden  bg-autumnFern shadow-autumnFern/30 ring-2 ring-autumnFern/20">
+                <img 
+                  src={YucaLogo} 
+                  alt="Yuca Logo" 
+                  className="h-full w-full object-cover" 
+                />
+              </div>
+              <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-autumnFern/20 to-oak/20 blur-sm -z-10"></div>
             </div>
-            <div>
-              <h1 className="text-3xl font-serif font-bold text-oak">YUCA</h1>
-              <p className="text-sm text-autumnFern">Where Luxury Grows With You</p>
+            <div className="text-center">
+              <h1 className="text-4xl font-butler font-bold text-oak tracking-wide mb-1">
+                YUCA
+              </h1>
+              <p className="text-sm text-autumnFern/80 font-medium tracking-wide">
+                Where Luxury Grows With You
+              </p>
             </div>
           </div>
         </div>
 
-        <Card className="shadow-lg shadow-oak/20 border-oak/30 bg-white/90">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-serif text-oak">Welcome Back</CardTitle>
-            <CardDescription>
+        <Card className="shadow-xl shadow-oak/25 border-oak/40 bg-white/95 backdrop-blur-sm">
+          <CardHeader className="text-center pb-6">
+            <CardTitle className="text-2xl font-butler font-semibold text-oak mb-2">
+              Welcome Back
+            </CardTitle>
+            <CardDescription className="text-autumnFern/70 font-medium">
               Sign in to your account to continue your luxury journey
             </CardDescription>
           </CardHeader>
@@ -75,7 +88,7 @@ export default function LoginPage() {
           <CardContent className="space-y-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-oak font-medium">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -83,12 +96,12 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="border-oak/30 focus:ring-autumnFern"
+                  className="border-oak/40 focus:ring-autumnFern focus:border-autumnFern/50 bg-white/80"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-oak font-medium">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -97,39 +110,41 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="border-oak/30 focus:ring-autumnFern pr-10"
+                    className="border-oak/40 focus:ring-autumnFern focus:border-autumnFern/50 bg-white/80 pr-10"
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-autumnFern/10 text-oak/60"
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-muted-foreground" />
+                      <EyeOff className="h-4 w-4" />
                     ) : (
-                      <Eye className="h-4 w-4 text-muted-foreground" />
+                      <Eye className="h-4 w-4" />
                     )}
                   </Button>
                 </div>
               </div>
 
               <div className="flex items-center justify-between">
-                <Link 
+                {/* <Link 
                   to="/forgot-password" 
                   className="text-sm text-autumnFern hover:underline"
                 >
                   Forgot password?
-                </Link>
+                </Link> */}
               </div>
 
               {error && (
-                <div className="text-red-500 text-sm text-center">{error}</div>
+                <div className="text-red-600 text-sm text-center bg-red-50 border border-red-200 rounded-md p-3 font-medium">
+                  {error}
+                </div>
               )}
               <Button 
                 type="submit" 
-                className="w-full bg-autumnFern hover:bg-autumnFern-600 text-blanket font-medium" 
+                className="w-full bg-autumnFern text-blanket font-semibold shadow-lg shadow-autumnFern/25 transition-all duration-200" 
                 size="lg"
                 disabled={loading}
               >
@@ -137,7 +152,7 @@ export default function LoginPage() {
               </Button>
             </form>
 
-            <div className="relative">
+            {/* <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <Separator />
               </div>
@@ -146,9 +161,9 @@ export default function LoginPage() {
                   Or continue with
                 </span>
               </div>
-            </div>
+            </div> */}
 
-            <div className="space-y-3">
+            {/* <div className="space-y-3">
               <Button 
                 variant="outline" 
                 className="w-full border-oak/30 hover:bg-mushroom text-oak"
@@ -164,12 +179,15 @@ export default function LoginPage() {
               >
                 Continue with Apple
               </Button>
-            </div>
+            </div> */}
 
-            <div className="text-center">
-              <span className="text-sm text-muted-foreground">
+            <div className="text-center pt-4">
+              <span className="text-sm text-oak/70">
                 Don't have an account?{' '}
-                <Link to="/register" className="text-autumnFern hover:underline font-medium">
+                <Link 
+                  to="/register" 
+                  className="text-autumnFern hover:text-autumnFern-700 font-semibold hover:underline transition-colors duration-200"
+                >
                   Create one
                 </Link>
               </span>

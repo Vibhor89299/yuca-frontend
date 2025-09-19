@@ -11,4 +11,13 @@ if (token) {
   axiosinstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
 
+// Function to update the authorization header
+export const setAuthToken = (token: string | null) => {
+  if (token) {
+    axiosinstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    delete axiosinstance.defaults.headers.common['Authorization'];
+  }
+};
+
 export default axiosinstance;

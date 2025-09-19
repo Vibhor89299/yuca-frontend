@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axiosinstance from '@/axiosinstance/axiosinstance';
+import axiosinstance, { setAuthToken } from '@/axiosinstance/axiosinstance';
 import { User } from '@/types';
 
 export const loginUser = createAsyncThunk(
@@ -71,7 +71,7 @@ const authSlice = createSlice({
       localStorage.removeItem('yuca_auth_token');
       localStorage.removeItem('yuca_user');
       // Remove token from axios defaults
-      delete axiosinstance.defaults.headers.common['Authorization'];
+      setAuthToken(null);
     },
   },
   extraReducers: (builder) => {
@@ -89,7 +89,7 @@ const authSlice = createSlice({
         localStorage.setItem('yuca_auth_token', action.payload.token);
         localStorage.setItem('yuca_user', JSON.stringify(action.payload.user));
         // Set token in axios defaults
-        axiosinstance.defaults.headers.common['Authorization'] = `Bearer ${action.payload.token}`;
+        setAuthToken(action.payload.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -102,7 +102,13 @@ const authSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
+        state.token = action.payload.token;
         state.isAuthenticated = true;
+        // Save to localStorage
+        localStorage.setItem('yuca_auth_token', action.payload.token);
+        localStorage.setItem('yuca_user', JSON.stringify(action.payload.user));
+        // Set token in axios defaults
+        setAuthToken(action.payload.token);
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
@@ -116,6 +122,10 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.isAuthenticated = true;
+        // Ensure token is set in axios if we have one
+        if (state.token) {
+          setAuthToken(state.token);
+        }
       })
       .addCase(fetchProfile.rejected, (state, action) => {
         state.loading = false;
