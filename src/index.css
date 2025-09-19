@@ -276,3 +276,14 @@
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-oak-600;
 }
+
+
+/* Added custom scrollbar hiding for horizontal scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
