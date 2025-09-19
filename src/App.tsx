@@ -5,7 +5,7 @@ import { HomePage } from '@/pages/HomePage';
 import { CartPage } from '@/pages/CartPage';
 import { ProductDetailPage } from '@/pages/ProductDetailPage';
 import { OrderSummaryPage } from '@/pages/OrderSummaryPage';
-import { OrderHistoryPage } from '@/pages/OrderHistoryPage';
+import OrderHistoryPage  from '@/pages/OrderHistoryPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import LoginPage from './pages/LoginPage';
 import { CheckoutPage } from '@/pages/CheckoutPage';
@@ -14,6 +14,7 @@ import RegisterPage from './pages/RegisterPage';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
 import { useAuthCheck } from '@/hooks/useAuthCheck';
+import ProfilePage from './pages/Profile';
 
 function App() {
   // Check authentication status on app load
@@ -30,6 +31,7 @@ function App() {
             {/* <Route path="/category/:category" element={<CategoryPage />} /> */}
             {/* <Route path="/category/:category/:subcategory" element={<CategoryPage />} /> */}
             <Route path="/cart" element={<CartPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />

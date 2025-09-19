@@ -1,98 +1,96 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Package, Truck, CheckCircle, Clock, Search, Filter, Eye, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useAppSelector, useAppDispatch } from '@/store/hooks';
-import { fetchMyOrders } from '@/store/slices/orderSlice';
-import { formatIndianPrice } from '@/utils/currency';
-import { Order } from '@/types';
 
-export function OrderHistoryPage() {
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const { orders, loading, error } = useAppSelector(state => state.order);
-  const { isAuthenticated } = useAppSelector(state => state.auth);
-  
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
+import { useState, useEffect } from "react"
+import { useNavigate, Link } from "react-router-dom"
+import { ArrowLeft, Package, Truck, CheckCircle, Clock, Search, Filter, Eye, RefreshCw } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useAppSelector, useAppDispatch } from "@/store/hooks"
+import { fetchMyOrders } from "@/store/slices/orderSlice"
+import { formatIndianPrice } from "@/utils/currency"
+import type { Order } from "@/types"
+
+export default function OrderHistoryPage() {
+  const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+  const { orders, loading, error } = useAppSelector((state) => state.order)
+  const { isAuthenticated } = useAppSelector((state) => state.auth)
+
+  const [searchTerm, setSearchTerm] = useState("")
+  const [statusFilter, setStatusFilter] = useState("all")
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([])
+  const [hasFetched, setHasFetched] = useState(false)
 
   useEffect(() => {
     if (isAuthenticated) {
-      // Only fetch if we don't already have orders or if there was an error
-      if (orders.length === 0 && !loading) {
-        dispatch(fetchMyOrders());
+      if (!hasFetched && !loading) {
+        dispatch(fetchMyOrders())
+        setHasFetched(true)
       }
     } else {
-      navigate('/login', { state: { from: '/orders' } });
+      navigate("/login", { state: { from: "/orders" } })
     }
-  }, [dispatch, isAuthenticated, navigate, orders.length, loading]);
+  }, [dispatch, isAuthenticated, navigate, hasFetched])
 
   useEffect(() => {
-    let filtered = orders;
+    let filtered = orders
 
-    // Filter by search term
     if (searchTerm) {
-      filtered = filtered.filter(order =>
-        order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.items.some(item =>
-          item.product.name.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      );
+      filtered = filtered.filter(
+        (order) =>
+          order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          order.items.some((item) => item.product.name.toLowerCase().includes(searchTerm.toLowerCase())),
+      )
     }
 
-    // Filter by status
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(order =>
-        order.status.toLowerCase() === statusFilter.toLowerCase()
-      );
+    if (statusFilter !== "all") {
+      filtered = filtered.filter((order) => order.status.toLowerCase() === statusFilter.toLowerCase())
     }
 
-    setFilteredOrders(filtered);
-  }, [orders, searchTerm, statusFilter]);
+    setFilteredOrders(filtered)
+  }, [orders, searchTerm, statusFilter])
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'paid':
-        return 'bg-green-100 text-green-800';
-      case 'processing':
-        return 'bg-blue-100 text-blue-800';
-      case 'shipped':
-        return 'bg-purple-100 text-purple-800';
-      case 'delivered':
-        return 'bg-green-100 text-green-800';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800';
+      case "paid":
+        return "bg-green-100 text-green-800"
+      case "processing":
+        return "bg-blue-100 text-blue-800"
+      case "shipped":
+        return "bg-purple-100 text-purple-800"
+      case "delivered":
+        return "bg-green-100 text-green-800"
+      case "cancelled":
+        return "bg-red-100 text-red-800"
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800"
     }
-  };
+  }
 
   const getStatusIcon = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'paid':
-        return <CheckCircle className="h-4 w-4" />;
-      case 'processing':
-        return <Clock className="h-4 w-4" />;
-      case 'shipped':
-        return <Truck className="h-4 w-4" />;
-      case 'delivered':
-        return <CheckCircle className="h-4 w-4" />;
+      case "paid":
+        return <CheckCircle className="h-4 w-4 mr-2" />
+      case "processing":
+        return <Clock className="h-4 w-4 mr-2" />
+      case "shipped":
+        return <Truck className="h-4 w-4 mr-2" />
+      case "delivered":
+        return <CheckCircle className="h-4 w-4 mr-2" />
       default:
-        return <Package className="h-4 w-4" />;
+        return <Package className="h-4 w-4" />
     }
-  };
+  }
 
   const handleRefresh = () => {
-    dispatch(fetchMyOrders());
-  };
+    dispatch(fetchMyOrders())
+    setHasFetched(true)
+  }
 
   if (!isAuthenticated) {
-    return null; // Will redirect to login
+    return null // Will redirect to login
   }
 
   if (loading && orders.length === 0) {
@@ -107,11 +105,11 @@ export function OrderHistoryPage() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 min-h-screen bg-mushroom/95 backdrop-blur-sm">
+    <div className=" mx-auto px-4 py-8 min-h-screen bg-white backdrop-blur-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-4">
@@ -119,12 +117,16 @@ export function OrderHistoryPage() {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
-          <h1 className="text-3xl font-serif luxury-heading">Order History</h1>
         </div>
-        <Button onClick={handleRefresh} variant="outline" className="luxury-button-secondary">
+        <Button onClick={handleRefresh} variant="outline" className="luxury-button-secondary bg-transparent">
           <RefreshCw className="h-4 w-4 mr-2" />
           Refresh
         </Button>
+      </div>
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center space-x-4">
+          <h1 className="text-3xl font-serif luxury-heading">Order History</h1>
+        </div>
       </div>
 
       {/* Filters and Search */}
@@ -181,13 +183,12 @@ export function OrderHistoryPage() {
           <CardContent className="p-12 text-center">
             <Package className="h-16 w-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold luxury-heading mb-2">
-              {searchTerm || statusFilter !== 'all' ? 'No orders found' : 'No orders yet'}
+              {searchTerm || statusFilter !== "all" ? "No orders found" : "No orders yet"}
             </h3>
             <p className="luxury-text-muted mb-6">
-              {searchTerm || statusFilter !== 'all' 
-                ? 'Try adjusting your search or filter criteria.'
-                : 'Start shopping to see your orders here.'
-              }
+              {searchTerm || statusFilter !== "all"
+                ? "Try adjusting your search or filter criteria."
+                : "Start shopping to see your orders here."}
             </p>
             <Button asChild className="luxury-button">
               <Link to="/">Start Shopping</Link>
@@ -206,21 +207,18 @@ export function OrderHistoryPage() {
                       <div className="flex items-center space-x-4">
                         {getStatusIcon(order.status)}
                         <div>
-                          <h3 className="text-lg font-semibold luxury-text">
-                            Order #{order.id}
-                          </h3>
+                          <h3 className="text-lg font-semibold luxury-text">Order #{order.id}</h3>
                           <p className="text-sm luxury-text-muted">
-                            Placed on {new Date(order.createdAt).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric'
+                            Placed on{" "}
+                            {new Date(order.createdAt).toLocaleDateString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
                             })}
                           </p>
                         </div>
                       </div>
-                      <Badge className={`${getStatusColor(order.status)} px-3 py-1`}>
-                        {order.status}
-                      </Badge>
+                      <Badge className={`${getStatusColor(order.status)} px-3 py-1`}>{order.status}</Badge>
                     </div>
 
                     {/* Order Items Preview */}
@@ -228,14 +226,12 @@ export function OrderHistoryPage() {
                       {order.items.slice(0, 2).map((item, index) => (
                         <div key={index} className="flex items-center space-x-3">
                           <img
-                            src={item.product.image}
+                            src={item.product.image || "/placeholder.svg"}
                             alt={item.product.name}
                             className="w-12 h-12 object-cover rounded-lg"
                           />
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium luxury-text truncate">
-                              {item.product.name}
-                            </p>
+                            <p className="text-sm font-medium luxury-text truncate">{item.product.name}</p>
                             <p className="text-xs luxury-text-muted">
                               Qty: {item.quantity} × {formatIndianPrice(item.product.price)}
                             </p>
@@ -244,7 +240,7 @@ export function OrderHistoryPage() {
                       ))}
                       {order.items.length > 2 && (
                         <p className="text-sm luxury-text-muted">
-                          +{order.items.length - 2} more item{order.items.length - 2 > 1 ? 's' : ''}
+                          +{order.items.length - 2} more item{order.items.length - 2 > 1 ? "s" : ""}
                         </p>
                       )}
                     </div>
@@ -253,30 +249,28 @@ export function OrderHistoryPage() {
                   {/* Order Summary and Actions */}
                   <div className="lg:text-right space-y-4">
                     <div>
-                      <p className="text-lg font-semibold luxury-accent">
-                        {formatIndianPrice(order.total)}
-                      </p>
+                      <p className="text-lg font-semibold luxury-accent">{formatIndianPrice(order.total)}</p>
                       <p className="text-sm luxury-text-muted">
-                        {order.items.length} item{order.items.length > 1 ? 's' : ''}
+                        {order.items.length} item{order.items.length > 1 ? "s" : ""}
                       </p>
                     </div>
-                    
+
                     <div className="flex flex-col sm:flex-row gap-2">
-                      <Button asChild variant="outline" className="luxury-button-secondary">
+                      <Button asChild variant="outline" className="luxury-button-secondary bg-transparent">
                         <Link to={`/order/${order.id}`}>
                           <Eye className="h-4 w-4 mr-2" />
                           View Details
                         </Link>
                       </Button>
-                      
-                      {order.status === 'delivered' && (
-                        <Button variant="outline" className="luxury-button-secondary">
+
+                      {order.status === "delivered" && (
+                        <Button variant="outline" className="luxury-button-secondary bg-transparent">
                           Reorder
                         </Button>
                       )}
-                      
-                      {order.status === 'processing' && (
-                        <Button variant="outline" className="luxury-button-secondary">
+
+                      {order.status === "processing" && (
+                        <Button variant="outline" className="luxury-button-secondary bg-transparent">
                           Cancel Order
                         </Button>
                       )}
@@ -311,13 +305,13 @@ export function OrderHistoryPage() {
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold luxury-accent">
-                  {orders.filter(o => o.status === 'delivered').length}
+                  {orders.filter((o) => o.status === "delivered").length}
                 </p>
                 <p className="text-sm luxury-text-muted">Delivered</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold luxury-accent">
-                  {orders.filter(o => o.status === 'processing' || o.status === 'shipped').length}
+                  {orders.filter((o) => o.status === "processing" || o.status === "shipped").length}
                 </p>
                 <p className="text-sm luxury-text-muted">In Progress</p>
               </div>
@@ -332,5 +326,5 @@ export function OrderHistoryPage() {
         </Card>
       )}
     </div>
-  );
+  )
 }

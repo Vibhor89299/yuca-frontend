@@ -360,7 +360,7 @@ export function ProductDetailPage() {
           },
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`, // make sure token is stored in localStorage
+              Authorization: `Bearer ${localStorage.getItem("yuca_auth_token")}`, // make sure token is stored in localStorage
             },
           }
         );

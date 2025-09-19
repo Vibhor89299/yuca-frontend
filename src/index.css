@@ -7,11 +7,11 @@
 @layer base {
   :root {
     /* New YUCA Brand Color System */
-    --background: 34 29% 90%;  /* blanket as main background */
-    --foreground: 15 17% 17%;  /* kimber for text */
-    --card: 26 20% 82%;        /* mushroom for card backgrounds */
-    --card-foreground: 15 17% 17%; /* kimber for card text */
-    --popover: 26 20% 82%;     /* mushroom for popover */
+    --background: #f5f2e0; /* Warm cream background */
+    --foreground: #6b4d3a; /* Rich brown text */
+    --card: #ffffff; /* Pure white cards */
+    --card-foreground: #bfaf95; /* Soft brown for card titles */
+       --popover: 26 20% 82%;     /* mushroom for popover */
     --popover-foreground: 15 17% 17%; /* kimber for popover text */
     --primary: 20 51% 33%;     /* autumnFern for primary actions */
     --primary-foreground: 34 29% 90%; /* blanket for primary text */

@@ -185,7 +185,6 @@ export function Header() {
                     </Button>
                   </form>
 
-                  {/* Navigation links removed as requested */}
                 </nav>
               </SheetContent>
             </Sheet>
