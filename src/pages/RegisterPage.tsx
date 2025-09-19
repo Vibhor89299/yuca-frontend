@@ -4,8 +4,9 @@ import { registerUser } from '@/store/slices/authSlice';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Leaf } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import YucaLogo from '../assets/logo.jpg';
 
 const RegisterPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -14,6 +15,8 @@ const RegisterPage: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
   React.useEffect(() => {
     if (isAuthenticated) navigate('/');
@@ -21,62 +24,141 @@ const RegisterPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setPasswordError('');
+    
+    if (password !== confirmPassword) {
+      setPasswordError('Passwords do not match');
+      return;
+    }
+    
+    if (password.length < 6) {
+      setPasswordError('Password must be at least 6 characters long');
+      return;
+    }
+    
     dispatch(registerUser({ name, email, password }));
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f5f3ee] to-[#e6e1d9] luxury-bg animate-fade-in">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-6">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="bg-autumnFern p-3 rounded-full shadow-lg">
-              <Leaf className="h-8 w-8 text-blanket" />
+    <div className="min-h-screen bg-blanket flex items-center justify-center py-12 px-4">
+      <div className="w-full max-w-md space-y-6">
+        {/* Logo */}
+        <div className="text-center">
+          <div className="flex flex-col items-center space-y-4 mb-6">
+            <div className="relative">
+              <div className="rounded-full h-20 w-20 overflow-hidden bg-autumnFern shadow-autumnFern/30 ring-2 ring-autumnFern/20">
+                <img 
+                  src={YucaLogo} 
+                  alt="Yuca Logo" 
+                  className="h-full w-full object-cover" 
+                />
+              </div>
+              <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-autumnFern/20 to-oak/20 blur-sm -z-10"></div>
             </div>
-            <div>
-              <h1 className="text-3xl font-serif font-bold text-oak tracking-wide">YUCA</h1>
-              <p className="text-sm text-autumnFern font-medium">Where Luxury Grows With You</p>
+            <div className="text-center">
+              <h1 className="text-4xl font-butler font-bold text-oak tracking-wide mb-1">
+                YUCA
+              </h1>
+              <p className="text-sm text-autumnFern/80 font-medium tracking-wide">
+                Where Luxury Grows With You
+              </p>
             </div>
           </div>
         </div>
-        <Card className="shadow-2xl border-0 luxury-card bg-white/90">
-          <CardHeader>
-            <CardTitle className="text-3xl font-serif text-center luxury-text mb-2">Create Your Account</CardTitle>
-            <p className="text-center text-autumnFern text-sm mb-2">Join the luxury experience</p>
+        <Card className="shadow-xl shadow-oak/25 border-oak/40 bg-white/95 backdrop-blur-sm">
+          <CardHeader className="text-center pb-6">
+            <CardTitle className="text-2xl font-butler font-semibold text-oak mb-2">
+              Create Your Account
+            </CardTitle>
+            <CardDescription className="text-autumnFern/70 font-medium">
+              Join the luxury experience and start your journey with us
+            </CardDescription>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <Input
-                type="text"
-                placeholder="Full Name"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                required
-                className="luxury-input rounded-xl shadow-sm"
-              />
-              <Input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-                className="luxury-input rounded-xl shadow-sm"
-              />
-              <Input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-                className="luxury-input rounded-xl shadow-sm"
-              />
-              {error && <div className="text-red-500 text-sm text-center font-medium">{error}</div>}
-              <Button type="submit" className="w-full luxury-button text-lg py-3 rounded-xl shadow-md" disabled={loading}>
-                {loading ? 'Registering...' : 'Register'}
+          <CardContent className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-oak font-medium">Full Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Enter your full name"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  required
+                  className="border-oak/40 focus:ring-autumnFern focus:border-autumnFern/50 bg-white/80"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-oak font-medium">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                  className="border-oak/40 focus:ring-autumnFern focus:border-autumnFern/50 bg-white/80"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-oak font-medium">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                  className="border-oak/40 focus:ring-autumnFern focus:border-autumnFern/50 bg-white/80"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword" className="text-oak font-medium">Confirm Password</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                  required
+                  className="border-oak/40 focus:ring-autumnFern focus:border-autumnFern/50 bg-white/80"
+                />
+              </div>
+
+              {passwordError && (
+                <div className="text-red-600 text-sm text-center bg-red-50 border border-red-200 rounded-md p-3 font-medium">
+                  {passwordError}
+                </div>
+              )}
+              
+              {error && (
+                <div className="text-red-600 text-sm text-center bg-red-50 border border-red-200 rounded-md p-3 font-medium">
+                  {error}
+                </div>
+              )}
+              
+              <Button 
+                type="submit" 
+                className="w-full bg-autumnFern hover:from-autumnFern-700 hover:to-oak-600 text-blanket font-semibold shadow-lg shadow-autumnFern/25 transition-all duration-200" 
+                size="lg"
+                disabled={loading}
+              >
+                {loading ? 'Creating Account...' : 'Create Account'}
               </Button>
             </form>
-            <div className="text-center mt-6">
-              <span className="luxury-text-muted">Already have an account?</span>{' '}
-              <Link to="/login" className="luxury-link font-semibold">Login</Link>
+            <div className="text-center pt-4">
+              <span className="text-sm text-oak/70">
+                Already have an account?{' '}
+                <Link 
+                  to="/login" 
+                  className="text-autumnFern hover:text-autumnFern-700 font-semibold hover:underline transition-colors duration-200"
+                >
+                  Sign In
+                </Link>
+              </span>
             </div>
           </CardContent>
         </Card>
