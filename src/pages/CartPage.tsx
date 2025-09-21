@@ -68,7 +68,7 @@ export function CartPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 min-h-screen bg-mushroom/95 backdrop-blur-sm">
+    <div className="container mx-auto px-4 py-8 min-h-screen bg-[#f2e0cf] backdrop-blur-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-4">
@@ -87,7 +87,7 @@ export function CartPage() {
         <div className="lg:col-span-2 space-y-4">
           {items.map((item) => (
             <Card key={item.id} className="luxury-card">
-              <CardContent className="p-6">
+              <div className="bg-[#fbfaf8] rounded-lg p-6">
                 <div className="flex space-x-4">
                   <div className="flex-shrink-0">
                     <img
@@ -149,7 +149,7 @@ export function CartPage() {
                     </p>
                   </div>
                 </div>
-              </CardContent>
+              </div>
             </Card>
           ))}
         </div>
@@ -157,7 +157,7 @@ export function CartPage() {
         {/* Order Summary */}
         <div className="space-y-6">
           <Card className="luxury-card">
-            <CardContent className="p-6">
+            <div className="bg-[#fbfaf8] rounded-lg p-6">
               <h2 className="text-xl luxury-heading mb-4">
                 Order Summary
               </h2>
@@ -203,12 +203,12 @@ export function CartPage() {
               >
                 Proceed to Checkout
               </Button>
-            </CardContent>
+            </div>
           </Card>
           
           {/* Security Badge */}
           <Card className="luxury-card">
-            <CardContent className="p-4 text-center">
+            <CardContent className="bg-[#fbfaf8]  rounded-lg p-4 text-center">
               <p className="text-xs luxury-text-muted">
                 Secure checkout powered by industry-leading encryption
               </p>

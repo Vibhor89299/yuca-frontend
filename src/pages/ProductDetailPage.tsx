@@ -232,34 +232,34 @@ export function ProductDetailPage() {
   //   </svg>
   // );
 
-  // const LuxuryDivider = ({ className = "" }: { className?: string }) => (
-  //   <svg
-  //     className={className}
-  //     viewBox="0 0 200 4"
-  //     fill="none"
-  //     xmlns="http://www.w3.org/2000/svg"
-  //   >
-  //     <line
-  //       x1="0"
-  //       y1="2"
-  //       x2="80"
-  //       y2="2"
-  //       stroke="currentColor"
-  //       strokeWidth="1"
-  //       opacity="0.3"
-  //     />
-  //     <circle cx="100" cy="2" r="2" fill="currentColor" opacity="0.6" />
-  //     <line
-  //       x1="120"
-  //       y1="2"
-  //       x2="200"
-  //       y2="2"
-  //       stroke="currentColor"
-  //       strokeWidth="1"
-  //       opacity="0.3"
-  //     />
-  //   </svg>
-  // );
+  const LuxuryDivider = ({ className = "" }: { className?: string }) => (
+    <svg
+      className={className}
+      viewBox="0 0 200 4"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <line
+        x1="0"
+        y1="2"
+        x2="80"
+        y2="2"
+        stroke="currentColor"
+        strokeWidth="1"
+        opacity="0.3"
+      />
+      <circle cx="100" cy="2" r="2" fill="currentColor" opacity="0.6" />
+      <line
+        x1="120"
+        y1="2"
+        x2="200"
+        y2="2"
+        stroke="currentColor"
+        strokeWidth="1"
+        opacity="0.3"
+      />
+    </svg>
+  );
 
   // const QualityStamp = ({ className = "" }: { className?: string }) => (
   //   <svg
@@ -752,11 +752,11 @@ export function ProductDetailPage() {
             </div>
           </div>
         </div>
-        {/* <div className="flex mt-8 justify-center" >
+        <div className="flex mt-8 justify-center" >
         {[...Array(5)].map((_, i) => (
-          <LuxuryOrnament key={i} className="h-4 text-amber-600" />
+          <LuxuryDivider key={i} className="h-4 text-amber-600" />
         ))}
-        </div> */}
+        </div>
         {/* Related Products Section */}
         <div className="mt-16">
           <section className="bg-white rounded-lg p-8 shadow-sm">

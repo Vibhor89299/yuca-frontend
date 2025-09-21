@@ -19,7 +19,6 @@ export function KoshaCollection() {
       dispatch(fetchProducts(newPage));
     }
   };
-
   return (
     <section className="luxury-section luxury-gradient-section">
       <div className="container mx-auto px-4">

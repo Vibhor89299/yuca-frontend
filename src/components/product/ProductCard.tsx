@@ -123,7 +123,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         </div>
 
-        <CardContent className="p-6">
+        <CardContent className=" p-6">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <Badge variant="outline" className="text-xs border-oak/30 text-oak">

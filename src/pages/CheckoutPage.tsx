@@ -1,36 +1,38 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
-import { CreditCard, Lock, ArrowLeft, User, Mail } from "lucide-react"
-import { formatIndianPrice } from "@/utils/currency"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { useAppSelector, useAppDispatch } from "@/store/hooks"
-import { clearCart, fetchCart, clearGuestCart } from "@/store/slices/cartSlice"
-import { placeOrder } from "@/store/slices/orderSlice"
-import { paymentService } from "@/services/paymentService"
+import type React from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { CreditCard, Lock, ArrowLeft, User, Mail } from "lucide-react";
+import { formatIndianPrice } from "@/utils/currency";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useAppSelector, useAppDispatch } from "@/store/hooks";
+import { clearCart, fetchCart, clearGuestCart } from "@/store/slices/cartSlice";
+import { placeOrder } from "@/store/slices/orderSlice";
+import { paymentService } from "@/services/paymentService";
 
 interface UserData {
-  _id: string
-  name: string
-  email: string
-  role: string
-  isAdmin: boolean
-  phone?: string
+  _id: string;
+  name: string;
+  email: string;
+  role: string;
+  isAdmin: boolean;
+  phone?: string;
 }
 export function CheckoutPage() {
-  const dispatch = useAppDispatch()
-  const { items, total } = useAppSelector((state) => state.cart)
-  const { loading: orderLoading, error: orderError } = useAppSelector((state) => state.order)
-  const [processingPayment, setProcessingPayment] = useState(false)
+  const dispatch = useAppDispatch();
+  const { items, total } = useAppSelector((state) => state.cart);
+  const { loading: orderLoading, error: orderError } = useAppSelector(
+    (state) => state.order
+  );
+  const [processingPayment, setProcessingPayment] = useState(false);
 
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     // Guest information
@@ -49,12 +51,12 @@ export function CheckoutPage() {
     cardNumber: "",
     expiry: "",
     cvv: "",
-  })
-  const navigate = useNavigate()
+  });
+  const navigate = useNavigate();
   const getAuthToken = () => {
-    return localStorage.getItem("yuca_auth_token") || null
-  }
-  const [userData, setUserData] = useState<UserData | null>(null)
+    return localStorage.getItem("yuca_auth_token") || null;
+  };
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   const fetchUserProfile = async () => {
     try {
@@ -62,66 +64,70 @@ export function CheckoutPage() {
         headers: {
           Authorization: `Bearer ${getAuthToken()}`,
         },
-      })
+      });
 
       if (response.ok) {
-        const data = await response.json()
+        const data = await response.json();
         if (data.success && data.user) {
-          setUserData(data.user)
-          console.log('data', data.user)
+          setUserData(data.user);
+          console.log("data", data.user);
           setForm((prevForm) => ({
             ...prevForm,
             guestEmail: data.user.email || prevForm.guestEmail,
             guestName: data.user.name || prevForm.guestName,
             guestPhone: data.user.phone || prevForm.guestPhone,
-            firstName: data.user.name ? data.user.name.split(" ")[0] : prevForm.firstName,
-            lastName: data.user.name ? data.user.name.split(" ").slice(1).join(" ") : prevForm.lastName,
-          }))
+            firstName: data.user.name
+              ? data.user.name.split(" ")[0]
+              : prevForm.firstName,
+            lastName: data.user.name
+              ? data.user.name.split(" ").slice(1).join(" ")
+              : prevForm.lastName,
+          }));
         }
       } else {
-        setError("Failed to fetch user profile")
+        setError("Failed to fetch user profile");
       }
     } catch (err) {
-      console.error("Error fetching user profile:", err)
-      setError("Network error while fetching profile")
+      console.error("Error fetching user profile:", err);
+      setError("Network error while fetching profile");
     }
-  }
+  };
 
   useEffect(() => {
-    const authToken = getAuthToken()
-    console.log('auth',authToken)
+    const authToken = getAuthToken();
+    console.log("auth", authToken);
     if (authToken) {
-      fetchUserProfile()
+      fetchUserProfile();
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    dispatch(fetchCart())
-  }, [dispatch])
+    dispatch(fetchCart());
+  }, [dispatch]);
 
-  const subtotal = total
-  const shipping = 0
-  const tax = total * 0.18 // 18% GST
-  const finalTotal = subtotal + shipping + tax
+  const subtotal = total;
+  const shipping = 0;
+  const tax = total * 0.18; // 18% GST
+  const finalTotal = subtotal + shipping + tax;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.id]: e.target.value })
-  }
+    setForm({ ...form, [e.target.id]: e.target.value });
+  };
 
   const handlePaymentMethod = (val: string) => {
-    setForm({ ...form, paymentMethod: val })
-  }
+    setForm({ ...form, paymentMethod: val });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (form.paymentMethod !== "razorpay") {
       // Handle other payment methods (if any)
-      alert("Only Razorpay payment is currently supported")
-      return
+      alert("Only Razorpay payment is currently supported");
+      return;
     }
 
-    setProcessingPayment(true)
+    setProcessingPayment(true);
 
     try {
       const shippingAddress = {
@@ -131,7 +137,7 @@ export function CheckoutPage() {
         city: form.city,
         state: form.state,
         zip: form.zip,
-      }
+      };
 
       const orderData: any = {
         items: items.map((item) => ({
@@ -142,24 +148,24 @@ export function CheckoutPage() {
         shippingAddress,
         paymentMethod: "razorpay",
         totalPrice: finalTotal,
-      }
+      };
 
       // Add guest information if not authenticated
-      let guestInfo
+      let guestInfo;
       if (!isAuthenticated) {
         guestInfo = {
           email: form.guestEmail,
           name: form.guestName,
           phone: form.guestPhone,
-        }
-        orderData.guestInfo = guestInfo
+        };
+        orderData.guestInfo = guestInfo;
       }
 
       // Create order first
-      const orderResult = await dispatch(placeOrder(orderData))
+      const orderResult = await dispatch(placeOrder(orderData));
 
       if (placeOrder.fulfilled.match(orderResult)) {
-        const orderId = orderResult.payload.order.id
+        const orderId = orderResult.payload.order.id;
 
         // Prepare user info for Razorpay
         const userInfo = isAuthenticated
@@ -168,42 +174,51 @@ export function CheckoutPage() {
               email: userData?.email || form.guestEmail,
               phone: userData?.phone || form.guestPhone,
             }
-          : undefined
+          : undefined;
 
         // Open Razorpay checkout
-        const paymentResult = await paymentService.openRazorpayCheckout(orderId, userInfo, guestInfo)
+        const paymentResult = await paymentService.openRazorpayCheckout(
+          orderId,
+          userInfo,
+          guestInfo
+        );
 
         if (paymentResult.payment.status === "paid") {
           // Clear the appropriate cart based on authentication status
           if (isAuthenticated) {
-            dispatch(clearCart())
+            dispatch(clearCart());
           } else {
-            dispatch(clearGuestCart())
+            dispatch(clearGuestCart());
           }
-          navigate(`/order/${orderId}`)
+          navigate(`/order/${orderId}`);
         }
       }
     } catch (error: any) {
-      console.error("Payment failed:", error)
-      alert(`Payment failed: ${error.message}`)
+      console.error("Payment failed:", error);
+      alert(`Payment failed: ${error.message}`);
     } finally {
-      setProcessingPayment(false)
+      setProcessingPayment(false);
     }
-  }
+  };
 
   // Get authentication status from your store (adjust selector as needed)
-  const isAuthenticated = useAppSelector((state) => state.auth?.isAuthenticated) || !!getAuthToken()
+  const isAuthenticated =
+    useAppSelector((state) => state.auth?.isAuthenticated) || !!getAuthToken();
 
   useEffect(() => {
     if (items.length === 0) {
-      navigate("/cart")
+      navigate("/cart");
     }
-  }, [items.length, navigate])
+  }, [items.length, navigate]);
 
   return (
-    <div className="container mx-auto px-4 py-8 animate-fade-in bg-mushroom/95 backdrop-blur-sm min-h-screen">
+    <div className="container mx-auto px-4 py-8 animate-fade-in  backdrop-blur-sm min-h-screen">
       <div className="flex items-center mb-8">
-        <Button variant="ghost" onClick={() => navigate("/cart")} className="p-0 luxury-button-ghost">
+        <Button
+          variant="ghost"
+          onClick={() => navigate("/cart")}
+          className="p-0 luxury-button-ghost"
+        >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Cart
         </Button>
@@ -258,29 +273,41 @@ export function CheckoutPage() {
                 <div className="p-4 bg-sage-50 rounded-lg">
                   <p className="text-sm luxury-text-muted">
                     <Mail className="h-4 w-4 inline mr-2" />
-                    We'll send your order confirmation and tracking details to this email address.
+                    We'll send your order confirmation and tracking details to
+                    this email address.
                   </p>
                 </div>
               </CardContent>
             </Card>
           )}
-
-          
-
-          <Card className="luxury-card">
+          <Card className="bg-[#fbfaf8] ">
             <CardHeader>
-              <CardTitle className="font-serif luxury-text">Shipping Address</CardTitle>
+              <CardTitle className="font-serif luxury-text">
+                Shipping Address
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="firstName">First Name</Label>
-                    <Input id="firstName" placeholder="John" value={form.firstName} onChange={handleChange} required />
+                    <Input
+                      id="firstName"
+                      placeholder="John"
+                      value={form.firstName}
+                      onChange={handleChange}
+                      required
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="lastName">Last Name</Label>
-                    <Input id="lastName" placeholder="Doe" value={form.lastName} onChange={handleChange} required />
+                    <Input
+                      id="lastName"
+                      placeholder="Doe"
+                      value={form.lastName}
+                      onChange={handleChange}
+                      required
+                    />
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -296,20 +323,43 @@ export function CheckoutPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="city">City</Label>
-                    <Input id="city" placeholder="New York" value={form.city} onChange={handleChange} required />
+                    <Input
+                      id="city"
+                      placeholder="New York"
+                      value={form.city}
+                      onChange={handleChange}
+                      required
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="state">State</Label>
-                    <Input id="state" placeholder="NY" value={form.state} onChange={handleChange} required />
+                    <Input
+                      id="state"
+                      placeholder="NY"
+                      value={form.state}
+                      onChange={handleChange}
+                      required
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="zip">ZIP Code</Label>
-                    <Input id="zip" placeholder="10001" value={form.zip} onChange={handleChange} required />
+                    <Input
+                      id="zip"
+                      placeholder="10001"
+                      value={form.zip}
+                      onChange={handleChange}
+                      required
+                    />
                   </div>
                 </div>
                 <Separator />
-                <CardTitle className="font-serif luxury-text">Payment Method</CardTitle>
-                <RadioGroup value={form.paymentMethod} onValueChange={handlePaymentMethod}>
+                <CardTitle className="font-serif luxury-text">
+                  Payment Method
+                </CardTitle>
+                <RadioGroup
+                  value={form.paymentMethod}
+                  onValueChange={handlePaymentMethod}
+                >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="razorpay" id="razorpay" />
                     <Label htmlFor="razorpay" className="flex items-center">
@@ -322,11 +372,16 @@ export function CheckoutPage() {
                   <div className="p-4 bg-sage-50 rounded-lg">
                     <p className="text-sm luxury-text-muted">
                       <Lock className="h-4 w-4 inline mr-2" />
-                      Secure payment powered by Razorpay. You'll be redirected to a secure payment page.
+                      Secure payment powered by Razorpay. You'll be redirected
+                      to a secure payment page.
                     </p>
                   </div>
                 )}
-                {orderError && <div className="text-red-500 text-sm text-center font-medium">{orderError}</div>}
+                {orderError && (
+                  <div className="text-red-500 text-sm text-center font-medium">
+                    {orderError}
+                  </div>
+                )}
                 <Button
                   type="submit"
                   className="w-full luxury-button text-lg py-3 rounded-xl shadow-md mt-4"
@@ -336,8 +391,8 @@ export function CheckoutPage() {
                   {processingPayment
                     ? "Processing Payment..."
                     : orderLoading
-                      ? "Creating Order..."
-                      : `Pay ${formatIndianPrice(finalTotal)}`}
+                    ? "Creating Order..."
+                    : `Pay ${formatIndianPrice(finalTotal)}`}
                 </Button>
               </form>
             </CardContent>
@@ -347,7 +402,9 @@ export function CheckoutPage() {
         <div className="space-y-6">
           <Card className="luxury-shadow border-sage-200 bg-white/90">
             <CardHeader>
-              <CardTitle className="font-serif luxury-text">Order Summary</CardTitle>
+              <CardTitle className="font-serif luxury-text">
+                Order Summary
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-3">
@@ -359,8 +416,12 @@ export function CheckoutPage() {
                       className="w-16 h-16 object-cover rounded-lg"
                     />
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-medium luxury-text truncate">{item.product.name}</h4>
-                      <p className="text-sm text-muted-foreground">Quantity: {item.quantity}</p>
+                      <h4 className="text-sm font-medium luxury-text truncate">
+                        {item.product.name}
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        Quantity: {item.quantity}
+                      </p>
                     </div>
                     <div className="text-sm font-medium luxury-text">
                       {(item.product.price * item.quantity).toFixed(2)}
@@ -385,7 +446,9 @@ export function CheckoutPage() {
                 <Separator />
                 <div className="flex justify-between text-lg font-bold luxury-text">
                   <span>Total</span>
-                  <span>{formatIndianPrice(finalTotal, { compact: false })}</span>
+                  <span>
+                    {formatIndianPrice(finalTotal, { compact: false })}
+                  </span>
                 </div>
               </div>
               <p className="text-xs text-center text-muted-foreground mt-2">
@@ -396,5 +459,5 @@ export function CheckoutPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

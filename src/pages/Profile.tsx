@@ -253,7 +253,7 @@ export default function ProfilePage() {
       <div className="min-h-screen bg-[#f5f2e0] flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-600 mb-4">{error}</p>
-          <Button onClick={() => window.location.reload()} className="bg-amber-700 text-white hover:bg-amber-800">
+          <Button onClick={() => window.location.reload()} className="bg-amber-700 text-[#fbfaf8] hover:bg-amber-800">
             Retry
           </Button>
         </div>
@@ -263,12 +263,12 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-[#f5f2e0]">
-      <div className="lg:hidden bg-white border-b border-stone-200 sticky top-0 z-50">
+      <div className="lg:hidden bg-[#fbfaf8] border-b border-sage-200 sticky top-0 z-50">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-3">
             <Avatar className="w-8 h-8">
               <AvatarImage src="/professional-woman-diverse.png" />
-              <AvatarFallback className="bg-amber-700 text-white text-sm">
+              <AvatarFallback className="bg-amber-700 text-[#fbfaf8] text-sm">
                 {userData ? getInitials(userData.name) : "U"}
               </AvatarFallback>
             </Avatar>
@@ -300,8 +300,8 @@ export default function ProfilePage() {
               sidebarOpen ? "fixed top-0 left-0 h-full w-80 z-50 lg:relative lg:w-auto lg:h-fit" : "hidden lg:block"
             }`}
           >
-            <div className="bg-white rounded-lg shadow-sm border border-stone-200 overflow-hidden h-full lg:h-auto">
-              <div className="lg:hidden flex items-center justify-between p-4 border-b border-stone-200">
+            <div className="bg-[#fbfaf8] rounded-lg shadow-sm border border-sage-200 overflow-hidden h-full lg:h-auto">
+              <div className="lg:hidden flex items-center justify-between p-4 border-b border-sage-200">
                 <h3 className="text-lg font-semibold text-amber-900">Menu</h3>
                 <Button
                   variant="ghost"
@@ -314,17 +314,17 @@ export default function ProfilePage() {
               </div>
 
               {/* Profile Header */}
-              <div className="bg-gradient-to-r from-amber-50 to-stone-100 p-6 border-b border-stone-200">
+              <div className="bg-gradient-to-r from-amber-50 to-stone-100 p-6 border-b border-sage-200">
                 <div className="flex flex-col items-center text-center">
-                  <Avatar className="w-20 h-20 mb-3 border-3 border-white shadow-lg">
+                  <Avatar className="w-20 h-20 mb-3 border-3 border-[#fbfaf8] shadow-lg">
                     <AvatarImage src="/professional-woman-diverse.png" />
-                    <AvatarFallback className="bg-amber-700 text-white text-lg">
+                    <AvatarFallback className="bg-amber-700 text-[#fbfaf8] text-lg">
                       {userData ? getInitials(userData.name) : "U"}
                     </AvatarFallback>
                   </Avatar>
                   <h2 className="text-lg font-semibold text-amber-900 mb-1">{userData?.name || "User"}</h2>
                   <p className="text-sm text-amber-700 mb-2">Premium Member</p>
-                  <Badge className="bg-amber-700 text-white text-xs px-2 py-1">VIP Customer</Badge>
+                  <Badge className="bg-amber-700 text-[#fbfaf8] text-xs px-2 py-1">VIP Customer</Badge>
                 </div>
               </div>
 
@@ -344,7 +344,7 @@ export default function ProfilePage() {
                       }}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 mb-1 ${
                         activeTab === item.id
-                          ? "bg-amber-700 text-white shadow-sm"
+                          ? "bg-amber-700 text-[#fbfaf8] shadow-sm"
                           : "text-stone-700 hover:bg-stone-50 hover:text-amber-700"
                       }`}
                     >
@@ -356,7 +356,7 @@ export default function ProfilePage() {
               </nav>
 
               {/* Quick Stats */}
-              <div className="p-4 border-t border-stone-200 bg-stone-50">
+              <div className="p-4 border-t border-sage-200 bg-stone-50">
                 <div className="grid grid-cols-2 gap-3 text-center">
                   <div>
                     <p className="text-2xl font-bold text-amber-700">{orders.length}</p>
@@ -376,12 +376,12 @@ export default function ProfilePage() {
             {activeTab === "overview" && (
               <div className="space-y-8">
                 {/* Hero Welcome Section */}
-                <div className="bg-white rounded-lg shadow-sm border border-stone-200 overflow-hidden">
+                <div className="bg-[#fbfaf8] rounded-lg shadow-sm border border-sage-200 overflow-hidden">
                   <div className="relative bg-gradient-to-r from-amber-50 to-stone-100 p-8">
                     <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-                      <Avatar className="w-20 h-20 border-4 border-white shadow-lg">
+                      <Avatar className="w-20 h-20 border-4 border-[#fbfaf8] shadow-lg">
                         <AvatarImage src="/professional-woman-diverse.png" />
-                        <AvatarFallback className="bg-amber-700 text-white text-xl">
+                        <AvatarFallback className="bg-amber-700 text-[#fbfaf8] text-xl">
                           {userData ? getInitials(userData.name) : "U"}
                         </AvatarFallback>
                       </Avatar>
@@ -393,7 +393,7 @@ export default function ProfilePage() {
                             </h1>
                             <p className="text-amber-700 text-lg mb-3">Premium Member since January 2023</p>
                             <div className="flex items-center gap-4">
-                              <Badge className="bg-amber-700 text-white px-3 py-1">VIP Customer</Badge>
+                              <Badge className="bg-amber-700 text-[#fbfaf8] px-3 py-1">VIP Customer</Badge>
                               <Badge className="bg-green-100 text-green-800 px-3 py-1">Premium Loyalty</Badge>
                             </div>
                           </div>
@@ -405,7 +405,7 @@ export default function ProfilePage() {
 
                 {/* Enhanced Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-6 hover:shadow-md transition-shadow">
+                  <div className="bg-[#fbfaf8] rounded-lg shadow-sm border border-sage-200 p-6 hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm text-stone-600 mb-1">Total Orders</p>
@@ -430,7 +430,7 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-6 hover:shadow-md transition-shadow">
+                  <div className="bg-[#fbfaf8] rounded-lg shadow-sm border border-sage-200 p-6 hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm text-stone-600 mb-1">Total Spent</p>
@@ -460,7 +460,7 @@ export default function ProfilePage() {
                   </div>
 
 
-                  <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-6 hover:shadow-md transition-shadow">
+                  <div className="bg-[#fbfaf8] rounded-lg shadow-sm border border-sage-200 p-6 hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm text-stone-600 mb-1">
@@ -479,8 +479,8 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Contact Information Section */}
-                <div className="bg-white rounded-lg shadow-sm border border-stone-200">
-                  <div className="p-6 border-b border-stone-200">
+                <div className="bg-[#fbfaf8] rounded-lg shadow-sm border border-sage-200">
+                  <div className="p-6 border-b border-sage-200">
                     <h3 className="text-xl font-semibold text-amber-900 flex items-center gap-2">
                       <User className="w-5 h-5" />
                       Personal Information
@@ -527,8 +527,8 @@ export default function ProfilePage() {
                 {/* Recent Activity */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Recent Orders */}
-                  <div className="bg-white rounded-lg shadow-sm border border-stone-200">
-                    <div className="p-6 border-b border-stone-200">
+                  <div className="bg-[#fbfaf8] rounded-lg shadow-sm border border-sage-200">
+                    <div className="p-6 border-b border-sage-200">
                       <div className="flex items-center justify-between">
                         <h3 className="text-xl font-semibold text-amber-900 flex items-center gap-2">
                           <Package className="w-5 h-5" />
@@ -554,7 +554,7 @@ export default function ProfilePage() {
                           {orders.slice(0, 3).map((order) => (
                             <div
                               key={order._id}
-                              className="flex items-center justify-between p-3 border border-stone-200 rounded-lg hover:bg-stone-50 transition-colors"
+                              className="flex items-center justify-between p-3 border border-sage-200 rounded-lg hover:bg-stone-50 transition-colors"
                             >
                               <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
@@ -584,8 +584,8 @@ export default function ProfilePage() {
                   </div>
 
                   {/* Quick Actions */}
-                  <div className="bg-white rounded-lg shadow-sm border border-stone-200">
-                    <div className="p-6 border-b border-stone-200">
+                  <div className="bg-[#fbfaf8] rounded-lg shadow-sm border border-sage-200">
+                    <div className="p-6 border-b border-sage-200">
                       <h3 className="text-xl font-semibold text-amber-900 flex items-center gap-2">
                         <Settings className="w-5 h-5" />
                         Quick Actions
@@ -632,8 +632,8 @@ export default function ProfilePage() {
             )}
 
             {activeTab === "orders" && (
-              <div className="bg-white rounded-lg shadow-sm border border-stone-200">
-                <div className="p-6 border-b border-stone-200">
+              <div className="bg-[#fbfaf8] rounded-lg shadow-sm border border-sage-200">
+                <div className="p-6 border-b border-sage-200">
                   <h2 className="text-xl font-semibold text-amber-900">Order History</h2>
                 </div>
                 <div className="p-6">
@@ -644,7 +644,7 @@ export default function ProfilePage() {
                   ) : orders.length > 0 ? (
                     <div className="space-y-6">
                       {orders.map((order) => (
-                        <div key={order._id} className="border border-stone-200 rounded-lg p-6">
+                        <div key={order._id} className="border border-sage-200 rounded-lg p-6">
                           <div className="flex justify-between items-start mb-4">
                             <div>
                               <h3 className="font-semibold text-stone-900">{formatOrderId(order)}</h3>
@@ -677,7 +677,7 @@ export default function ProfilePage() {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="mt-2 border-stone-200 text-stone-900 hover:bg-amber-50 hover:text-amber-900 bg-transparent"
+                                className="mt-2 border-sage-200 text-stone-900 hover:bg-amber-50 hover:text-amber-900 bg-transparent"
                               >
                                 View Details
                               </Button>
@@ -698,15 +698,15 @@ export default function ProfilePage() {
             )}
 
             {activeTab === "wishlist" && (
-              <div className="bg-white rounded-lg shadow-sm border border-stone-200">
-                <div className="p-6 border-b border-stone-200">
+              <div className="bg-[#fbfaf8] rounded-lg shadow-sm border border-sage-200">
+                <div className="p-6 border-b border-sage-200">
                   <h2 className="text-xl font-semibold text-amber-900">My Wishlist</h2>
                   <p className="text-sm text-stone-600 mt-1">Wishlist API not available - showing sample items</p>
                 </div>
                 <div className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {wishlistItems.map((item, index) => (
-                      <div key={index} className="border border-stone-200 rounded-lg p-4">
+                      <div key={index} className="border border-sage-200 rounded-lg p-4">
                         <img
                           src={item.image || "/placeholder.svg"}
                           alt={item.name}
@@ -715,13 +715,13 @@ export default function ProfilePage() {
                         <h3 className="font-medium text-stone-900 mb-2">{item.name}</h3>
                         <p className="text-lg font-semibold text-amber-700 mb-4">{item.price}</p>
                         <div className="flex gap-2">
-                          <Button size="sm" className="flex-1 bg-amber-700 text-white hover:bg-amber-800">
+                          <Button size="sm" className="flex-1 bg-amber-700 text-[#fbfaf8] hover:bg-amber-800">
                             Add to Cart
                           </Button>
                           <Button
                             variant="outline"
                             size="sm"
-                            className="border-stone-200 text-stone-900 hover:bg-red-50 hover:text-red-600 bg-transparent"
+                            className="border-sage-200 text-stone-900 hover:bg-red-50 hover:text-red-600 bg-transparent"
                           >
                             <Heart className="w-4 h-4" />
                           </Button>
@@ -734,8 +734,8 @@ export default function ProfilePage() {
             )}
 
             {activeTab === "settings" && (
-              <div className="bg-white rounded-lg shadow-sm border border-stone-200">
-                <div className="p-6 border-b border-stone-200">
+              <div className="bg-[#fbfaf8] rounded-lg shadow-sm border border-sage-200">
+                <div className="p-6 border-b border-sage-200">
                   <h2 className="text-xl font-semibold text-amber-900">Account Settings</h2>
                 </div>
                 <div className="p-6">
@@ -749,7 +749,7 @@ export default function ProfilePage() {
                             type="text"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="w-full p-3 border border-stone-200 rounded-lg bg-white text-stone-900"
+                            className="w-full p-3 border border-sage-200 rounded-lg bg-[#fbfaf8] text-stone-900"
                           />
                         </div>
                         <div>
@@ -758,7 +758,7 @@ export default function ProfilePage() {
                             type="tel"
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            className="w-full p-3 border border-stone-200 rounded-lg bg-white text-stone-900"
+                            className="w-full p-3 border border-sage-200 rounded-lg bg-[#fbfaf8] text-stone-900"
                           />
                         </div>
                       </div>
@@ -775,7 +775,7 @@ export default function ProfilePage() {
                             type="email"
                             value={userData?.email || ""}
                             disabled
-                            className="w-full p-3 border border-stone-200 rounded-lg bg-stone-50 text-stone-500"
+                            className="w-full p-3 border border-sage-200 rounded-lg bg-stone-50 text-stone-500"
                           />
                           <p className="text-xs text-stone-500 mt-1">Email cannot be changed</p>
                         </div>
@@ -786,7 +786,7 @@ export default function ProfilePage() {
                       <Button
                         onClick={updateProfile}
                         disabled={updateLoading}
-                        className="bg-amber-700 text-white hover:bg-amber-800"
+                        className="bg-amber-700 text-[#fbfaf8] hover:bg-amber-800"
                       >
                         {updateLoading ? (
                           <>
@@ -805,7 +805,7 @@ export default function ProfilePage() {
                             phone: userData?.phone || "",
                           })
                         }}
-                        className="border-stone-200 text-stone-900 hover:bg-stone-50 bg-transparent"
+                        className="border-sage-200 text-stone-900 hover:bg-stone-50 bg-transparent"
                       >
                         Cancel
                       </Button>
