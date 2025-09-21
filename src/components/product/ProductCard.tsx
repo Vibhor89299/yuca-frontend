@@ -159,9 +159,9 @@ export function ProductCard({ product }: ProductCardProps) {
                 <span className="text-xl font-bold text-autumnFern">
                   ₹{product.price.toFixed(2)}
                 </span>
-                <p className="text-xs text-muted-foreground">
+                {/* <p className="text-xs text-muted-foreground">
                   by {productBrand}
-                </p>
+                </p> */}
               </div>
 
               <Button

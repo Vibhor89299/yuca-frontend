@@ -173,6 +173,7 @@ class PaymentService {
         },
         handler: async (response: any) => {
           try {
+            console.log('Payment successful, verifying...', response);
             // Verify payment
             const verificationResult = await this.verifyPayment(
               response.razorpay_order_id,
@@ -181,6 +182,7 @@ class PaymentService {
               guestInfo
             );
             
+            console.log('Payment verified successfully:', verificationResult);
             return verificationResult;
           } catch (error) {
             console.error('Payment verification failed:', error);
@@ -191,24 +193,31 @@ class PaymentService {
 
       // Open Razorpay checkout
       return new Promise((resolve, reject) => {
-        const razorpay = new (window as any).Razorpay(options);
-        
-        razorpay.on('payment.failed', (response: any) => {
-          reject(new Error(`Payment failed: ${response.error.description}`));
-        });
-
-        razorpay.on('payment.success', async (response: any) => {
+        // Override the handler to resolve the promise
+        options.handler = async (response: any) => {
           try {
+            console.log('Payment successful, verifying...', response);
+            // Verify payment
             const verificationResult = await this.verifyPayment(
               response.razorpay_order_id,
               response.razorpay_payment_id,
               response.razorpay_signature,
               guestInfo
             );
+            
+            console.log('Payment verified successfully:', verificationResult);
             resolve(verificationResult);
           } catch (error) {
+            console.error('Payment verification failed:', error);
             reject(error);
           }
+        };
+
+        const razorpay = new (window as any).Razorpay(options);
+        
+        razorpay.on('payment.failed', (response: any) => {
+          console.error('Payment failed:', response.error);
+          reject(new Error(`Payment failed: ${response.error.description}`));
         });
 
         razorpay.open();
