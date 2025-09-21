@@ -1,71 +1,128 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { CreditCard, Lock, ArrowLeft, User, Mail } from 'lucide-react';
-import { formatIndianPrice } from '@/utils/currency';                  
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { useAppSelector, useAppDispatch } from '@/store/hooks';
-import { clearCart, fetchCart, clearGuestCart } from '@/store/slices/cartSlice';
-import { placeOrder } from '@/store/slices/orderSlice';
-import { paymentService } from '@/services/paymentService';
+"use client"
 
+import type React from "react"
+import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { CreditCard, Lock, ArrowLeft, User, Mail } from "lucide-react"
+import { formatIndianPrice } from "@/utils/currency"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { useAppSelector, useAppDispatch } from "@/store/hooks"
+import { clearCart, fetchCart, clearGuestCart } from "@/store/slices/cartSlice"
+import { placeOrder } from "@/store/slices/orderSlice"
+import { paymentService } from "@/services/paymentService"
+
+interface UserData {
+  _id: string
+  name: string
+  email: string
+  role: string
+  isAdmin: boolean
+  phone?: string
+}
 export function CheckoutPage() {
-  const dispatch = useAppDispatch();
-  const { items, total } = useAppSelector(state => state.cart);
-  const { loading: orderLoading, error: orderError } = useAppSelector(state => state.order);
-  const [processingPayment, setProcessingPayment] = useState(false);
+  const dispatch = useAppDispatch()
+  const { items, total } = useAppSelector((state) => state.cart)
+  const { loading: orderLoading, error: orderError } = useAppSelector((state) => state.order)
+  const [processingPayment, setProcessingPayment] = useState(false)
+
+  const [error, setError] = useState<string | null>(null)
+
   const [form, setForm] = useState({
     // Guest information
-    guestEmail: '',
-    guestName: '',
-    guestPhone: '',
+    guestEmail: "",
+    guestName: "",
+    guestPhone: "",
     // Shipping information
-    firstName: '',
-    lastName: '',
-    address: '',
-    city: '',
-    state: '',
-    zip: '',
+    firstName: "",
+    lastName: "",
+    address: "",
+    city: "",
+    state: "",
+    zip: "",
     // Payment information
-    paymentMethod: 'card',
-    cardNumber: '',
-    expiry: '',
-    cvv: '',
-  });
-  const navigate = useNavigate();
+    paymentMethod: "card",
+    cardNumber: "",
+    expiry: "",
+    cvv: "",
+  })
+  const navigate = useNavigate()
+  const getAuthToken = () => {
+    return localStorage.getItem("yuca_auth_token") || null
+  }
+  const [userData, setUserData] = useState<UserData | null>(null)
+
+  const fetchUserProfile = async () => {
+    try {
+      const response = await fetch("http://localhost:5001/api/auth/profile", {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success && data.user) {
+          setUserData(data.user)
+          console.log('data', data.user)
+          setForm((prevForm) => ({
+            ...prevForm,
+            guestEmail: data.user.email || prevForm.guestEmail,
+            guestName: data.user.name || prevForm.guestName,
+            guestPhone: data.user.phone || prevForm.guestPhone,
+            firstName: data.user.name ? data.user.name.split(" ")[0] : prevForm.firstName,
+            lastName: data.user.name ? data.user.name.split(" ").slice(1).join(" ") : prevForm.lastName,
+          }))
+        }
+      } else {
+        setError("Failed to fetch user profile")
+      }
+    } catch (err) {
+      console.error("Error fetching user profile:", err)
+      setError("Network error while fetching profile")
+    }
+  }
 
   useEffect(() => {
-    dispatch(fetchCart());
-  }, [dispatch]);
+    const authToken = getAuthToken()
+    console.log('auth',authToken)
+    if (authToken) {
+      fetchUserProfile()
+    }
+  }, [])
 
-  const subtotal = total;
-  const shipping = 0;
-  const tax = total * 0.18; // 18% GST
-  const finalTotal = subtotal + shipping + tax;
+  useEffect(() => {
+    dispatch(fetchCart())
+  }, [dispatch])
+
+  const subtotal = total
+  const shipping = 0
+  const tax = total * 0.18 // 18% GST
+  const finalTotal = subtotal + shipping + tax
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.id]: e.target.value });
-  };
+    setForm({ ...form, [e.target.id]: e.target.value })
+  }
 
   const handlePaymentMethod = (val: string) => {
-    setForm({ ...form, paymentMethod: val });
-  };
+    setForm({ ...form, paymentMethod: val })
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (form.paymentMethod !== 'razorpay') {
+    e.preventDefault()
+
+    if (form.paymentMethod !== "razorpay") {
       // Handle other payment methods (if any)
-      alert('Only Razorpay payment is currently supported');
-      return;
+      alert("Only Razorpay payment is currently supported")
+      return
     }
 
-    setProcessingPayment(true);
-    
+    setProcessingPayment(true)
+
     try {
       const shippingAddress = {
         firstName: form.firstName,
@@ -74,82 +131,79 @@ export function CheckoutPage() {
         city: form.city,
         state: form.state,
         zip: form.zip,
-      };
+      }
 
       const orderData: any = {
-        items: items.map(item => ({ 
-          productId: item.product._id || item.product.id, 
-          quantity: item.quantity, 
-          price: item.product.price 
+        items: items.map((item) => ({
+          productId: item.product._id || item.product.id,
+          quantity: item.quantity,
+          price: item.product.price,
         })),
         shippingAddress,
-        paymentMethod: 'razorpay',
+        paymentMethod: "razorpay",
         totalPrice: finalTotal,
-      };
+      }
 
       // Add guest information if not authenticated
-      let guestInfo;
+      let guestInfo
       if (!isAuthenticated) {
         guestInfo = {
           email: form.guestEmail,
           name: form.guestName,
           phone: form.guestPhone,
-        };
-        orderData.guestInfo = guestInfo;
+        }
+        orderData.guestInfo = guestInfo
       }
 
       // Create order first
-      const orderResult = await dispatch(placeOrder(orderData));
-      
+      const orderResult = await dispatch(placeOrder(orderData))
+
       if (placeOrder.fulfilled.match(orderResult)) {
-        const orderId = orderResult.payload.order.id;
-        
+        const orderId = orderResult.payload.order.id
+
         // Prepare user info for Razorpay
-        const userInfo = isAuthenticated ? {
-          name: `${form.firstName} ${form.lastName}`,
-          email: form.guestEmail, // This should come from user profile in real app
-          phone: form.guestPhone, // This should come from user profile in real app
-        } : undefined;
+        const userInfo = isAuthenticated
+          ? {
+              name: `${form.firstName} ${form.lastName}`,
+              email: userData?.email || form.guestEmail,
+              phone: userData?.phone || form.guestPhone,
+            }
+          : undefined
 
         // Open Razorpay checkout
-        const paymentResult = await paymentService.openRazorpayCheckout(
-          orderId,
-          userInfo,
-          guestInfo
-        );
+        const paymentResult = await paymentService.openRazorpayCheckout(orderId, userInfo, guestInfo)
 
-        if (paymentResult.payment.status === 'paid') {
+        if (paymentResult.payment.status === "paid") {
           // Clear the appropriate cart based on authentication status
           if (isAuthenticated) {
-            dispatch(clearCart());
+            dispatch(clearCart())
           } else {
-            dispatch(clearGuestCart());
+            dispatch(clearGuestCart())
           }
-          navigate(`/order/${orderId}`);
+          navigate(`/order/${orderId}`)
         }
       }
     } catch (error: any) {
-      console.error('Payment failed:', error);
-      alert(`Payment failed: ${error.message}`);
+      console.error("Payment failed:", error)
+      alert(`Payment failed: ${error.message}`)
     } finally {
-      setProcessingPayment(false);
+      setProcessingPayment(false)
     }
-  };
+  }
 
   // Get authentication status from your store (adjust selector as needed)
-  const isAuthenticated = useAppSelector(state => state.auth?.isAuthenticated);
+  const isAuthenticated = useAppSelector((state) => state.auth?.isAuthenticated) || !!getAuthToken()
 
   useEffect(() => {
     if (items.length === 0) {
-      navigate('/cart');
+      navigate("/cart")
     }
-    // Remove the authentication requirement - allow guest checkout
-  }, [items.length, navigate]);
+  }, [items.length, navigate])
 
   return (
     <div className="container mx-auto px-4 py-8 animate-fade-in bg-mushroom/95 backdrop-blur-sm min-h-screen">
       <div className="flex items-center mb-8">
-        <Button variant="ghost" onClick={() => navigate('/cart')} className="p-0 luxury-button-ghost">
+        <Button variant="ghost" onClick={() => navigate("/cart")} className="p-0 luxury-button-ghost">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Cart
         </Button>
@@ -170,35 +224,35 @@ export function CheckoutPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="guestName">Full Name</Label>
-                    <Input 
-                      id="guestName" 
-                      placeholder="John Doe" 
-                      value={form.guestName} 
-                      onChange={handleChange} 
-                      required 
+                    <Input
+                      id="guestName"
+                      placeholder="John Doe"
+                      value={form.guestName}
+                      onChange={handleChange}
+                      required
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="guestEmail">Email</Label>
-                    <Input 
-                      id="guestEmail" 
-                      type="email" 
-                      placeholder="john@example.com" 
-                      value={form.guestEmail} 
-                      onChange={handleChange} 
-                      required 
+                    <Input
+                      id="guestEmail"
+                      type="email"
+                      placeholder="john@example.com"
+                      value={form.guestEmail}
+                      onChange={handleChange}
+                      required
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="guestPhone">Phone Number</Label>
-                  <Input 
-                    id="guestPhone" 
-                    type="tel" 
-                    placeholder="9876543210" 
-                    value={form.guestPhone} 
-                    onChange={handleChange} 
-                    required 
+                  <Input
+                    id="guestPhone"
+                    type="tel"
+                    placeholder="9876543210"
+                    value={form.guestPhone}
+                    onChange={handleChange}
+                    required
                   />
                 </div>
                 <div className="p-4 bg-sage-50 rounded-lg">
@@ -210,6 +264,8 @@ export function CheckoutPage() {
               </CardContent>
             </Card>
           )}
+
+          
 
           <Card className="luxury-card">
             <CardHeader>
@@ -229,7 +285,13 @@ export function CheckoutPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="address">Address</Label>
-                  <Input id="address" placeholder="123 Main Street" value={form.address} onChange={handleChange} required />
+                  <Input
+                    id="address"
+                    placeholder="123 Main Street"
+                    value={form.address}
+                    onChange={handleChange}
+                    required
+                  />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="space-y-2">
@@ -256,7 +318,7 @@ export function CheckoutPage() {
                     </Label>
                   </div>
                 </RadioGroup>
-                {form.paymentMethod === 'razorpay' && (
+                {form.paymentMethod === "razorpay" && (
                   <div className="p-4 bg-sage-50 rounded-lg">
                     <p className="text-sm luxury-text-muted">
                       <Lock className="h-4 w-4 inline mr-2" />
@@ -271,7 +333,11 @@ export function CheckoutPage() {
                   disabled={orderLoading || processingPayment}
                 >
                   <Lock className="h-4 w-4 mr-2" />
-                  {processingPayment ? 'Processing Payment...' : orderLoading ? 'Creating Order...' : `Pay ${formatIndianPrice(finalTotal)}`}
+                  {processingPayment
+                    ? "Processing Payment..."
+                    : orderLoading
+                      ? "Creating Order..."
+                      : `Pay ${formatIndianPrice(finalTotal)}`}
                 </Button>
               </form>
             </CardContent>
@@ -288,20 +354,16 @@ export function CheckoutPage() {
                 {items.map((item) => (
                   <div key={item.id} className="flex space-x-3">
                     <img
-                      src={item.product.image}
+                      src={item.product.image || "/placeholder.svg"}
                       alt={item.product.name}
                       className="w-16 h-16 object-cover rounded-lg"
                     />
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-medium luxury-text truncate">
-                        {item.product.name}
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        Quantity: {item.quantity}
-                      </p>
+                      <h4 className="text-sm font-medium luxury-text truncate">{item.product.name}</h4>
+                      <p className="text-sm text-muted-foreground">Quantity: {item.quantity}</p>
                     </div>
                     <div className="text-sm font-medium luxury-text">
-                      ${(item.product.price * item.quantity).toFixed(2)}
+                      {(item.product.price * item.quantity).toFixed(2)}
                     </div>
                   </div>
                 ))}
@@ -334,5 +396,5 @@ export function CheckoutPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }

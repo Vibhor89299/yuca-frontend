@@ -262,7 +262,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fff]">
+    <div className="min-h-screen bg-[#f5f2e0]">
       <div className="lg:hidden bg-white border-b border-stone-200 sticky top-0 z-50">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-3">

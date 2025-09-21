@@ -260,23 +260,6 @@
   }
 }
 
-/* Custom scrollbar with new colors */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  @apply bg-mushroom;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-oak rounded-full;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-oak-600;
-}
-
 
 /* Added custom scrollbar hiding for horizontal scroll */
 .scrollbar-hide {
