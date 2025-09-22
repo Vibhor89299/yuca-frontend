@@ -3,7 +3,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+/* Define Alice font */
+@font-face {
+  font-family: 'Alice';
+  src: url('/fonts/AliceRegular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 @layer base {
   :root {
     /* New YUCA Brand Color System */
@@ -62,13 +69,15 @@
     @apply border-border;
   }
   body {
-    @apply bg-blanket text-kimber font-sans;
+    @apply bg-blanket text-kimber;
+    font-family: 'Alice', serif;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif text-oak;
+    font-family: 'Alice', serif;
   }
   a {
     @apply text-autumnFern hover:underline transition-colors duration-200;
+    font-family: 'Alice', serif
   }
 }
 

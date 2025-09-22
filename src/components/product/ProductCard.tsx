@@ -150,7 +150,7 @@ export function ProductCard({ product }: ProductCardProps) {
               {toStartCase(product.name)}
             </h3>
 
-            <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+            <p className="text-sm line-clamp-2 leading-relaxed">
               {product.description}
             </p>
 

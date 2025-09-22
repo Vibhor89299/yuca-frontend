@@ -434,7 +434,7 @@ export function ProductDetailPage() {
   // rgb(184 159 134)
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8 min-h-screen bg-mushroom/95 backdrop-blur-sm">
+      <div className="container mx-auto px-4 pt-[140px] min-h-screen bg-mushroom/95 backdrop-blur-sm">
         <div className="animate-pulse">
           <div className="h-8 bg-gray-200 rounded w-1/4 mb-8"></div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -452,7 +452,7 @@ export function ProductDetailPage() {
 
   if (error || !product) {
     return (
-      <div className="container mx-auto px-4 py-8 min-h-screen bg-mushroom/95 backdrop-blur-sm">
+      <div className="container mx-auto px-4 pt-[140px] min-h-screen bg-mushroom/95 backdrop-blur-sm">
         <div className="text-center space-y-6">
           <h1 className="text-2xl luxury-heading">Product Not Found</h1>
           <p className="luxury-text-muted">
@@ -503,7 +503,7 @@ export function ProductDetailPage() {
         <meta name="twitter:description" content={pdescription} />
         <meta name="twitter:image" content={pimage} />
       </Helmet>
-      <div className="container mx-auto px-4 mt-4 py-8 min-h-screen bg-white rounded backdrop-blur-sm">
+      <div className="container mx-auto px-4 mt-4 mt-[100px] py-8 min-h-screen bg-white rounded backdrop-blur-sm">
         {/* Breadcrumb */}
 
         <div className="flex items-center space-x-2 mb-8">

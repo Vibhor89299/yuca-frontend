@@ -69,16 +69,16 @@ export function Header() {
         
       }`}
     >
-      <div className="container mx-auto px-4 py-2">
+      <div className="container mx-auto px-4 ">
         {/* Compact Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between py-0">
           {/* Logo */}
           <Link to="/" className="flex items-center  flex-shrink-0">
-            <div className="rounded-full h-20 w-20 overflow-hidden">
-              <img src={YucaLogo} alt="Yuca Logo" className="h-full w-full object-cover rounded-full" />
+            <div className="rounded-full h-[3rem] w-[4rem] overflow-hidden">
+              <img src={YucaLogo} alt="Yuca Logo" className="h-full w-full rounded-full object-cover " />
             </div>
             <div>
-              <span className="text-[28px] font-serif text-blanket">YUCA</span>
+              <span className="text-[20px] font-serif text-blanket">YUCA</span>
             </div>
           </Link>
 
