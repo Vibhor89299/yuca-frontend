@@ -175,10 +175,10 @@ export default function ProfilePage() {
     {
       name: "Premium Wine Glass",
       price: "₹799",
-      image: "/elegant-wine-glass.png",
+      image: "/assets/kosha/GLASS/glass/1.png",
     },
-    { name: "Ceramic Tea Set", price: "₹1,499", image: "/ceramic-tea-set.png" },
-    { name: "Wooden Serving Tray", price: "₹1,299", image: "/wooden-tray.png" },
+    { name: "Ceramic Tea Set", price: "₹1,499", image: "/assets/kosha/GLASS/glass/1.png" },
+    { name: "Wooden Serving Tray", price: "₹1,299", image: "/assets/kosha/GLASS/glass/1.png" },
   ];
 
   const getStatusColor = (status: string) => {
@@ -272,7 +272,7 @@ export default function ProfilePage() {
     );
   }
   return (
-    <div className="min-h-screen bg-[#f5f2e0]">
+    <div className="min-h-screen bg-[#ebd9c9] pt-[80px]">
         {!isMobile && <div className="lg:hidden bg-[#fbfaf8] border-b border-sage-200 sticky top-0 z-50">
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
@@ -421,7 +421,7 @@ export default function ProfilePage() {
                               {userData?.name?.split(" ")[0] || "User"}!
                             </h1>
                             <p className="text-amber-700 text-lg mb-3">
-                              Premium Member since January 2023
+                              Premium Member si'nce January 2023
                             </p>
                             <div className="flex items-center gap-4">
                               <Badge className="bg-amber-700 text-[#fbfaf8] px-3 py-1">

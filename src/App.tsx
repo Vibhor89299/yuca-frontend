@@ -16,6 +16,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAuthCheck } from '@/hooks/useAuthCheck';
 import ProfilePage from './pages/Profile';
 import OurStoryPage from './pages/StoryPage';
+import { CategoryPage } from './pages/Category';
 
 function App() {
   // Check authentication status on app load
@@ -25,11 +26,11 @@ function App() {
     <Router>
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main className="flex-1">
+        <main className="flex-1 z-10">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/product/:id" element={<ProductDetailPage />} />
-            {/* <Route path="/category/:category" element={<CategoryPage />} /> */}
+            <Route path="/category/kosha" element={<CategoryPage />} />
             {/* <Route path="/category/:category/:subcategory" element={<CategoryPage />} /> */}
             <Route path="/cart" element={<CartPage />} />
             <Route path="/profile" element={<ProfilePage />} />

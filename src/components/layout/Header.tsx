@@ -65,9 +65,8 @@ export function Header() {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
-        isVisible 
-          ? 'translate-y-0 bg-kimber/95 backdrop-blur-lg shadow-lg border-b border-oak/50' 
-          : '-translate-y-full bg-transparent'
+        'translate-y-0 bg-kimber/95 backdrop-blur-lg shadow-lg border-b border-oak/50' 
+        
       }`}
     >
       <div className="container mx-auto px-4 py-2">
@@ -75,11 +74,11 @@ export function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center  flex-shrink-0">
-            <div className="rounded-full h-14 w-14 overflow-hidden">
+            <div className="rounded-full h-20 w-20 overflow-hidden">
               <img src={YucaLogo} alt="Yuca Logo" className="h-full w-full object-cover rounded-full" />
             </div>
             <div>
-              <h1 className="text-lg font-serif text-blanket">YUCA</h1>
+              <span className="text-[28px] font-serif text-blanket">YUCA</span>
             </div>
           </Link>
 

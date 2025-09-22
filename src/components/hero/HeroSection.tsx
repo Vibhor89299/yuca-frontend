@@ -31,7 +31,7 @@ export function HeroSection() {
       <div className="relative z-10 container mx-auto px-4 py-16 pb-24 text-center">
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button asChild className="luxury-button" size="lg">
-            <Link to="/category/living">
+            <Link to="/category/kosha">
               Explore Collection
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
