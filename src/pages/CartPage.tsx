@@ -68,7 +68,7 @@ export function CartPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 min-h-screen bg-[#f2e0cf] backdrop-blur-sm">
+    <div className="container mx-auto px-4 pt-[140px] min-h-screen bg-[#f2e0cf] backdrop-blur-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-4">

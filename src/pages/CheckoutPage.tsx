@@ -180,7 +180,7 @@ export function CheckoutPage() {
           userInfo,
           guestInfo
         );
-
+        paymentResult.payment.status
         if (paymentResult.payment.status === "paid") {
           // Clear the appropriate cart based on authentication status
           if (isAuthenticated) {
@@ -210,7 +210,7 @@ export function CheckoutPage() {
   }, [items.length, navigate]);
 
   return (
-    <div className="container mx-auto px-4 py-8 animate-fade-in  backdrop-blur-sm min-h-screen">
+    <div className="container mx-auto px-4 pt-[140px] animate-fade-in  backdrop-blur-sm min-h-screen">
       <div className="flex items-center mb-8">
         <Button
           variant="ghost"
