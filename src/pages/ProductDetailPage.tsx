@@ -22,6 +22,7 @@ import { formatIndianPrice } from "@/utils/currency";
 import axiosinstance from "@/axiosinstance/axiosinstance";
 import { Product } from "@/types";
 import { Helmet } from "react-helmet-async";
+import { fetchProducts } from "@/services/actions";
 
 
 interface Review {
@@ -144,49 +145,49 @@ export function ProductDetailPage() {
       id: "68b488f78dbaffb39227034b",
     },
   ];
+const customerReviews: Review[] = [
+  {
+    id: 1,
+    name: "Priya Sharma",
+    rating: 5,
+    date: "2 weeks ago",
+    comment:
+      "Absolutely love YUCA! Their aesthetic and commitment to quality truly stand out. Everything from the design ethos to the packaging feels premium. It’s refreshing to see a brand that blends tradition with modern style so effortlessly.",
+    verified: true,
+    helpful: 12,
+  },
+  {
+    id: 2,
+    name: "Rajesh Kumar",
+    rating: 4,
+    date: "1 month ago",
+    comment:
+      "YUCA brings a unique touch to everyday living. Their products are beautifully designed and thoughtfully made. You can tell there's genuine craftsmanship involved. Only small suggestion — clearer care instructions would be helpful.",
+    verified: true,
+    helpful: 8,
+  },
+  {
+    id: 3,
+    name: "Anita Patel",
+    rating: 5,
+    date: "3 weeks ago",
+    comment:
+      "I'm genuinely impressed by YUCA as a brand. From the moment I discovered them, it was clear they care about quality and customer satisfaction. Their attention to detail and packaging was on point. Looking forward to ordering again!",
+    verified: false,
+    helpful: 15,
+  },
+  {
+    id: 4,
+    name: "Vikram Singh",
+    rating: 4,
+    date: "1 week ago",
+    comment:
+      "YUCA’s customer service and fast delivery really impressed me. Their products are not only elegant but feel authentic and grounded. Great value for money — I’ve already recommended them to friends.",
+    verified: true,
+    helpful: 6,
+  },
+];
 
-  const customerReviews: Review[] = [
-    {
-      id: 1,
-      name: "Priya Sharma",
-      rating: 5,
-      date: "2 weeks ago",
-      comment:
-        "Absolutely love this geo bowl! The geometric design is stunning and it's perfect for serving salads. The quality is excellent and it feels very sturdy. Highly recommended!",
-      verified: true,
-      helpful: 12,
-    },
-    {
-      id: 2,
-      name: "Rajesh Kumar",
-      rating: 4,
-      date: "1 month ago",
-      comment:
-        "Good quality wooden bowl. The design is unique and adds a modern touch to our dining table. Only minor issue is that it requires careful hand washing.",
-      verified: true,
-      helpful: 8,
-    },
-    {
-      id: 3,
-      name: "Anita Patel",
-      rating: 5,
-      date: "3 weeks ago",
-      comment:
-        "Beautiful craftsmanship! The bowl arrived well-packaged and exactly as shown in the pictures. Perfect size for family meals. Will definitely buy more from YUCA.",
-      verified: false,
-      helpful: 15,
-    },
-    {
-      id: 4,
-      name: "Vikram Singh",
-      rating: 4,
-      date: "1 week ago",
-      comment:
-        "Nice bowl with elegant design. The wooden utensils that come with it are a nice touch. Good value for money. Delivery was quick too.",
-      verified: true,
-      helpful: 6,
-    },
-  ];
 
   // const LuxuryOrnament = ({ className = "" }: { className?: string }) => (
   //   <svg
@@ -295,7 +296,10 @@ export function ProductDetailPage() {
   //     />
   //   </svg>
   // );
-
+  const { products,  page, totalPages } = useAppSelector((state) => state.products);
+  useEffect(() => {
+    dispatch(fetchProducts(page));
+  }, [dispatch, page]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -765,7 +769,7 @@ export function ProductDetailPage() {
             </h2>
 
             <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide">
-              {relatedProducts.map((product) => (
+              {products.slice(0,5).map((product) => (
                 <div
                   key={product.id}
                   className="group cursor-pointer flex-shrink-0 w-64"
@@ -812,7 +816,7 @@ export function ProductDetailPage() {
         <section className="bg-white rounded-lg p-8 shadow-sm">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-medium text-amber-700">
-              Customer Reviews
+              Customer Reviews for YUCA
             </h2>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
