@@ -31,7 +31,7 @@ export function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-16 min-h-screen bg-mushroom/95 backdrop-blur-sm">
+      <div className="container mx-auto px-4 py-16 min-h-screen pt-[100px]">
         <div className="text-center space-y-6">
           <div className="bg-mushroom p-6 rounded-full w-24 h-24 mx-auto flex items-center justify-center">
             <ShoppingBag className="h-12 w-12 text-autumnFern" />
