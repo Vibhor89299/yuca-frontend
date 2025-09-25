@@ -68,11 +68,11 @@ export function CartPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 pt-[140px] min-h-screen bg-[#f2e0cf] backdrop-blur-sm">
+    <div className="container mx-auto px-4 pt-[100px] min-h-screen bg-[#f2e0cf] backdrop-blur-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" onClick={() => navigate(-1)} className="p-0 luxury-button-ghost">
+          <Button variant="ghost" onClick={() => navigate('/')} className="p-0 luxury-button-ghost">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Continue Shopping
           </Button>

@@ -3,6 +3,7 @@ import { useCallback, useMemo, useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { ArrowDown, Leaf, Heart, Globe, Sparkles, Users, Menu, X } from "lucide-react"
 
+import { Navigate, useNavigate } from "react-router-dom"
 const ethosData = [
   {
     id: 1,
@@ -58,7 +59,7 @@ export default function OurStoryPage() {
   const ethosRefs = useRef<(HTMLDivElement | null)[]>([])
   const stackContainerRef = useRef<HTMLDivElement>(null)
   const observerRef = useRef<IntersectionObserver | null>(null)
-
+  const navigate = useNavigate()
   const handleScroll = useCallback(() => {
     setScrollY(window.scrollY)
 
@@ -239,7 +240,7 @@ export default function OurStoryPage() {
               modern seeker who loves India, but doesn't want it loud. It's for those who choose slow over speed,
               meaning over noise.
             </p>
-            <Button className="bg-oak hover:bg-oak-600 text-blanket px-8 py-4 rounded-full text-lg transition-all duration-300 transform hover:scale-105">
+            <Button onClick={()=>navigate('/category/kosha')} className="bg-oak hover:bg-oak-600 text-blanket px-8 py-4 rounded-full text-lg transition-all duration-300 transform hover:scale-105">
               Explore Our Products
             </Button>
           </div>

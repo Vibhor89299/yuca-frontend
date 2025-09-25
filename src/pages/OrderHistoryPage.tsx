@@ -20,7 +20,7 @@ export default function OrderHistoryPage() {
 
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
-  const [filteredOrders, setFilteredOrders] = useState<Order[]>([])
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]) // will accept backend variations via runtime guards
   const [hasFetched, setHasFetched] = useState(false)
 
   useEffect(() => {
@@ -38,22 +38,25 @@ export default function OrderHistoryPage() {
     let filtered = orders
 
     if (searchTerm) {
-      filtered = filtered.filter(
-        (order) =>
-          order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          order.items.some((item) => item.product.name.toLowerCase().includes(searchTerm.toLowerCase())),
-      )
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter((order: any) => {
+        const idMatch = order?.id?.toLowerCase()?.includes(term) || order?._id?.toLowerCase()?.includes(term);
+        const itemsArray = Array.isArray(order?.items) ? order.items : [];
+        const productMatch = itemsArray.some((item: any) => item?.product?.name?.toLowerCase()?.includes(term));
+        return idMatch || productMatch;
+      });
     }
 
     if (statusFilter !== "all") {
-      filtered = filtered.filter((order) => order.status.toLowerCase() === statusFilter.toLowerCase())
+      filtered = filtered.filter((order: any) => (order?.status || '').toLowerCase() === statusFilter.toLowerCase())
     }
 
     setFilteredOrders(filtered)
   }, [orders, searchTerm, statusFilter])
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
+  const getStatusColor = (status?: string) => {
+    const s = (status ?? '').toLowerCase();
+    switch (s) {
       case "paid":
         return "bg-green-100 text-green-800"
       case "processing":
@@ -69,8 +72,9 @@ export default function OrderHistoryPage() {
     }
   }
 
-  const getStatusIcon = (status: string) => {
-    switch (status.toLowerCase()) {
+  const getStatusIcon = (status?: string) => {
+    const s = (status ?? '').toLowerCase();
+    switch (s) {
       case "paid":
         return <CheckCircle className="h-4 w-4 mr-2" />
       case "processing":
@@ -108,12 +112,13 @@ export default function OrderHistoryPage() {
     )
   }
 
+  console.log(filteredOrders)
   return (
-    <div className=" mx-auto px-4 py-8 min-h-screen bg-white backdrop-blur-sm">
+    <div className=" mx-auto pt-[90px] pb-8 px-4  min-h-screen backdrop-blur-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" onClick={() => navigate(-1)} className="p-0 luxury-button-ghost">
+          <Button variant="ghost" onClick={() => navigate('/')} className="p-0 luxury-button-ghost">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
@@ -128,9 +133,10 @@ export default function OrderHistoryPage() {
           <h1 className="text-3xl font-serif luxury-heading">Order History</h1>
         </div>
       </div>
+    
 
       {/* Filters and Search */}
-      <Card className="luxury-card mb-8">
+      <Card className="luxury-card mb-8  bg-[#fbfaf8]">
         <CardContent className="p-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
@@ -166,7 +172,7 @@ export default function OrderHistoryPage() {
 
       {/* Orders List */}
       {error && (
-        <Card className="luxury-card mb-8">
+        <Card className="luxury-card mb-8  bg-[#fbfaf8]">
           <CardContent className="p-6">
             <div className="text-center text-red-600">
               <p>Error loading orders: {error}</p>
@@ -179,7 +185,7 @@ export default function OrderHistoryPage() {
       )}
 
       {filteredOrders.length === 0 && !loading ? (
-        <Card className="luxury-card">
+        <div className="luxury-card  bg-[#fbfaf8]">
           <CardContent className="p-12 text-center">
             <Package className="h-16 w-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold luxury-heading mb-2">
@@ -194,11 +200,11 @@ export default function OrderHistoryPage() {
               <Link to="/">Start Shopping</Link>
             </Button>
           </CardContent>
-        </Card>
+        </div>
       ) : (
         <div className="space-y-6">
-          {filteredOrders.map((order) => (
-            <Card key={order.id} className="luxury-card hover:shadow-lg transition-shadow">
+          {filteredOrders.map((order: any) => (
+            <Card key={order?.id || order?._id} className="l bg-[#fbfaf8] uxury-card hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                   {/* Order Info */}
@@ -207,7 +213,7 @@ export default function OrderHistoryPage() {
                       <div className="flex items-center space-x-4">
                         {getStatusIcon(order.status)}
                         <div>
-                          <h3 className="text-lg font-semibold luxury-text">Order #{order.id}</h3>
+                          <h3 className="text-lg font-semibold luxury-text">Order #{order?.id || order?._id}</h3>
                           <p className="text-sm luxury-text-muted">
                             Placed on{" "}
                             {new Date(order.createdAt).toLocaleDateString("en-US", {
@@ -223,22 +229,22 @@ export default function OrderHistoryPage() {
 
                     {/* Order Items Preview */}
                     <div className="space-y-2">
-                      {order.items.slice(0, 2).map((item, index) => (
+                      {(Array.isArray(order?.items) ? order.items : [] as any[]).slice(0, 2).map((item: any, index: number) => (
                         <div key={index} className="flex items-center space-x-3">
                           <img
-                            src={item.product.image || "/placeholder.svg"}
-                            alt={item.product.name}
+                            src={item?.product?.image || "/placeholder.svg"}
+                            alt={item?.product?.name || "Product"}
                             className="w-12 h-12 object-cover rounded-lg"
                           />
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium luxury-text truncate">{item.product.name}</p>
+                            <p className="text-sm font-medium luxury-text truncate">{item?.product?.name || "Item"}</p>
                             <p className="text-xs luxury-text-muted">
-                              Qty: {item.quantity} × {formatIndianPrice(item.product.price)}
+                              Qty: {item?.quantity ?? 0} × {formatIndianPrice(item?.product?.price ?? 0)}
                             </p>
                           </div>
                         </div>
                       ))}
-                      {order.items.length > 2 && (
+                      {Array.isArray(order?.items) && order.items.length > 2 && (
                         <p className="text-sm luxury-text-muted">
                           +{order.items.length - 2} more item{order.items.length - 2 > 1 ? "s" : ""}
                         </p>
@@ -249,9 +255,10 @@ export default function OrderHistoryPage() {
                   {/* Order Summary and Actions */}
                   <div className="lg:text-right space-y-4">
                     <div>
-                      <p className="text-lg font-semibold luxury-accent">{formatIndianPrice(order.total)}</p>
+
+                      <p className="text-lg font-semibold luxury-accent">{formatIndianPrice((order as any)?.totalPrice ?? (order as any)?.totalPrice ?? 0)}</p>
                       <p className="text-sm luxury-text-muted">
-                        {order.items.length} item{order.items.length > 1 ? "s" : ""}
+                        {Array.isArray(order?.items) ? order.items.length : 0} item{(Array.isArray(order?.items) ? order.items.length : 0) > 1 ? "s" : ""}
                       </p>
                     </div>
 
@@ -300,24 +307,24 @@ export default function OrderHistoryPage() {
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
-                <p className="text-2xl font-bold luxury-accent">{orders.length}</p>
+                <p className="text-2xl font-bold luxury-accent">{filteredOrders.length}</p>
                 <p className="text-sm luxury-text-muted">Total Orders</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold luxury-accent">
-                  {orders.filter((o) => o.status === "delivered").length}
+                  {filteredOrders.filter((o) => o.status === "delivered").length}
                 </p>
                 <p className="text-sm luxury-text-muted">Delivered</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold luxury-accent">
-                  {orders.filter((o) => o.status === "processing" || o.status === "shipped").length}
+                  {filteredOrders.filter((o) => o.status === "processing" || o.status === "shipped").length}
                 </p>
                 <p className="text-sm luxury-text-muted">In Progress</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold luxury-accent">
-                  {formatIndianPrice(orders.reduce((sum, order) => sum + order.total, 0))}
+                  {formatIndianPrice(filteredOrders.reduce((sum, order) => sum + order.totalPrice, 0))}
                 </p>
                 <p className="text-sm luxury-text-muted">Total Spent</p>
               </div>

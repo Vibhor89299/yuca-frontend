@@ -68,7 +68,7 @@ export interface Order {
   id: string;
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
   items: CartItem[];
-  total: number;
+  totalPrice: number;
   shippingAddress: Address;
   billingAddress: Address;
   createdAt: string;

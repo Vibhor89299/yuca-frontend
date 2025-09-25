@@ -17,6 +17,7 @@ import { useAuthCheck } from '@/hooks/useAuthCheck';
 import ProfilePage from './pages/Profile';
 import OurStoryPage from './pages/StoryPage';
 import { CategoryPage } from './pages/Category';
+import PrivacyPage from './pages/Privacy';
 
 function App() {
   // Check authentication status on app load
@@ -33,6 +34,7 @@ function App() {
             <Route path="/category/kosha" element={<CategoryPage />} />
             {/* <Route path="/category/:category/:subcategory" element={<CategoryPage />} /> */}
             <Route path="/cart" element={<CartPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/about" element={<OurStoryPage />} />
             <Route path="/login" element={<LoginPage />} />

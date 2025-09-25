@@ -19,7 +19,15 @@ export const fetchMyOrders = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axiosinstance.get('/api/orders/my');
-      return response.data;
+      const data = response.data;
+      // Normalize to always return an array of orders
+      if (Array.isArray(data)) {
+        return data as Order[];
+      }
+      if (data && Array.isArray(data.orders)) {
+        return data.orders as Order[];
+      }
+      return [] as Order[];
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch orders');
     }
@@ -31,8 +39,10 @@ export const fetchOrderById = createAsyncThunk(
   async (orderId: string, { rejectWithValue }) => {
     try {
       const response = await axiosinstance.get(`/api/orders/${orderId}`);
+      console.log('order',response)
       return response.data;
     } catch (error: any) {
+      console.log(error)
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch order');
     }
   }
@@ -76,7 +86,7 @@ const orderSlice = createSlice({
       })
       .addCase(fetchMyOrders.fulfilled, (state, action) => {
         state.loading = false;
-        state.orders = action.payload;
+        state.orders = action.payload as Order[];
       })
       .addCase(fetchMyOrders.rejected, (state, action) => {
         state.loading = false;
@@ -88,7 +98,9 @@ const orderSlice = createSlice({
       })
       .addCase(fetchOrderById.fulfilled, (state, action) => {
         state.loading = false;
-        state.currentOrder = action.payload;
+        // Some APIs return { success, order }, others return the order directly
+        const payload = action.payload as any;
+        state.currentOrder = (payload && payload.order) ? payload.order as Order : (payload as Order);
       })
       .addCase(fetchOrderById.rejected, (state, action) => {
         state.loading = false;
