@@ -24,9 +24,10 @@ import {
   X,
   Loader2,
 } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 interface UserData {
   _id: string;
+  memberSince:string;
   name: string;
   email: string;
   role: string;
@@ -35,11 +36,11 @@ interface UserData {
 }
 
 interface Order {
-  _id: string;
+  id: string;
   orderNumber?: string;
   createdAt: string;
   status: string;
-  totalAmount: number;
+  totalPrice: number;
   items?: any[];
 }
 
@@ -54,7 +55,7 @@ export default function ProfilePage() {
   const [ordersLoading, setOrdersLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [updateLoading, setUpdateLoading] = useState(false);
-
+const navigate=useNavigate()
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -69,7 +70,7 @@ export default function ProfilePage() {
   const sidebarItems = [
     { id: "overview", label: "Overview", icon: User },
     { id: "orders", label: "My Orders", icon: Package },
-    { id: "wishlist", label: "Wishlist", icon: Heart },
+    // { id: "wishlist", label: "Wishlist", icon: Heart },
     { id: "settings", label: "Settings", icon: Settings },
     { id: "logout", label: "Logout", icon: LogOut },
   ];
@@ -177,8 +178,16 @@ export default function ProfilePage() {
       price: "₹799",
       image: "/assets/kosha/GLASS/glass/1.png",
     },
-    { name: "Ceramic Tea Set", price: "₹1,499", image: "/assets/kosha/GLASS/glass/1.png" },
-    { name: "Wooden Serving Tray", price: "₹1,299", image: "/assets/kosha/GLASS/glass/1.png" },
+    {
+      name: "Ceramic Tea Set",
+      price: "₹1,499",
+      image: "/assets/kosha/GLASS/glass/1.png",
+    },
+    {
+      name: "Wooden Serving Tray",
+      price: "₹1,299",
+      image: "/assets/kosha/GLASS/glass/1.png",
+    },
   ];
 
   const getStatusColor = (status: string) => {
@@ -231,9 +240,18 @@ export default function ProfilePage() {
       day: "numeric",
     });
   };
+  function formatISODate(isoString: string): string {
+    const date = new Date(isoString);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  }
 
   const formatOrderId = (order: Order) => {
-    return order.orderNumber || `#ORD-${order._id.slice(-6).toUpperCase()}`;
+    return order.orderNumber || `#ORD-${order.id.slice(-6).toUpperCase()}`;
   };
 
   const getInitials = (name: string) => {
@@ -273,7 +291,8 @@ export default function ProfilePage() {
   }
   return (
     <div className="min-h-screen bg-[#ebd9c9] pt-[80px]">
-        {!isMobile && <div className="lg:hidden bg-[#fbfaf8] border-b border-sage-200 sticky top-0 z-50">
+      {!isMobile && (
+        <div className="lg:hidden bg-[#fbfaf8] border-b border-sage-200 sticky top-0 z-50">
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
               <Avatar className="w-8 h-8">
@@ -286,7 +305,7 @@ export default function ProfilePage() {
                 <h2 className="text-sm font-semibold text-amber-900">
                   {userData?.name || "User"}
                 </h2>
-                <p className="text-xs text-amber-700">Premium Member</p>
+                {/* <p className="text-xs text-amber-700"> Member</p> */}
               </div>
             </div>
             <Button
@@ -303,7 +322,7 @@ export default function ProfilePage() {
             </Button>
           </div>
         </div>
-}
+      )}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
@@ -346,10 +365,10 @@ export default function ProfilePage() {
                   <h2 className="text-lg font-semibold text-amber-900 mb-1">
                     {userData?.name || "User"}
                   </h2>
-                  <p className="text-sm text-amber-700 mb-2">Premium Member</p>
-                  <Badge className="bg-amber-700 text-[#fbfaf8] text-xs px-2 py-1">
+                  {/* <p className="text-sm text-amber-700 mb-2">Premium Member</p> */}
+                  {/* <Badge className="bg-amber-700 text-[#fbfaf8] text-xs px-2 py-1">
                     VIP Customer
-                  </Badge>
+                  </Badge> */}
                 </div>
               </div>
 
@@ -391,7 +410,16 @@ export default function ProfilePage() {
                     <p className="text-xs text-stone-600">Orders</p>
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-amber-700"> ₹0 </p>
+                    <p className="text-2xl font-bold text-amber-700">
+                      {" "}
+                      ₹
+                      {orders
+                        .reduce(
+                          (total, order) => total + (order.totalPrice || 0),
+                          0
+                        )
+                        .toLocaleString()}
+                    </p>
                     <p className="text-xs text-stone-600">Spent</p>
                   </div>
                 </div>
@@ -420,16 +448,17 @@ export default function ProfilePage() {
                               Welcome back,{" "}
                               {userData?.name?.split(" ")[0] || "User"}!
                             </h1>
-                            <p className="text-amber-700 text-lg mb-3">
-                              Premium Member si'nce January 2023
+                            {userData?.memberSince&& <p className="text-amber-700 text-lg mb-3">
+                              Member since{" "}
+                              {formatISODate(userData?.memberSince)}{" "}
                             </p>
-                            <div className="flex items-center gap-4">
+                            }<div className="flex items-center gap-4">
                               <Badge className="bg-amber-700 text-[#fbfaf8] px-3 py-1">
-                                VIP Customer
+                                Customer
                               </Badge>
-                              <Badge className="bg-green-100 text-green-800 px-3 py-1">
+                              {/* <Badge className="bg-green-100 text-green-800 px-3 py-1">
                                 Premium Loyalty
-                              </Badge>
+                              </Badge> */}
                             </div>
                           </div>
                         </div>
@@ -439,7 +468,7 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Enhanced Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="bg-[#fbfaf8] rounded-lg shadow-sm border border-sage-200 p-6 hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between">
                       <div>
@@ -481,8 +510,7 @@ export default function ProfilePage() {
                           ₹
                           {orders
                             .reduce(
-                              (total, order) =>
-                                total + (order.totalAmount || 0),
+                              (total, order) => total + (order.totalPrice || 0),
                               0
                             )
                             .toLocaleString()}
@@ -501,8 +529,7 @@ export default function ProfilePage() {
                               );
                             })
                             .reduce(
-                              (total, order) =>
-                                total + (order.totalAmount || 0),
+                              (total, order) => total + (order.totalPrice || 0),
                               0
                             )
                             .toLocaleString()}{" "}
@@ -514,7 +541,7 @@ export default function ProfilePage() {
                       </div>
                     </div>
                   </div>
-
+                  {/* 
                   <div className="bg-[#fbfaf8] rounded-lg shadow-sm border border-sage-200 p-6 hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between">
                       <div>
@@ -530,7 +557,7 @@ export default function ProfilePage() {
                         <Heart className="w-6 h-6 text-red-600" />
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* Contact Information Section */}
@@ -555,7 +582,10 @@ export default function ProfilePage() {
                             </p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 bg-stone-50 rounded-lg">
+                      </div>
+                      <div className="space-y-4">
+
+                      <div className="flex items-center gap-3 p-3 bg-stone-50 rounded-lg">
                           <Phone className="w-5 h-5 text-amber-700" />
                           <div>
                             <p className="text-sm text-stone-600">
@@ -566,28 +596,7 @@ export default function ProfilePage() {
                             </p>
                           </div>
                         </div>
-                      </div>
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-3 p-3 bg-stone-50 rounded-lg">
-                          <MapPin className="w-5 h-5 text-amber-700" />
-                          <div>
-                            <p className="text-sm text-stone-600">Location</p>
-                            <p className="font-medium text-stone-900">
-                              Mumbai, Maharashtra, India
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3 p-3 bg-stone-50 rounded-lg">
-                          <Calendar className="w-5 h-5 text-amber-700" />
-                          <div>
-                            <p className="text-sm text-stone-600">
-                              Member Since
-                            </p>
-                            <p className="font-medium text-stone-900">
-                              January 15, 2023
-                            </p>
-                          </div>
-                        </div>
+
                       </div>
                     </div>
                   </div>
@@ -622,8 +631,11 @@ export default function ProfilePage() {
                         <div className="space-y-4">
                           {orders.slice(0, 3).map((order) => (
                             <div
-                              key={order._id}
-                              className="flex flex-col md:flex-row  items-left md:items-center justify-between p-3 border border-sage-200 rounded-lg hover:bg-stone-50 transition-colors"
+                              key={order.id}
+                              onClick={()=>{
+                                navigate(`/order/${order.id}`)
+                              }}
+                              className="cursor-pointer flex flex-col md:flex-row  items-left md:items-center justify-between p-3 border border-sage-200 rounded-lg hover:bg-stone-50 transition-colors"
                             >
                               <div className="flex items-center gap-3 mb-2">
                                 <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
@@ -631,7 +643,8 @@ export default function ProfilePage() {
                                 </div>
                                 <div>
                                   <p className="font-medium text-stone-900 text-sm">
-                                    {formatOrderId(order)}
+                                    {/* {formatOrderId(order)} */}
+                                    {order?.orderNumber}
                                   </p>
                                   <p className="text-xs text-stone-600">
                                     {formatDate(order.createdAt)}
@@ -647,7 +660,7 @@ export default function ProfilePage() {
                                   {order.status}
                                 </Badge>
                                 <p className="text-sm font-medium text-stone-900 mt-1">
-                                  ₹{order.totalAmount?.toLocaleString() || "0"}
+                                  ₹{order.totalPrice?.toLocaleString() || "0"}
                                 </p>
                               </div>
                             </div>
@@ -682,7 +695,7 @@ export default function ProfilePage() {
                             Track Orders
                           </span>
                         </Button>
-                        <Button
+                        {/* <Button
                           variant="outline"
                           onClick={() => setActiveTab("wishlist")}
                           className="h-20 flex flex-col items-center gap-2 border-amber-200 hover:bg-amber-50 hover:border-amber-300 bg-transparent"
@@ -691,7 +704,7 @@ export default function ProfilePage() {
                           <span className="text-sm text-amber-900">
                             View Wishlist
                           </span>
-                        </Button>
+                        </Button> */}
                         <Button
                           variant="outline"
                           onClick={() => setActiveTab("settings")}
@@ -732,13 +745,13 @@ export default function ProfilePage() {
                     <div className="space-y-6">
                       {orders.map((order) => (
                         <div
-                          key={order._id}
+                          key={order.orderNumber}
                           className="border border-sage-200 rounded-lg p-6"
                         >
                           <div className="flex justify-between items-start mb-4">
                             <div>
                               <h3 className="font-semibold text-stone-900">
-                                {formatOrderId(order)}
+                                {order.orderNumber}
                               </h3>
                               <p className="text-sm text-stone-600">
                                 Placed on {formatDate(order.createdAt)}
@@ -774,11 +787,14 @@ export default function ProfilePage() {
                             </div>
                             <div className="text-right">
                               <p className="text-lg font-semibold text-stone-900">
-                                ₹{order.totalAmount?.toLocaleString() || "0"}
+                                ₹{order.totalPrice?.toLocaleString() || "0"}
                               </p>
                               <Button
                                 variant="outline"
                                 size="sm"
+                                onClick={()=>{
+                                  navigate(`/order/${order.id}`)
+                                }}
                                 className="mt-2 border-sage-200 text-stone-900 hover:bg-amber-50 hover:text-amber-900 bg-transparent"
                               >
                                 View Details

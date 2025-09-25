@@ -123,7 +123,7 @@ export default function OrderHistoryPage() {
             Back
           </Button>
         </div>
-        <Button onClick={handleRefresh} variant="outline" className="luxury-button-secondary bg-transparent">
+        <Button onClick={handleRefresh} variant="outline" className="luxury-button-secondary bg-[#854629] hover:bg-[#854629] hover:text-white text-white">
           <RefreshCw className="h-4 w-4 mr-2" />
           Refresh
         </Button>
@@ -136,39 +136,37 @@ export default function OrderHistoryPage() {
     
 
       {/* Filters and Search */}
-      <Card className="luxury-card mb-8  bg-[#fbfaf8]">
-        <CardContent className="p-6">
+      <div className=" mb-8 ">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
-              <div className="relative">
+              <div className="luxury-card relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="Search orders by ID or product name..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 bg-white"
                 />
               </div>
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-4 border border-sage-200 rounded-[10px]  bg-[#fbfaf8]">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-48">
                   <Filter className="h-4 w-4 mr-2" />
                   <SelectValue placeholder="Filter by status" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Orders</SelectItem>
-                  <SelectItem value="processing">Processing</SelectItem>
-                  <SelectItem value="paid">Paid</SelectItem>
-                  <SelectItem value="shipped">Shipped</SelectItem>
-                  <SelectItem value="delivered">Delivered</SelectItem>
-                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                <SelectContent className="bg-[#fbfaf8] cursor-pointer">
+                  <SelectItem className="cusor-pointer" value="all">All Orders</SelectItem>
+                  <SelectItem className="cusor-pointer" value="processing">Processing</SelectItem>
+                  <SelectItem className="cusor-pointer" value="paid">Paid</SelectItem>
+                  <SelectItem className="cusor-pointer" value="shipped">Shipped</SelectItem>
+                  <SelectItem className="cusor-pointer" value="delivered">Delivered</SelectItem>
+                  <SelectItem className="cusor-pointer" value="cancelled">Cancelled</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
-        </CardContent>
-      </Card>
+      </div>
 
       {/* Orders List */}
       {error && (
@@ -202,7 +200,8 @@ export default function OrderHistoryPage() {
           </CardContent>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2  gap-3 h-[400px]space-y-6">
+          
           {filteredOrders.map((order: any) => (
             <Card key={order?.id || order?._id} className="l bg-[#fbfaf8] uxury-card hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
@@ -300,7 +299,7 @@ export default function OrderHistoryPage() {
 
       {/* Order Statistics */}
       {orders.length > 0 && (
-        <Card className="luxury-card mt-8">
+        <Card className="luxury-card bg-[#fbfaf8] mt-8">
           <CardHeader>
             <CardTitle className="font-serif luxury-text">Order Statistics</CardTitle>
           </CardHeader>
