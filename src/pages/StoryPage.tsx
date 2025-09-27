@@ -60,6 +60,7 @@ export default function OurStoryPage() {
   const stackContainerRef = useRef<HTMLDivElement>(null)
   const observerRef = useRef<IntersectionObserver | null>(null)
   const navigate = useNavigate()
+  
   const handleScroll = useCallback(() => {
     setScrollY(window.scrollY)
 
@@ -67,12 +68,18 @@ export default function OurStoryPage() {
       const container = stackContainerRef.current
       const containerTop = container.offsetTop
       const containerHeight = container.offsetHeight
-      const scrollProgress = (window.scrollY - containerTop) / (containerHeight - window.innerHeight)
+      const windowHeight = window.innerHeight
+      
+      // Calculate scroll progress more accurately
+      const scrollableHeight = containerHeight - windowHeight
+      const scrollProgress = Math.max(0, Math.min(1, (window.scrollY - containerTop) / scrollableHeight))
 
-      // Calculate which ethos should be active based on scroll
-      const activeIndex = Math.floor(scrollProgress * ethosData.length)
+      // Calculate which ethos should be active based on scroll progress
+      // Use (ethosData.length - 1) to prevent going beyond the last item
+      const activeIndex = Math.floor(scrollProgress * (ethosData.length - 1))
       const clampedIndex = Math.max(0, Math.min(activeIndex, ethosData.length - 1))
 
+      // Only update if we're within the container bounds and index has changed
       if (clampedIndex !== currentEthos && scrollProgress >= 0 && scrollProgress <= 1) {
         setCurrentEthos(clampedIndex)
       }
@@ -161,8 +168,8 @@ export default function OurStoryPage() {
           </div>
         </div>
       </section>
-      <div ref={stackContainerRef} className="stack-container" style={{ height: `${ethosData.length * 100}vh` }}>
-        {ethosData.map((ethos, index) => {
+      <div ref={stackContainerRef} className="stack-container mb-6" style={{ height: `${(ethosData.length - 1) * 100 + 100}vh` }}>
+      {ethosData.map((ethos, index) => {
           const IconComponent = ethos.icon
           const isActive = index === currentEthos
           const isPast = index < currentEthos
@@ -185,14 +192,14 @@ export default function OurStoryPage() {
                   {/* Content */}
                   <div className={`space-y-8 ${index % 2 === 0 ? "" : "lg:col-start-2"}`}>
                     <div className={`scroll-reveal-fast ${isActive ? "revealed" : ""}`}>
-                      <div className="flex items-center space-x-4 mb-6">
+                      {/* <div className="flex items-center space-x-4 mb-6">
                         <div className="w-12 h-12 bg-autumnFern rounded-full flex items-center justify-center">
                           <IconComponent className="h-6 w-6 text-blanket" />
                         </div>
                         <span className="text-sm font-medium text-khakiMoss tracking-wider uppercase">
                           Ethos {String(index + 1).padStart(2, "0")}
                         </span>
-                      </div>
+                      </div> */}
 
                       <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-semibold text-oak mb-6 text-balance">
                         {ethos.title}
@@ -231,8 +238,8 @@ export default function OurStoryPage() {
         })}
       </div>
       {/* Summary Section */}
-      <section className="py-20 bg-kimber text-blanket relative z-10">
-        <div className="max-w-4xl mx-auto px-6 text-center">
+      <section className="py-[20] bg-kimber text-blanket relative z-10">
+        <div className="flex justify center items-center max-w-4xl h-[60vh] mx-auto mt-8  py-6 px-6 text-center">
           <div className="scroll-reveal">
             <h2 className="text-4xl md:text-5xl font-serif font-semibold mb-8 text-balance">In Summary: YUCA is...</h2>
             <p className="text-xl leading-relaxed mb-12 text-pretty opacity-90">

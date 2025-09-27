@@ -211,6 +211,13 @@ const navigate=useNavigate()
   };
 
   const handleLogout = () => {
+    // Show confirmation dialog
+    const confirmed = window.confirm("Are you sure you want to logout?");
+    
+    if (!confirmed) {
+      return; // Do nothing if user clicks "No" or cancels
+    }
+
     // Clear all authentication data
     localStorage.removeItem("authToken");
     localStorage.removeItem("userData");
@@ -228,7 +235,7 @@ const navigate=useNavigate()
       const name = eqPos > -1 ? c.substr(0, eqPos) : c;
       document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
     });
-    alert("user logged put successfuly");
+    alert("user logged out successfully");
     // Redirect to login or home page
     window.location.href = "/"; // or "/" for home page
   };

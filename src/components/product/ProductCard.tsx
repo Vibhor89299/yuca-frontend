@@ -29,6 +29,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const productId = product._id || product.id
   const inStock = product.inStock ?? (product.countInStock ? product.countInStock > 0 : true)
   const productBrand = product.brand || "YUCA"
+  const [isInCart, setIsInCart] = useState<boolean>(false);
 
   // Build the product URL
   const getProductUrl = () => {
@@ -47,9 +48,13 @@ export function ProductCard({ product }: ProductCardProps) {
     if (isAuthenticated) {
       // Authenticated: call backend API via Redux thunk
       dispatch(addToCart({ productId, quantity: 1 }))
+      setIsInCart(true);
+
     } else {
       // Guest: update Redux/localStorage
       dispatch(addGuestCartItem({ product, quantity: 1 }))
+      setIsInCart(true);
+
     }
   }
 
@@ -101,13 +106,13 @@ export function ProductCard({ product }: ProductCardProps) {
             <Badge className="absolute left-3 top-3 shadow-lg bg-input text-foreground">Featured</Badge>
           )}
           {!inStock && <Badge className="absolute left-3 top-3 shadow-lg bg-red-600 text-white">Out of Stock</Badge>}
-          <Button
+          {/* <Button
             variant="ghost"
             size="sm"
             className="absolute right-3 top-3 translate-y-2 border border-border bg-white/90 shadow-lg opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-white"
           >
             <Heart className="h-4 w-4 text-foreground" />
-          </Button>
+          </Button> */}
           {/* <div className="absolute inset-x-0 bottom-0 p-4 translate-y-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
             <Button
               onClick={handleAddToCart}
@@ -165,7 +170,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 disabled={!inStock}
               >
                 <ShoppingBag className="mr-1 h-4 w-4" />
-                {inStock ? "Add" : "Sold Out"}
+                {isInCart? "Go To cart":inStock ? "Add" : "Sold Out"}
               </Button>
             </div>
           </div>

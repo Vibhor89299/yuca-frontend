@@ -1,73 +1,79 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingBag, User, Menu } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Search, ShoppingBag, User, Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { useAppSelector, useAppDispatch } from '@/store/hooks';
-import { logout } from '@/store/slices/authSlice';
+} from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useAppSelector, useAppDispatch } from "@/store/hooks";
+import { logout } from "@/store/slices/authSlice";
 // import { categories } from '@/data/mockData';
-import YucaLogo from '../../assets/logo.jpg';
+import YucaLogo from "../../assets/logo.jpg";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isVisible, setIsVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-  const itemCount = useAppSelector(state => state.cart.itemCount);
-  const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
-  const user = useAppSelector(state => state.auth.user);
+  // const itemCount = useAppSelector(state => state.cart.itemCount);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/');
+    navigate("/");
   };
+  // const [itemCount, setItemCount] = useState(0);
+
   // TODO: Implement logout via Redux if needed
   // const dispatch = useAppDispatch();
   // const handleLogout = () => { dispatch(logoutUser()); navigate('/'); };
+  // useEffect(() => {
+  //   const fetchCartItemCount = async () => {
+  //     try {
+  //       const response = await fetch('http://localhost:5001/api/cart', {
+  //         headers: {
+  //             Authorization: `Bearer ${localStorage.getItem("yuca_auth_token")}`, // make sure token is stored in localStorage
+  //         },
+  //       });
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const isCurrentlyScrolled = scrollY > 50;
-      
-      setIsVisible(isCurrentlyScrolled);
-    };
+  //       if (!response.ok) {
+  //         throw new Error('Failed to fetch cart data');
+  //       }
 
-    window.addEventListener('scroll', handleScroll);
-    
-    // Initial check
-    handleScroll();
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
+  //       const data = await response.json();
+
+  //       // Assuming the response looks like: { items: [...] }
+  //       const count = data.items?.length ?? 0;
+  //       setItemCount(count);
+  //     } catch (error) {
+  //       console.error('Error fetching cart item count:', error);
+  //       setItemCount(0);
+  //     }
+  //   };
+  //   fetchCartItemCount();
+  // }, []);
+
+  const reduxItemCount = useAppSelector((state) => state.cart.itemCount);
+
+
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
-      setSearchQuery('');
+      setSearchQuery("");
     }
   };
 
-  // TODO: Implement logout via Redux if needed
-  // const handleLogout = () => { dispatch(logoutUser()); navigate('/'); };
-
   return (
-    <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
-        'translate-y-0 bg-kimber/95 backdrop-blur-lg shadow-lg border-b border-oak/50' 
-        
-      }`}
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${"translate-y-0 bg-kimber/95 backdrop-blur-lg shadow-lg border-b border-oak/50"}`}
     >
       <div className="container mx-auto px-4 ">
         {/* Compact Header */}
@@ -75,7 +81,11 @@ export function Header() {
           {/* Logo */}
           <Link to="/" className="flex items-center  flex-shrink-0">
             <div className="rounded-full h-[3rem] w-[4rem] overflow-hidden">
-              <img src={YucaLogo} alt="Yuca Logo" className="h-full w-full rounded-full object-cover " />
+              <img
+                src={YucaLogo}
+                alt="Yuca Logo"
+                className="h-full w-full rounded-full object-cover "
+              />
             </div>
             <div>
               <span className="text-[20px] font-serif text-blanket">YUCA</span>
@@ -112,20 +122,27 @@ export function Header() {
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="text-blanket h-8 px-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-blanket h-8 px-2"
+                >
                   <User className="h-4 w-4" />
                   <span className="hidden sm:inline ml-1 text-xs">
-                    {isAuthenticated ? user?.firstName : 'Account'}
+                    {isAuthenticated ? user?.firstName : "Account"}
                   </span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-mushroom/95 backdrop-blur-lg border-oak/50">
+              <DropdownMenuContent
+                align="end"
+                className="bg-mushroom/95 backdrop-blur-lg border-oak/50"
+              >
                 {isAuthenticated ? (
                   <>
-                    <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    <DropdownMenuItem onClick={() => navigate("/profile")}>
                       My Profile
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/orders')}>
+                    <DropdownMenuItem onClick={() => navigate("/orders")}>
                       My Orders
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleLogout}>
@@ -134,10 +151,10 @@ export function Header() {
                   </>
                 ) : (
                   <>
-                    <DropdownMenuItem onClick={() => navigate('/login')}>
+                    <DropdownMenuItem onClick={() => navigate("/login")}>
                       Sign In
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/register')}>
+                    <DropdownMenuItem onClick={() => navigate("/register")}>
                       Create Account
                     </DropdownMenuItem>
                   </>
@@ -149,13 +166,13 @@ export function Header() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => navigate('/cart')}
+              onClick={() => navigate("/cart")}
               className="relative text-blanket h-8 px-2"
             >
               <ShoppingBag className="h-4 w-4" />
-              {itemCount > 0 && (
+              {reduxItemCount > 0 && (
                 <Badge className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0 bg-autumnFern text-blanket text-xs">
-                  {itemCount}
+                  {reduxItemCount}
                 </Badge>
               )}
               <span className="hidden sm:inline ml-1 text-xs">Cart</span>
@@ -164,11 +181,18 @@ export function Header() {
             {/* Mobile Menu */}
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="md:hidden h-8 px-2 text-blanket">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="md:hidden h-8 px-2 text-blanket"
+                >
                   <Menu className="h-4 w-4" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] bg-mushroom/95 backdrop-blur-lg">
+              <SheetContent
+                side="right"
+                className="w-[300px] bg-mushroom/95 backdrop-blur-lg"
+              >
                 <nav className="flex flex-col space-y-4 mt-8">
                   {/* Mobile Search */}
                   <form onSubmit={handleSearch} className="flex w-full mb-6">
@@ -179,11 +203,14 @@ export function Header() {
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="rounded-r-none"
                     />
-                    <Button type="submit" className="rounded-l-none bg-autumnFern hover:bg-autumnFern-600" size="sm">
+                    <Button
+                      type="submit"
+                      className="rounded-l-none bg-autumnFern hover:bg-autumnFern-600"
+                      size="sm"
+                    >
                       <Search className="h-4 w-4" />
                     </Button>
                   </form>
-
                 </nav>
               </SheetContent>
             </Sheet>

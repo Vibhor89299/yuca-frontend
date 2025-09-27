@@ -226,7 +226,7 @@ export function CheckoutPage() {
         <div className="space-y-6">
           {/* Guest Information Form (only show if not authenticated) */}
           {!isAuthenticated && (
-            <Card className="luxury-card">
+            <Card className="bg-[#fbfaf8] ">
               <CardHeader>
                 <CardTitle className="font-serif luxury-text flex items-center">
                   <User className="h-5 w-5 mr-2" />

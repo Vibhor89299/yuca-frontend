@@ -816,7 +816,7 @@ const customerReviews: Review[] = [
         <section className="bg-white rounded-lg p-8 shadow-sm">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-medium text-amber-700">
-              Customer Reviews for YUCA
+              Customer Testimonials for YUCA
             </h2>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
