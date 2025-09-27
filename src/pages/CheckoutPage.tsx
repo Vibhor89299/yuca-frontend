@@ -211,6 +211,7 @@ export function CheckoutPage() {
 
   return (
     <div className="container mx-auto px-4 pt-[80px] animate-fade-in  backdrop-blur-sm min-h-screen">
+      {error}
       <div className="flex items-center mb-8">
         <Button
           variant="ghost"

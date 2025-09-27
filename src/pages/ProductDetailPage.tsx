@@ -50,101 +50,6 @@ export function ProductDetailPage() {
   // const [activeTab, setActiveTab] = useState("reviews");
   const [visibleReviews, setVisibleReviews] = useState(2);
 
-  const relatedProducts: Product[] = [
-    {
-      _id: "68b488f78dbaffb39227034e",
-      name: "tea cup",
-      description: "Classic tea cup for a refined tea experience.",
-      price: 299,
-      countInStock: 10,
-      category: "kosha",
-      image: "/assets/kosha/TEA CUP/tea-cup/1.png",
-      images: [
-        "/assets/kosha/TEA CUP/tea-cup/1.png",
-        "/assets/kosha/TEA CUP/tea-cup/2.png",
-      ],
-      rating: 0,
-      numReviews: 0,
-      user: "68937dc830a98a8ec17eb3d1",
-      createdAt: "2025-08-31T17:40:07.665Z",
-      updatedAt: "2025-08-31T17:40:07.665Z",
-      id: "68b488f78dbaffb39227034e",
-    },
-    {
-      _id: "68b488f78dbaffb39227034f",
-      name: "wine",
-      description: "Luxury wine glass for celebrations and fine dining.",
-      price: 499,
-      countInStock: 10,
-      category: "kosha",
-      image: "/assets/kosha/WINE/wine/1.png",
-      images: [
-        "/assets/kosha/WINE/wine/1.png",
-        "/assets/kosha/WINE/wine/2.png",
-      ],
-      rating: 0,
-      numReviews: 0,
-      user: "68937dc830a98a8ec17eb3d1",
-      createdAt: "2025-08-31T17:40:07.665Z",
-      updatedAt: "2025-08-31T17:40:07.665Z",
-      id: "68b488f78dbaffb39227034f",
-    },
-    {
-      _id: "68b488f78dbaffb39227034a",
-      name: "glass",
-      description: "Premium glassware for a sophisticated dining experience.",
-      price: 399,
-      countInStock: 8,
-      category: "kosha",
-      image: "/assets/kosha/GLASS/glass/1.png",
-      images: [
-        "/assets/kosha/GLASS/glass/1.png",
-        "/assets/kosha/GLASS/glass/2.png",
-      ],
-      rating: 0,
-      numReviews: 0,
-      user: "68937dc830a98a8ec17eb3d1",
-      createdAt: "2025-08-31T17:40:07.665Z",
-      updatedAt: "2025-09-04T08:32:39.296Z",
-      id: "68b488f78dbaffb39227034a",
-    },
-    {
-      _id: "68b488f78dbaffb39227034d",
-      name: "spoon",
-      description: "Elegant spoon, perfect for daily use or special occasions.",
-      price: 99,
-      countInStock: 10,
-      category: "kosha",
-      image: "/assets/kosha/SPOON FOLK/spoon/1.png",
-      images: ["/assets/kosha/SPOON FOLK/spoon/1.png"],
-      rating: 0,
-      numReviews: 0,
-      user: "68937dc830a98a8ec17eb3d1",
-      createdAt: "2025-08-31T17:40:07.665Z",
-      updatedAt: "2025-08-31T17:40:07.665Z",
-      id: "68b488f78dbaffb39227034d",
-    },
-    {
-      _id: "68b488f78dbaffb39227034b",
-      name: "katori",
-      description:
-        "Traditional katori bowls, perfect for serving sides and desserts.",
-      price: 199,
-      countInStock: 10,
-      category: "kosha",
-      image: "/assets/kosha/KATORI/katori/1.png",
-      images: [
-        "/assets/kosha/KATORI/katori/1.png",
-        "/assets/kosha/KATORI/katori/2.png",
-      ],
-      rating: 0,
-      numReviews: 0,
-      user: "68937dc830a98a8ec17eb3d1",
-      createdAt: "2025-08-31T17:40:07.665Z",
-      updatedAt: "2025-08-31T17:40:07.665Z",
-      id: "68b488f78dbaffb39227034b",
-    },
-  ];
 const customerReviews: Review[] = [
   {
     id: 1,
@@ -296,7 +201,7 @@ const customerReviews: Review[] = [
   //     />
   //   </svg>
   // );
-  const { products,  page, totalPages } = useAppSelector((state) => state.products);
+  const { products,  page } = useAppSelector((state) => state.products);
   useEffect(() => {
     dispatch(fetchProducts(page));
   }, [dispatch, page]);

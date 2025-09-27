@@ -1,9 +1,9 @@
 import type React from "react"
-import { useCallback, useMemo, useEffect, useRef, useState } from "react"
+import { useCallback,  useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { ArrowDown, Leaf, Heart, Globe, Sparkles, Users, Menu, X } from "lucide-react"
+import { ArrowDown, Leaf, Heart, Globe, Sparkles, Users} from "lucide-react"
 
-import { Navigate, useNavigate } from "react-router-dom"
+import {  useNavigate } from "react-router-dom"
 const ethosData = [
   {
     id: 1,
@@ -55,8 +55,6 @@ const ethosData = [
 export default function OurStoryPage() {
   const [currentEthos, setCurrentEthos] = useState(0)
   const [scrollY, setScrollY] = useState(0)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const ethosRefs = useRef<(HTMLDivElement | null)[]>([])
   const stackContainerRef = useRef<HTMLDivElement>(null)
   const observerRef = useRef<IntersectionObserver | null>(null)
   const navigate = useNavigate()
@@ -170,7 +168,6 @@ export default function OurStoryPage() {
       </section>
       <div ref={stackContainerRef} className="stack-container mb-6" style={{ height: `${(ethosData.length - 1) * 100 + 100}vh` }}>
       {ethosData.map((ethos, index) => {
-          const IconComponent = ethos.icon
           const isActive = index === currentEthos
           const isPast = index < currentEthos
 

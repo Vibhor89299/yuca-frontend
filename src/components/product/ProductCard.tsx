@@ -7,7 +7,7 @@ import { Link } from "react-router-dom"
 function toStartCase(str: string) {
   return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
 }
-import { ShoppingBag, Heart } from "lucide-react"
+import { ShoppingBag } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
@@ -28,7 +28,6 @@ export function ProductCard({ product }: ProductCardProps) {
   // Handle backwards compatibility between old and new schema
   const productId = product._id || product.id
   const inStock = product.inStock ?? (product.countInStock ? product.countInStock > 0 : true)
-  const productBrand = product.brand || "YUCA"
   const [isInCart, setIsInCart] = useState<boolean>(false);
 
   // Build the product URL

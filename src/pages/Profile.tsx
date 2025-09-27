@@ -7,17 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
   User,
-  MapPin,
   Phone,
   Mail,
-  Calendar,
   Package,
   Heart,
   Settings,
   LogOut,
-  Edit3,
   ShoppingBag,
-  Star,
   Truck,
   CreditCard,
   Menu,
@@ -257,9 +253,7 @@ const navigate=useNavigate()
     return `${year}-${month}-${day}`;
   }
 
-  const formatOrderId = (order: Order) => {
-    return order.orderNumber || `#ORD-${order.id.slice(-6).toUpperCase()}`;
-  };
+  
 
   const getInitials = (name: string) => {
     return name
