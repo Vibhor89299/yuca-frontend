@@ -104,8 +104,11 @@ export function CheckoutPage() {
   }, [dispatch]);
 
   const subtotal = total;
+  const mrpSubtotal = Math.round(subtotal / 0.9);
+  const discount = mrpSubtotal - subtotal; // 10% display discount
   const shipping = 0;
-  const tax = total * 0.18; // 18% GST
+  // Match cart breakdown (prices inclusive of GST)
+  const tax = 0;
   const finalTotal = subtotal + shipping + tax;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -208,6 +211,8 @@ export function CheckoutPage() {
       navigate("/cart");
     }
   }, [items.length, navigate]);
+
+  const itemCountCalc = items.reduce((sum, i) => sum + i.quantity, 0);
 
   return (
     <div className="container mx-auto px-4 pt-[80px] animate-fade-in  backdrop-blur-sm min-h-screen">
@@ -423,32 +428,38 @@ export function CheckoutPage() {
                       </p>
                     </div>
                     <div className="text-sm font-medium luxury-text">
-                      {(item.product.price * item.quantity).toFixed(2)}
+                      {formatIndianPrice(item.product.price * item.quantity)}
                     </div>
                   </div>
                 ))}
               </div>
               <Separator />
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>Subtotal</span>
-                  <span>{formatIndianPrice(subtotal, { compact: false })}</span>
+              <div className="space-y-3">
+                <div className="flex justify-between text-sm luxury-text">
+                  <span>MRP ({itemCountCalc} items)</span>
+                  <span className="line-through text-muted-foreground">{formatIndianPrice(mrpSubtotal, { compact: false })}</span>
                 </div>
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-sm luxury-text">
+                  <span>Diwali Discount (10%)</span>
+                  <span className="text-autumnFern">- {formatIndianPrice(discount, { compact: false })}</span>
+                </div>
+                <Separator className="luxury-divider" />
+                <div className="flex justify-between text-sm luxury-text font-medium">
+                  <span>Subtotal (Inclusive of GST)</span>
+                  <span>{formatIndianPrice(finalTotal, { compact: false })}</span>
+                </div>
+                <div className="flex justify-between text-sm luxury-text">
                   <span>Shipping</span>
                   <span className="text-sage-600">Free</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span>GST (18%)</span>
-                  <span>{formatIndianPrice(tax, { compact: false })}</span>
-                </div>
-                <Separator />
-                <div className="flex justify-between text-lg font-bold luxury-text">
-                  <span>Total</span>
+                <Separator className="luxury-divider" />
+                <div className="flex justify-between text-lg font-bold luxury-accent">
+                  <span>Total Payable</span>
                   <span>
                     {formatIndianPrice(finalTotal, { compact: false })}
                   </span>
                 </div>
+                <p className="text-xs text-muted-foreground text-right">Prices are inclusive of GST</p>
               </div>
               <p className="text-xs text-center text-muted-foreground mt-2">
                 Your payment information is encrypted and secure

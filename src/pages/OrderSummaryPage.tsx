@@ -111,6 +111,15 @@ export function OrderSummaryPage() {
   }
 
   const ship = (currentOrder?.shippingAddress || {}) as any;
+  // Compute MRP and discount for display (backend totals unchanged)
+  const itemsSafe = (currentOrder.items || []) as any[];
+  const orderTotal = (currentOrder.totalPrice ?? 0) as number;
+  const mrpTotal = itemsSafe.reduce((sum, it) => {
+    const unit = (it.product?.price ?? it.price ?? 0) as number;
+    const mrpEach = Math.round(unit / 0.9);
+    return sum + mrpEach * (it.quantity ?? 0);
+  }, 0);
+  const displayDiscount = Math.max(0, mrpTotal - orderTotal);
   console.log('order', currentOrder)
   return (
     <div className="container mx-auto px-4 pt-[120px] text-white py-8 min-h-screen  backdrop-blur-sm">
@@ -166,7 +175,7 @@ export function OrderSummaryPage() {
               <CardTitle className="font-serif luxury-text">Order Items</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {currentOrder.items.map((item, index) => (
+              {itemsSafe.map((item, index) => (
                 <div key={index} className="flex space-x-4">
                   <img
                     src={item.product?.image || (item as any).image}
@@ -180,12 +189,42 @@ export function OrderSummaryPage() {
                     <p className="text-sm luxury-text-muted">
                       Quantity: {item.quantity}
                     </p>
-                    <p className="text-sm luxury-text-muted">
-                      Price: {formatIndianPrice((item.product?.price ?? (item as any).price ?? 0))}
-                    </p>
+                    <div className="flex flex-col items-start gap-1">
+                      {(() => {
+                        const unit = (item.product?.price ?? (item as any).price ?? 0) as number;
+                        const mrpEach = Math.round(unit / 0.9);
+                        return (
+                          <>
+                            <span className="text-sm font-semibold text-foreground">
+                              {formatIndianPrice(unit)}
+                            </span>
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <span className="text-xs line-through">
+                                {formatIndianPrice(mrpEach)}
+                              </span>
+                              <span className="text-[10px] rounded-full px-2 py-0.5 bg-autumnFern/15 text-autumnFern font-medium">
+                                10% OFF
+                              </span>
+                            </div>
+                          </>
+                        );
+                      })()}
+                    </div>
                   </div>
-                  <div className="text-sm font-medium luxury-text">
-                    {formatIndianPrice(((item.product?.price ?? (item as any).price ?? 0) * (item.quantity ?? 0)))}
+                  <div className="text-sm font-medium luxury-text text-right">
+                    {(() => {
+                      const unit = (item.product?.price ?? (item as any).price ?? 0) as number;
+                      const qty = (item.quantity ?? 0) as number;
+                      const mrpEach = Math.round(unit / 0.9);
+                      const mrpLine = mrpEach * qty;
+                      const line = unit * qty;
+                      return (
+                        <div className="flex flex-col items-end gap-1">
+                          <span className="text-sm font-semibold text-foreground">{formatIndianPrice(line)}</span>
+                          <span className="line-through text-muted-foreground text-xs">{formatIndianPrice(mrpLine)}</span>
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
               ))}
@@ -255,24 +294,30 @@ export function OrderSummaryPage() {
               <CardTitle className="font-serif luxury-text">Order Summary</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span>Subtotal</span>
-                  <span>{formatIndianPrice(((currentOrder.totalPrice ?? 0) as number) * 0.85)}</span>
+                  <span>MRP</span>
+                  <span className="line-through text-muted-foreground">{formatIndianPrice(mrpTotal)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Diwali Discount (10%)</span>
+                  <span className="text-autumnFern">- {formatIndianPrice(displayDiscount)}</span>
+                </div>
+                <Separator />
+                <div className="flex justify-between text-sm font-medium">
+                  <span>Subtotal (Inclusive of GST)</span>
+                  <span>{formatIndianPrice(orderTotal)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Shipping</span>
                   <span className="text-sage-600">Free</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span>GST (18%)</span>
-                  <span>{formatIndianPrice(((currentOrder.totalPrice ?? 0) as number) * 0.15)}</span>
-                </div>
                 <Separator />
                 <div className="flex justify-between text-lg font-bold luxury-text">
-                  <span>Total</span>
-                  <span>{formatIndianPrice((currentOrder.totalPrice ?? 0) as number)}</span>
+                  <span>Total Paid</span>
+                  <span>{formatIndianPrice(orderTotal)}</span>
                 </div>
+                <p className="text-xs text-muted-foreground text-right">Prices are inclusive of GST</p>
               </div>
             </CardContent>
           </Card>

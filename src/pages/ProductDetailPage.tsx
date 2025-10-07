@@ -3,15 +3,12 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   ArrowLeft,
   ShoppingBag,
-  Heart,
   Star,
-  Share2,
   Minus,
   Plus,
   Truck,
   Shield,
   RotateCcw,
-  ThumbsUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,17 +20,10 @@ import axiosinstance from "@/axiosinstance/axiosinstance";
 import { Product } from "@/types";
 import { Helmet } from "react-helmet-async";
 import { fetchProducts } from "@/services/actions";
+import { ProductCard } from "@/components/product/ProductCard";
 
 
-interface Review {
-  id: number;
-  name: string;
-  rating: number;
-  date: string;
-  comment: string;
-  verified: boolean;
-  helpful: number;
-}
+// interface Review {}
 
 export function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -48,50 +38,10 @@ export function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [addingToCart, setAddingToCart] = useState(false);
   // const [activeTab, setActiveTab] = useState("reviews");
-  const [visibleReviews, setVisibleReviews] = useState(2);
+  // Reviews UI disabled; re-enable to use state below
+  // const [visibleReviews, setVisibleReviews] = useState(2);
 
-const customerReviews: Review[] = [
-  {
-    id: 1,
-    name: "Priya Sharma",
-    rating: 5,
-    date: "2 weeks ago",
-    comment:
-      "Absolutely love YUCA! Their aesthetic and commitment to quality truly stand out. Everything from the design ethos to the packaging feels premium. It’s refreshing to see a brand that blends tradition with modern style so effortlessly.",
-    verified: true,
-    helpful: 12,
-  },
-  {
-    id: 2,
-    name: "Rajesh Kumar",
-    rating: 4,
-    date: "1 month ago",
-    comment:
-      "YUCA brings a unique touch to everyday living. Their products are beautifully designed and thoughtfully made. You can tell there's genuine craftsmanship involved. Only small suggestion — clearer care instructions would be helpful.",
-    verified: true,
-    helpful: 8,
-  },
-  {
-    id: 3,
-    name: "Anita Patel",
-    rating: 5,
-    date: "3 weeks ago",
-    comment:
-      "I'm genuinely impressed by YUCA as a brand. From the moment I discovered them, it was clear they care about quality and customer satisfaction. Their attention to detail and packaging was on point. Looking forward to ordering again!",
-    verified: false,
-    helpful: 15,
-  },
-  {
-    id: 4,
-    name: "Vikram Singh",
-    rating: 4,
-    date: "1 week ago",
-    comment:
-      "YUCA’s customer service and fast delivery really impressed me. Their products are not only elegant but feel authentic and grounded. Great value for money — I’ve already recommended them to friends.",
-    verified: true,
-    helpful: 6,
-  },
-];
+// const customerReviews: Review[] = [];
 
 
   // const LuxuryOrnament = ({ className = "" }: { className?: string }) => (
@@ -298,15 +248,15 @@ const customerReviews: Review[] = [
     navigate("/cart");
   };
 
-  const handleLoadMore = () => {
-    if (visibleReviews < customerReviews.length) {
-      setVisibleReviews((prev) => Math.min(prev + 2, customerReviews.length));
-    } else {
-      setVisibleReviews(2);
-    }
-  };
+  // const handleLoadMore = () => {
+  //   if (visibleReviews < customerReviews.length) {
+  //     setVisibleReviews((prev) => Math.min(prev + 2, customerReviews.length));
+  //   } else {
+  //     setVisibleReviews(2);
+  //   }
+  // };
 
-  const isShowingAll = visibleReviews >= customerReviews.length;
+  // const isShowingAll = visibleReviews >= customerReviews.length;
 
   const images =
     product?.images && product.images.length > 0
@@ -323,23 +273,7 @@ const customerReviews: Review[] = [
   const pimage = images?.[0] || "/fallback.jpg";
   const purl = `${import.meta.env.VITE_UI_URL}/product/${id}`;
 
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `${pname}`,
-          text: `${pdescription}`,
-          url: `${import.meta.env.VITE_UI_URL}/product/${id}`,
-        });
-      } catch (err) {
-        console.error(" Error sharing:", err);
-      }
-    } else {
-      alert(
-        "Sharing not supported on this browser. Please copy the link manually."
-      );
-    }
-  };
+  // const handleShare = async () => {};
   // rgb(184 159 134)
   if (loading) {
     return (
@@ -456,6 +390,11 @@ const customerReviews: Review[] = [
                   }
                 }}
               />
+              {!inStock && (
+                <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center">
+                  <span className="text-base font-semibold text-red-700 bg-white/90 px-3 py-1 rounded">Out of Stock</span>
+                </div>
+              )}
               {product.featured && (
                 <Badge className="absolute top-4 left-4 bg-autumnFern text-blanket shadow-lg">
                   Featured
@@ -500,7 +439,7 @@ const customerReviews: Review[] = [
                 <Badge variant="outline" className="border-oak/30 text-oak">
                   {capitalizeFirst(product.category)}
                 </Badge>
-                <div className="flex items-center space-x-2">
+                {/* <div className="flex items-center space-x-2">
                   <Button
                     onClick={handleShare}
                     variant="ghost"
@@ -516,7 +455,7 @@ const customerReviews: Review[] = [
                   >
                     <Heart className="h-4 w-4" />
                   </Button>
-                </div>
+                </div> */}
               </div>
 
               <h1 className="text-3xl font-serif luxury-heading">
@@ -543,9 +482,27 @@ const customerReviews: Review[] = [
               </div>
 
               <div className="space-y-2">
-                <p className="text-3xl font-bold luxury-accent">
-                  {formatIndianPrice(product.price)}
-                </p>
+                {(() => {
+                  const current = product.price
+                  const mrp = Math.round(current / 0.9)
+                  return (
+                    <>
+                      <div className="flex items-baseline gap-3">
+                        <p className="text-3xl font-bold luxury-accent">
+                          {formatIndianPrice(current)}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3 text-muted-foreground">
+                        <span className="text-base line-through">
+                          {formatIndianPrice(mrp)}
+                        </span>
+                        <span className="text-xs rounded-full px-2.5 py-1 bg-autumnFern/15 text-autumnFern font-medium">
+                          10% OFF
+                        </span>
+                      </div>
+                    </>
+                  )
+                })()}
                 <p className="text-sm luxury-text-muted">by {productBrand}</p>
               </div>
 
@@ -576,8 +533,13 @@ const customerReviews: Review[] = [
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setQuantity(quantity + 1)}
-                    disabled={!inStock}
+                    onClick={() => {
+                      const maxQty = product?.countInStock ?? Number.POSITIVE_INFINITY;
+                      setQuantity((q) => Math.min(q + 1, maxQty));
+                    }}
+                    disabled={
+                      !inStock || (product?.countInStock ? quantity >= product.countInStock : false)
+                    }
                     className="h-8 w-8 p-0 luxury-button-secondary"
                   >
                     <Plus className="h-3 w-3" />
@@ -594,7 +556,11 @@ const customerReviews: Review[] = [
                       handleAddToCart();
                     }
                   }}
-                  disabled={!inStock || addingToCart}
+                  disabled={
+                    !inStock ||
+                    addingToCart ||
+                    (product?.countInStock ? quantity > product.countInStock : false)
+                  }
                   className="flex-1 luxury-button"
                   size="lg"
                 >
@@ -609,7 +575,11 @@ const customerReviews: Review[] = [
                 </Button>
                 <Button
                   onClick={handleBuyNow}
-                  disabled={!inStock || addingToCart}
+                  disabled={
+                    !inStock ||
+                    addingToCart ||
+                    (product?.countInStock ? quantity > product.countInStock : false)
+                  }
                   variant="outline"
                   className="flex-1 luxury-button-secondary"
                   size="lg"
@@ -630,17 +600,17 @@ const customerReviews: Review[] = [
                 <div className="flex items-center space-x-3">
                   <Truck className="h-5 w-5 text-autumnFern" />
                   <span className="luxury-text">
-                    Free shipping on orders over ₹2,000
+                    Free shipping on all orders.
                   </span>
                 </div>
-                <div className="flex items-center space-x-3">
+                {/* <div className="flex items-center space-x-3">
                   <Shield className="h-5 w-5 text-autumnFern" />
                   <span className="luxury-text">1-year warranty included</span>
-                </div>
-                <div className="flex items-center space-x-3">
+                </div> */}
+                {/* <div className="flex items-center space-x-3">
                   <RotateCcw className="h-5 w-5 text-autumnFern" />
                   <span className="luxury-text">30-day return policy</span>
-                </div>
+                </div> */}
               </div>
             </div>
 
@@ -674,43 +644,11 @@ const customerReviews: Review[] = [
             </h2>
 
             <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide">
-              {products.slice(0,5).map((product) => (
-                <div
-                  key={product.id}
-                  className="group cursor-pointer flex-shrink-0 w-64"
-                >
-                  <div className="relative bg-stone-50 rounded-lg p-4 mb-4 overflow-hidden">
-                    <img
-                      src={product.image || "/placeholder.svg"}
-                      alt={product.name}
-                      className="w-full h-48 object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Heart className="w-4 h-4 text-gray-600" />
-                    </button>
-                  </div>
-
-                  <div className="space-y-2">
-                    <p className="text-xs text-amber-600 font-medium uppercase tracking-wide">
-                      {capitalizeFirst(product.category)}
-                    </p>
-                    <h3 className="text-lg font-medium text-gray-800 group-hover:text-amber-700 transition-colors">
-                      {capitalizeFirst(product.name)}
-                    </h3>
-
-                    <div className="flex items-center gap-2">
-                      {renderStars(product.rating)}
-                      <span className="text-sm text-gray-500">
-                        ({product.numReviews})
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg font-semibold text-gray-800">
-                        ₹{product.price}
-                      </span>
-                    </div>
-                  </div>
+              {products.slice(0, 5).map((p) => (
+                <div key={p._id || p.id} className="flex-shrink-0 w-64">
+                  {/* Reuse the standard ProductCard for consistency */}
+                  {/* @ts-ignore types align at runtime between slices and ProductCard */}
+                  <ProductCard product={p as any} />
                 </div>
               ))}
             </div>
@@ -718,8 +656,8 @@ const customerReviews: Review[] = [
         </div>
 
         {/* Customer Reviews Section */}
-        <section className="bg-white rounded-lg p-8 shadow-sm">
-          <div className="flex items-center justify-between mb-8">
+        {/* <section className="bg-white rounded-lg p-8 shadow-sm"> */}
+          {/* <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-medium text-amber-700">
               Customer Testimonials for YUCA
             </h2>
@@ -732,10 +670,10 @@ const customerReviews: Review[] = [
                 </span>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Rating Breakdown */}
-          <div className="mb-8 p-6 bg-stone-50 rounded-lg">
+          {/* <div className="mb-8 p-6 bg-stone-50 rounded-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h3 className="font-medium text-gray-800 mb-4">
@@ -809,10 +747,10 @@ const customerReviews: Review[] = [
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Individual Reviews */}
-          <div className="space-y-6">
+          {/* <div className="space-y-6">
             {customerReviews.slice(0, visibleReviews).map((review) => (
               <div
                 key={review.id}
@@ -868,18 +806,18 @@ const customerReviews: Review[] = [
                 </div>
               </div>
             ))}
-          </div>
+          </div> */}
 
           {/* Load More Button */}
-          <div className="text-center mt-8">
+          {/* <div className="text-center mt-8">
             <button
               onClick={handleLoadMore}
               className="px-6 py-3 border border-amber-700 text-amber-700 rounded-lg hover:bg-amber-50 transition-colors"
             >
               {isShowingAll ? "Show Less" : "Load More Reviews"}
             </button>
-          </div>
-        </section>
+          </div> */}
+        {/* </section> */}
       </div>
     </>
   );

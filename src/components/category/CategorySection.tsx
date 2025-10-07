@@ -2,7 +2,9 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Home, Sparkles, Shirt, TreePine } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { categories } from '@/data/mockData';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { fetchCategories } from '@/store/slices/categoriesSlice';
 
 const categoryIcons = {
   'living': Home,
@@ -12,6 +14,16 @@ const categoryIcons = {
 };
 
 export function CategorySection() {
+  const dispatch = useAppDispatch();
+  const { categories, loading } = useAppSelector((state) => ({
+    categories: state.categories.categories,
+    loading: state.categories.loading,
+  }));
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
   return (
     <section className="luxury-section bg-blanket">
       <div className="container mx-auto px-4">
@@ -25,18 +37,23 @@ export function CategorySection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {categories.map((category) => {
-            const IconComponent = categoryIcons[category.slug as keyof typeof categoryIcons] || Home;
+          {loading && (
+            <p className="luxury-text-muted">Loading categories...</p>
+          )}
+          {!loading && categories.map((category) => {
+            const slug = String(category).toLowerCase();
+            const name = String(category).charAt(0).toUpperCase() + String(category).slice(1);
+            const IconComponent = categoryIcons[slug as keyof typeof categoryIcons] || Home;
             return (
             <Card
-              key={category.id}
+              key={slug}
               className="group overflow-hidden luxury-card-elevated hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
             >
-              <Link to={`/category/${category.slug}`}>
+              <Link to={`/category/${slug}`}>
                 <div className="relative overflow-hidden">
                   <img
                     src="https://i.pinimg.com/736x/1e/75/55/1e7555a65f6e0b34358ad110ae31f562.jpg"
-                    alt={category.name}
+                    alt={name}
                     className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-kimber/70 via-kimber/30 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300" />
@@ -53,13 +70,14 @@ export function CategorySection() {
                       <IconComponent className="h-5 w-5 text-autumnFern" />
                     </div>
                     <h3 className="text-xl luxury-heading group-hover:luxury-accent transition-colors">
-                      {category.name}
+                      {name}
                     </h3>
                   </div>
                   
+                  {/* Description unavailable from API categories; remove mock description */}
                   <p className="text-sm luxury-text-muted mb-4 line-clamp-2">
-                      {category.description}
-                    </p>
+                    Explore premium products in {name}
+                  </p>
                   
                   <div className="flex items-center justify-between">
                     <Button
@@ -71,11 +89,7 @@ export function CategorySection() {
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                     
-                    {category.subcategories && (
-                      <span className="text-xs luxury-text-muted">
-                        {category.subcategories.length} categories
-                      </span>
-                    )}
+                    {/* Subcategories not available from API-derived categories */}
                   </div>
                 </CardContent>
               </Link>

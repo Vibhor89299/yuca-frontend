@@ -18,6 +18,7 @@ import ProfilePage from './pages/Profile';
 import OurStoryPage from './pages/StoryPage';
 import { CategoryPage } from './pages/Category';
 import PrivacyPage from './pages/Privacy';
+import { ScrollToTop } from '@/components/layout/ScrollToTop';
 
 function App() {
   // Check authentication status on app load
@@ -26,6 +27,7 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen flex flex-col">
+        <ScrollToTop />
         <Header />
         <main className="flex-1 z-10">
           <Routes>

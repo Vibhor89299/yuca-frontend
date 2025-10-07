@@ -28,7 +28,8 @@ export function ProductCard({ product }: ProductCardProps) {
   // Handle backwards compatibility between old and new schema
   const productId = product._id || product.id
   const inStock = product.inStock ?? (product.countInStock ? product.countInStock > 0 : true)
-  const [isInCart, setIsInCart] = useState<boolean>(false);
+  const [isInCart, setIsInCart] = useState<boolean>(false)
+  const [isAdding, setIsAdding] = useState<boolean>(false)
 
   // Build the product URL
   const getProductUrl = () => {
@@ -36,24 +37,29 @@ export function ProductCard({ product }: ProductCardProps) {
     return `/product/${productId}`
   }
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
+    if (isAdding || isInCart) return
+    setIsAdding(true)
     const productId = product._id || product.id
     if (!productId) {
       console.error("Product ID is missing")
+      setIsAdding(false)
       return
     }
-    if (isAuthenticated) {
-      // Authenticated: call backend API via Redux thunk
-      dispatch(addToCart({ productId, quantity: 1 }))
-      setIsInCart(true);
-
-    } else {
-      // Guest: update Redux/localStorage
-      dispatch(addGuestCartItem({ product, quantity: 1 }))
-      setIsInCart(true);
-
+    try {
+      if (isAuthenticated) {
+        // Authenticated: call backend API via Redux thunk
+        await dispatch(addToCart({ productId, quantity: 1 }))
+        setIsInCart(true)
+      } else {
+        // Guest: update Redux/localStorage
+        dispatch(addGuestCartItem({ product, quantity: 1 }))
+        setIsInCart(true)
+      }
+    } finally {
+      setIsAdding(false)
     }
   }
 
@@ -71,8 +77,18 @@ export function ProductCard({ product }: ProductCardProps) {
   }, [images]) // Updated to use the entire images array as dependency
 
   return (
-    <Card className="group overflow-hidden rounded-lg  bg-card shadow-sm transition-all duration-500 hover:-translate-y-2 hover:shadow-md">
-      <Link to={getProductUrl()} className="block">
+    <Card className={`group overflow-hidden rounded-lg bg-card shadow-sm transition-all duration-500 hover:-translate-y-2 hover:shadow-md ${!inStock ? "opacity-90" : ""}`} aria-disabled={!inStock}>
+      <Link
+        to={getProductUrl()}
+        className={`block ${!inStock ? "cursor-not-allowed" : ""}`}
+        onClick={(e) => {
+          if (!inStock) {
+            e.preventDefault()
+            e.stopPropagation()
+          }
+        }}
+        aria-disabled={!inStock}
+      >
         <div className="relative overflow-hidden">
           <img
             src={images[imgIdx] || "/placeholder.svg"}
@@ -104,7 +120,14 @@ export function ProductCard({ product }: ProductCardProps) {
           {product.featured && (
             <Badge className="absolute left-3 top-3 shadow-lg bg-input text-foreground">Featured</Badge>
           )}
-          {!inStock && <Badge className="absolute left-3 top-3 shadow-lg bg-red-600 text-white">Out of Stock</Badge>}
+          {!inStock && (
+            <>
+              <Badge className="absolute left-3 top-3 shadow-lg bg-red-600 text-white">Out of Stock</Badge>
+              <div className="pointer-events-none absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center">
+                <span className="text-sm font-semibold text-red-700 bg-white/80 px-3 py-1 rounded">Out of Stock</span>
+              </div>
+            </>
+          )}
           {/* <Button
             variant="ghost"
             size="sm"
@@ -156,7 +179,23 @@ export function ProductCard({ product }: ProductCardProps) {
 
             <div className="flex items-end justify-between pt-3">
               <div className="space-y-1">
-                <span className="font-bold text-xl text-foreground">₹{product.price.toFixed(2)}</span>
+                {(() => {
+                  const current = product.price
+                  const mrp = Math.round(current / 0.9)
+                  return (
+                    <>
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-bold text-xl text-foreground">₹{current.toFixed(2)}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <span className="text-xs line-through">₹{mrp.toFixed(2)}</span>
+                        <span className="text-[11px] rounded-full px-2 py-0.5 bg-autumnFern/15 text-autumnFern font-medium whitespace-nowrap">
+                          10% OFF
+                        </span>
+                      </div>
+                    </>
+                  )
+                })()}
                 {/* <p className="text-xs text-muted-foreground">
                   by {productBrand}
                 </p> */}
@@ -166,10 +205,11 @@ export function ProductCard({ product }: ProductCardProps) {
                 onClick={handleAddToCart}
                 className="shadow-md bg-primary text-primary-foreground hover:bg-primary/90"
                 size="sm"
-                disabled={!inStock}
+                type="button"
+                disabled={!inStock || isAdding || isInCart}
               >
                 <ShoppingBag className="mr-1 h-4 w-4" />
-                {isInCart? "Go To cart":inStock ? "Add" : "Sold Out"}
+                {isInCart ? "Added" : isAdding ? "Adding..." : inStock ? "Add" : "Sold Out"}
               </Button>
             </div>
           </div>
