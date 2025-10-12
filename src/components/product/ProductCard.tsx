@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Link } from "react-router-dom"
 // Utility to convert a string to start case
 function toStartCase(str: string) {
@@ -63,18 +63,9 @@ export function ProductCard({ product }: ProductCardProps) {
     }
   }
 
-  const [imgIdx, setImgIdx] = useState(0)
+  // Use first image only (no carousel)
   const images = product.images && product.images.length > 0 ? product.images : [product.image]
-
-  // Auto-rotate images every minute
-  useEffect(() => {
-    if (images.length <= 1) return
-    const interval = setInterval(() => {
-      console.log("Rotating image " + images[imgIdx])
-      setImgIdx((idx) => (idx + 1) % images.length)
-    }, 10000) // 10,000 ms = 10 seconds
-    return () => clearInterval(interval)
-  }, [images]) // Updated to use the entire images array as dependency
+  const displayImage = images[0] || "/placeholder.svg"
 
   return (
     <Card className={`group overflow-hidden rounded-lg bg-card shadow-sm transition-all duration-500 hover:-translate-y-2 hover:shadow-md ${!inStock ? "opacity-90" : ""}`} aria-disabled={!inStock}>
@@ -91,7 +82,7 @@ export function ProductCard({ product }: ProductCardProps) {
       >
         <div className="relative overflow-hidden">
           <img
-            src={images[imgIdx] || "/placeholder.svg"}
+            src={displayImage}
             alt={product.name}
             className="h-64 w-full object-cover bg-white transition-transform duration-700 group-hover:scale-110"
             onError={(e) => {
@@ -101,21 +92,6 @@ export function ProductCard({ product }: ProductCardProps) {
               }
             }}
           />
-          {images.length > 1 && (
-            <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 space-x-2 transform">
-              {images.map((img, idx) => (
-                <button
-                  key={img}
-                  className={`h-2 w-2 rounded-full border border-muted-foreground/50 ${imgIdx === idx ? "bg-primary" : "bg-muted-foreground/70"}`}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    setImgIdx(idx)
-                  }}
-                  aria-label={`Show image ${idx + 1}`}
-                />
-              ))}
-            </div>
-          )}
           <div className="absolute inset-0 bg-gradient-to-t from-foreground/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           {product.featured && (
             <Badge className="absolute left-3 top-3 shadow-lg bg-input text-foreground">Featured</Badge>

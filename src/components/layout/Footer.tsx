@@ -114,9 +114,15 @@ export function Footer() {
         </div>
 
         <div className="border-t border-oak mt-8 pt-8 flex flex-col md:flex-row items-center justify-between">
-          <p className="text-sm text-blanket/70">
-            © 2025 YUCA. All rights reserved.
-          </p>
+          <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-8">
+            <p className="text-sm text-blanket/70">
+              © 2025 YUCA. All rights reserved.
+            </p>
+            <div className="text-sm text-blanket/70">
+              <strong>Delivery Timeline:</strong> Delhi NCR: 2-3 business days |
+              Pan India: 7-8 business days 
+            </div>
+          </div>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link
               to="/privacy"

@@ -145,6 +145,12 @@ export function Header() {
                     <DropdownMenuItem onClick={() => navigate("/orders")}>
                       My Orders
                     </DropdownMenuItem>
+                    {/* Show POS link only for admin users */}
+                    {(user?.role === 'ADMIN' || user?.isAdmin === true) && (
+                      <DropdownMenuItem onClick={() => navigate("/pos")}>
+                        Retail POS
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem onClick={handleLogout}>
                       Sign Out
                     </DropdownMenuItem>

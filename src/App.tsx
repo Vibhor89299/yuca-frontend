@@ -12,6 +12,8 @@ import { CheckoutPage } from '@/pages/CheckoutPage';
 import { Toaster } from '@/components/ui/sonner';
 import RegisterPage from './pages/RegisterPage';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import AdminProtectedRoute from '@/components/AdminProtectedRoute';
+import RetailPOS from './pages/RetailPOS';
 
 import { useAuthCheck } from '@/hooks/useAuthCheck';
 import ProfilePage from './pages/Profile';
@@ -43,13 +45,11 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/order/:id" element={<OrderSummaryPage />} />
-            <Route path="/orders" element={
-              <ProtectedRoute>
-                <OrderHistoryPage />
-              </ProtectedRoute>
+            <Route path="/pos" element={
+              <AdminProtectedRoute>
+                <RetailPOS />
+              </AdminProtectedRoute>
             } />
-            {/* Catch-all route for non-existing routes */}
-            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>
         <Footer />

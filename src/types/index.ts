@@ -44,9 +44,15 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
+  name?: string; // For compatibility
   avatar?: string;
   addresses?: Address[];
   orders?: Order[];
+  phone?: string;
+  location?: string;
+  memberSince?: string;
+  role?: string;
+  isAdmin?: boolean;
 }
 
 export interface Address {
