@@ -5,13 +5,13 @@ import { HomePage } from '@/pages/HomePage';
 import { CartPage } from '@/pages/CartPage';
 import { ProductDetailPage } from '@/pages/ProductDetailPage';
 import { OrderSummaryPage } from '@/pages/OrderSummaryPage';
-import OrderHistoryPage  from '@/pages/OrderHistoryPage';
+// import OrderHistoryPage  from '@/pages/OrderHistoryPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import LoginPage from './pages/LoginPage';
 import { CheckoutPage } from '@/pages/CheckoutPage';
 import { Toaster } from '@/components/ui/sonner';
 import RegisterPage from './pages/RegisterPage';
-import ProtectedRoute from '@/components/ProtectedRoute';
+// import ProtectedRoute from '@/components/ProtectedRoute';
 import AdminProtectedRoute from '@/components/AdminProtectedRoute';
 import RetailPOS from './pages/RetailPOS';
 
@@ -45,11 +45,17 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/order/:id" element={<OrderSummaryPage />} />
+            {/* <Route path="/orders" element={
+              <ProtectedRoute>
+                <OrderHistoryPage />
+              </ProtectedRoute>
+            } /> */}
             <Route path="/pos" element={
               <AdminProtectedRoute>
                 <RetailPOS />
               </AdminProtectedRoute>
             } />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>
         <Footer />
