@@ -107,7 +107,7 @@ const RetailPOS: React.FC = () => {
 
   // Calculate totals
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const tax = subtotal * 0.18; // 18% GST
+  const tax = 0;
   const total = subtotal + tax;
 
   // Generate invoice
@@ -118,46 +118,47 @@ const RetailPOS: React.FC = () => {
     }
 
     if (!customerInfo.name || !customerInfo.email) {
-      toast.error('Please provide customer information');
+      toast.error('Please provide customer name and email');
+      return;
+    }
+
+    // Validate phone if provided
+    if (customerInfo.phone && !/^[6-9]\d{9}$/.test(customerInfo.phone.replace(/\D/g, ''))) {
+      toast.error('Please enter a valid 10-digit phone number');
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(customerInfo.email)) {
+      toast.error('Please enter a valid email address');
       return;
     }
 
     try {
       setIsGeneratingInvoice(true);
 
-      // For retail POS, we'll create a minimal order for record keeping
       const orderData = {
         items: cart.map(item => ({
           productId: item.product._id,
           quantity: item.quantity,
           price: item.price
         })),
-        guestInfo: {
+        retailCustomerInfo: {
           name: customerInfo.name,
           email: customerInfo.email,
-          phone: customerInfo.phone || ''
-        },
-        // Minimal shipping address for retail POS
-        shippingAddress: {
-          firstName: customerInfo.name,
-          lastName: '',
-          address1: 'Retail POS Sale',
-          city: 'Retail',
-          province: 'Retail',
-          postalCode: '00000',
-          country: 'India'
+          phone: customerInfo.phone || '',
+          address: 'Retail POS Sale'
         },
         paymentMethod: paymentMethod,
-        // Mark as paid for retail POS (offline payment)
-        status: 'Paid',
-        paymentStatus: 'completed'
+        totalPrice: total
       };
 
-      // Create order (this will be marked as paid for retail POS)
-      const orderResponse = await axiosinstance.post('/api/orders', orderData);
+      // Create retail order using the new route
+      const orderResponse = await axiosinstance.post('/api/orders/retail', orderData);
 
       if (orderResponse.data && orderResponse.data.order) {
-        const orderId = orderResponse.data.order.id; // Use 'id' not '_id' as per backend response
+        const orderId = orderResponse.data.order.id;
 
         // Send the invoice email using the order ID
         await axiosinstance.post(`/api/email/invoice/${orderId}`);
@@ -173,7 +174,9 @@ const RetailPOS: React.FC = () => {
 
     } catch (error: any) {
       console.error('Error generating invoice:', error);
-      if (error.response?.status === 404) {
+      if (error.response?.status === 403) {
+        toast.error('Access denied. Admin privileges required.');
+      } else if (error.response?.status === 404) {
         toast.error('Invoice service not available. Please try again later.');
       } else if (error.response?.status === 400) {
         toast.error('Invalid data provided. Please check your input.');
@@ -195,7 +198,7 @@ const RetailPOS: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Product Selection */}
         <div className="lg:col-span-2">
-          <Card>
+          <Card className="bg-gray-50 shadow-md border-0">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Search className="w-5 h-5" />
@@ -267,7 +270,7 @@ const RetailPOS: React.FC = () => {
         {/* Cart & Customer Info */}
         <div className="space-y-6">
           {/* Customer Information */}
-          <Card>
+          <Card className="bg-gray-50 shadow-md border-0">
             <CardHeader>
               <CardTitle>Customer Information</CardTitle>
             </CardHeader>
@@ -301,7 +304,7 @@ const RetailPOS: React.FC = () => {
           </Card>
 
           {/* Payment Method */}
-          <Card>
+          <Card className="bg-gray-50 shadow-md border-0">
             <CardHeader>
               <CardTitle>Payment Method</CardTitle>
             </CardHeader>
@@ -334,7 +337,7 @@ const RetailPOS: React.FC = () => {
           </Card>
 
           {/* Cart */}
-          <Card>
+          <Card className="bg-gray-50 shadow-md border-0 p-4">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <ShoppingCart className="w-5 h-5" />
@@ -391,10 +394,6 @@ const RetailPOS: React.FC = () => {
                     <div className="flex justify-between">
                       <span>Subtotal:</span>
                       <span>₹{subtotal.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>GST (18%):</span>
-                      <span>₹{tax.toFixed(2)}</span>
                     </div>
                     <Separator />
                     <div className="flex justify-between font-semibold text-base">
