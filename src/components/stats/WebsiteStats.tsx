@@ -105,38 +105,63 @@ export function WebsiteStats() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 max-w-6xl mx-auto">
-          {statItems.map((stat, index) => (
-            <div
-              key={index}
-              className={`group relative rounded-xl ${stat.bgColor} ${stat.borderColor} border backdrop-blur-sm p-6 sm:p-8 transition-all duration-300 hover:shadow-lg hover:scale-105 hover:-translate-y-1`}
-            >
-              {/* Icon */}
-              <div className={`inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full ${stat.bgColor} ${stat.borderColor} border mb-4 transition-transform duration-300 group-hover:scale-110`}>
-                <stat.icon className={`w-6 h-6 sm:w-7 sm:h-7 ${stat.color}`} strokeWidth={1.5} />
-              </div>
+          {loading ? (
+            // Shimmer Loading State
+            Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={index}
+                className="relative rounded-xl bg-blanket/10 border border-blanket/20 backdrop-blur-sm p-6 sm:p-8 overflow-hidden"
+              >
+                {/* Shimmer Effect */}
+                <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                
+                {/* Icon Skeleton */}
+                <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-blanket/20 mb-4">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-blanket/30 rounded"></div>
+                </div>
 
-              {/* Value */}
-              <div className={`text-3xl sm:text-4xl font-bold ${stat.color} mb-2 font-serif tabular-nums`}>
-                {stat.value}
-              </div>
+                {/* Value Skeleton */}
+                <div className="h-10 sm:h-12 bg-blanket/20 rounded-lg mb-2 w-3/4"></div>
 
-              {/* Label */}
-              <div className="text-xs sm:text-sm text-kimber/60 uppercase tracking-wider font-medium">
-                {stat.label}
+                {/* Label Skeleton */}
+                <div className="h-4 bg-blanket/20 rounded w-1/2"></div>
               </div>
+            ))
+          ) : (
+            // Actual Stats
+            statItems.map((stat, index) => (
+              <div
+                key={index}
+                className={`group relative rounded-xl ${stat.bgColor} ${stat.borderColor} border backdrop-blur-sm p-6 sm:p-8 transition-all duration-300 hover:shadow-lg hover:scale-105 hover:-translate-y-1`}
+              >
+                {/* Icon */}
+                <div className={`inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full ${stat.bgColor} ${stat.borderColor} border mb-4 transition-transform duration-300 group-hover:scale-110`}>
+                  <stat.icon className={`w-6 h-6 sm:w-7 sm:h-7 ${stat.color}`} strokeWidth={1.5} />
+                </div>
 
-              {/* Decorative element */}
-              <div className={`absolute top-0 right-0 w-20 h-20 ${stat.bgColor} rounded-full blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-500 -z-10`}></div>
-            </div>
-          ))}
+                {/* Value */}
+                <div className={`text-3xl sm:text-4xl font-bold ${stat.color} mb-2 font-serif tabular-nums`}>
+                  {stat.value}
+                </div>
+
+                {/* Label */}
+                <div className="text-xs sm:text-sm text-kimber/60 uppercase tracking-wider font-medium">
+                  {stat.label}
+                </div>
+
+                {/* Decorative element */}
+                <div className={`absolute top-0 right-0 w-20 h-20 ${stat.bgColor} rounded-full blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-500 -z-10`}></div>
+              </div>
+            ))
+          )}
         </div>
 
         {/* Trust Badge */}
         <div className="mt-10 sm:mt-12 text-center">
           <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-blanket/20 border border-blanket/30 backdrop-blur-sm">
-            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+            <div className={`w-2 h-2 rounded-full ${loading ? 'bg-yellow-500' : 'bg-green-500'} animate-pulse`}></div>
             <span className="text-xs sm:text-sm text-kimber/80 font-medium">
-              Live tracking • Updated in real-time
+              {loading ? 'Loading stats...' : 'Live tracking • Updated in real-time'}
             </span>
           </div>
         </div>
