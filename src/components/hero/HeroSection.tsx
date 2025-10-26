@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import desktopVideo from "../../assets/banner.mp4";
-import mobileVideo from "../../assets/mbbanner.mp4";
+import mobileVideo from "../../assets/mbBanner.mp4";
 
 export function HeroSection() {
   return (
