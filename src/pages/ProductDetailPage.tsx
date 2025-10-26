@@ -267,7 +267,7 @@ export function ProductDetailPage() {
       : [];
   const inStock =
     product?.inStock ??
-    (product?.countInStock ? product.countInStock > 0 : true);
+    (product?.countInStock !== undefined ? product.countInStock > 0 : true);
   const productBrand = product?.brand || "YUCA";
 
   // const handleShare = async () => {};

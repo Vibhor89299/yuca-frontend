@@ -27,7 +27,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   // Handle backwards compatibility between old and new schema
   const productId = product._id || product.id
-  const inStock = product.inStock ?? (product.countInStock ? product.countInStock > 0 : true)
+  const inStock = product.inStock ?? (product.countInStock !== undefined ? product.countInStock > 0 : true)
   const [isInCart, setIsInCart] = useState<boolean>(false)
   const [isAdding, setIsAdding] = useState<boolean>(false)
 
@@ -63,15 +63,21 @@ export function ProductCard({ product }: ProductCardProps) {
     }
   }
 
-  // Use first image only (no carousel)
-  const images = product.images && product.images.length > 0 ? product.images : [product.image]
-  const displayImage = images[0] || "/placeholder.svg"
+  // Use product.image as primary display image
+  const displayImage = product.image || (product.images && product.images.length > 0 ? product.images[0] : "/placeholder.svg")
 
   return (
-    <Card className={`group overflow-hidden rounded-lg bg-card shadow-sm transition-all duration-500 hover:-translate-y-2 hover:shadow-md ${!inStock ? "opacity-90" : ""}`} aria-disabled={!inStock}>
+    <Card 
+      className={`group overflow-hidden rounded-lg bg-card shadow-sm transition-all duration-500 ${
+        inStock 
+          ? 'hover:-translate-y-2 hover:shadow-md' 
+          : 'opacity-75 cursor-not-allowed'
+      }`} 
+      aria-disabled={!inStock}
+    >
       <Link
         to={getProductUrl()}
-        className={`block ${!inStock ? "cursor-not-allowed" : ""}`}
+        className={`block ${!inStock ? "pointer-events-none" : ""}`}
         onClick={(e) => {
           if (!inStock) {
             e.preventDefault()
@@ -84,7 +90,11 @@ export function ProductCard({ product }: ProductCardProps) {
           <img
             src={displayImage}
             alt={product.name}
-            className="h-64 w-full object-cover bg-white transition-transform duration-700 group-hover:scale-110"
+            className={`h-64 w-full object-cover bg-white transition-all duration-700 ${
+              inStock 
+                ? 'group-hover:scale-110' 
+                : 'grayscale opacity-60'
+            }`}
             onError={(e) => {
               const target = e.target as HTMLImageElement
               if (!target.src.endsWith("/fallback.jpg")) {
@@ -92,15 +102,33 @@ export function ProductCard({ product }: ProductCardProps) {
               }
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-          {product.featured && (
+          <div className={`absolute inset-0 bg-gradient-to-t from-foreground/10 to-transparent transition-opacity duration-300 ${
+            inStock ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'
+          }`} />
+          
+          {product.featured && inStock && (
             <Badge className="absolute left-3 top-3 shadow-lg bg-input text-foreground">Featured</Badge>
           )}
+          
           {!inStock && (
             <>
-              <Badge className="absolute left-3 top-3 shadow-lg bg-red-600 text-white">Out of Stock</Badge>
-              <div className="pointer-events-none absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center">
-                <span className="text-sm font-semibold text-red-700 bg-white/80 px-3 py-1 rounded">Out of Stock</span>
+              {/* Out of Stock Badge */}
+              <Badge className="absolute left-3 top-3 shadow-lg bg-red-600 text-white border-0 z-10">
+                Out of Stock
+              </Badge>
+              
+              {/* Overlay with Out of Stock Message */}
+              <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center z-[5]">
+                <div className="text-center space-y-2">
+                  <div className="bg-white/95 backdrop-blur-sm px-6 py-3 rounded-lg shadow-xl border-2 border-red-500">
+                    <p className="text-lg font-bold text-red-600 uppercase tracking-wider">
+                      Out of Stock
+                    </p>
+                    <p className="text-xs text-gray-600 mt-1">
+                      Currently Unavailable
+                    </p>
+                  </div>
+                </div>
               </div>
             </>
           )}
@@ -124,10 +152,14 @@ export function ProductCard({ product }: ProductCardProps) {
           </div> */}
         </div>
 
-        <CardContent className="p-6">
+        <CardContent className={`p-6 ${!inStock ? 'opacity-60' : ''}`}>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <Badge variant="default" className="text-xs bg-input text-muted-foreground">
+              <Badge variant="default" className={`text-xs ${
+                inStock 
+                  ? 'bg-input text-muted-foreground' 
+                  : 'bg-gray-200 text-gray-500'
+              }`}>
                 {product.category}
               </Badge>
               <div className="flex items-center">
@@ -147,11 +179,19 @@ export function ProductCard({ product }: ProductCardProps) {
               </div>
             </div>
 
-            <h3 className="font-serif text-lg font-semibold leading-tight text-foreground transition-colors group-hover:text-primary">
+            <h3 className={`font-serif text-lg font-semibold leading-tight transition-colors ${
+              inStock 
+                ? 'text-foreground group-hover:text-primary' 
+                : 'text-gray-500'
+            }`}>
               {toStartCase(product.name)}
             </h3>
 
-            <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">{product.description}</p>
+            <p className={`line-clamp-2 text-sm leading-relaxed ${
+              inStock ? 'text-muted-foreground' : 'text-gray-400'
+            }`}>
+              {product.description}
+            </p>
 
             <div className="flex items-end justify-between pt-3">
               <div className="space-y-1">
@@ -161,11 +201,21 @@ export function ProductCard({ product }: ProductCardProps) {
                   return (
                     <>
                       <div className="flex items-baseline gap-2">
-                        <span className="font-bold text-xl text-foreground">₹{current.toFixed(2)}</span>
+                        <span className={`font-bold text-xl ${
+                          inStock ? 'text-foreground' : 'text-gray-400'
+                        }`}>
+                          ₹{current.toFixed(2)}
+                        </span>
                       </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
+                      <div className={`flex items-center gap-2 ${
+                        inStock ? 'text-muted-foreground' : 'text-gray-400'
+                      }`}>
                         <span className="text-xs line-through">₹{mrp.toFixed(2)}</span>
-                        <span className="text-[11px] rounded-full px-2 py-0.5 bg-autumnFern/15 text-autumnFern font-medium whitespace-nowrap">
+                        <span className={`text-[11px] rounded-full px-2 py-0.5 font-medium whitespace-nowrap ${
+                          inStock 
+                            ? 'bg-autumnFern/15 text-autumnFern' 
+                            : 'bg-gray-200 text-gray-500'
+                        }`}>
                           10% OFF
                         </span>
                       </div>
@@ -179,13 +229,17 @@ export function ProductCard({ product }: ProductCardProps) {
 
               <Button
                 onClick={handleAddToCart}
-                className="shadow-md bg-primary text-primary-foreground hover:bg-primary/90"
+                className={`shadow-md ${
+                  inStock 
+                    ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed hover:bg-gray-300'
+                }`}
                 size="sm"
                 type="button"
                 disabled={!inStock || isAdding || isInCart}
               >
                 <ShoppingBag className="mr-1 h-4 w-4" />
-                {isInCart ? "Added" : isAdding ? "Adding..." : inStock ? "Add" : "Sold Out"}
+                {!inStock ? "Sold Out" : isInCart ? "Added" : isAdding ? "Adding..." : "Add"}
               </Button>
             </div>
           </div>

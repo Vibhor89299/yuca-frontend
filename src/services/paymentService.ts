@@ -61,7 +61,7 @@ class PaymentService {
 
   constructor() {
     // In production, this should come from environment variables
-    this.razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_your_key_here';
+    this.razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
   }
 
   // Load Razorpay script dynamically
