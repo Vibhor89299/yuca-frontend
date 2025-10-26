@@ -1,0 +1,14 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Disallow admin and checkout pages
+Disallow: /admin/
+Disallow: /checkout
+Disallow: /cart
+Disallow: /login
+Disallow: /register
+Disallow: /profile
+
+# Sitemap
+Sitemap: https://yucalifestyle.com/sitemap.xml

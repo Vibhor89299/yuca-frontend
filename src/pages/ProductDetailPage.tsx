@@ -18,7 +18,8 @@ import { addToCart, addGuestCartItem } from "@/store/slices/cartSlice";
 import { formatIndianPrice } from "@/utils/currency";
 import axiosinstance from "@/axiosinstance/axiosinstance";
 import { Product } from "@/types";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/seo/SEO";
+import { generateProductSchema, generateBreadcrumbSchema } from "@/utils/seoSchemas";
 import { fetchProducts } from "@/services/actions";
 import { ProductCard } from "@/components/product/ProductCard";
 
@@ -268,10 +269,6 @@ export function ProductDetailPage() {
     product?.inStock ??
     (product?.countInStock ? product.countInStock > 0 : true);
   const productBrand = product?.brand || "YUCA";
-  const pdescription = product?.description || "Product description";
-  const pname = product?.name || "Product";
-  const pimage = images?.[0] || "/fallback.jpg";
-  const purl = `${import.meta.env.VITE_UI_URL}/product/${id}`;
 
   // const handleShare = async () => {};
   // rgb(184 159 134)
@@ -329,23 +326,35 @@ export function ProductDetailPage() {
     if (!str) return "";
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   }
+
+  // Generate product schema
+  const productSchema = product ? generateProductSchema(product) : undefined;
+  
+  // Generate breadcrumb schema
+  const breadcrumbSchema = product ? generateBreadcrumbSchema([
+    { name: "Home", url: "https://yucalifestyle.com" },
+    { name: capitalizeFirst(product.category), url: `https://yucalifestyle.com/category/${product.category}` },
+    { name: product.name, url: `https://yucalifestyle.com/product/${product.id}` }
+  ]) : undefined;
+
   return (
     <>
-      <Helmet>
-        <title>{`${pname} | YUCA`}</title>
-        <meta name="description" content={pdescription} />
-
-        <meta property="og:title" content={pname} />
-        <meta property="og:description" content={pdescription} />
-        <meta property="og:image" content={pimage} />
-        <meta property="og:url" content={purl} />
-        <meta property="og:type" content="product" />
-
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={pname} />
-        <meta name="twitter:description" content={pdescription} />
-        <meta name="twitter:image" content={pimage} />
-      </Helmet>
+      {product && (
+        <SEO
+          title={`${product.name} | YUCA Lifestyle`}
+          description={product.description}
+          keywords={`${product.name}, ${product.category}, luxury home decor, handcrafted, artisanal, YUCA lifestyle`}
+          image={product.image}
+          url={`https://yucalifestyle.com/product/${product.id}`}
+          type="product"
+          schema={productSchema}
+        />
+      )}
+      {breadcrumbSchema && (
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbSchema)}
+        </script>
+      )}
       <div className="container mx-auto px-4 mt-4 mt-[100px] py-8 min-h-screen bg-white rounded backdrop-blur-sm">
         {/* Breadcrumb */}
 

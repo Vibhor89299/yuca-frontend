@@ -10,8 +10,8 @@ type TimeLeft = {
 };
 
 export function DiwaliOfferBanner() {
-  // Set your Diwali offer end date (IST). Update if needed.
-  const offerEnd = useMemo(() => new Date('2025-11-05T23:59:59+05:30').getTime(), []);
+  // Set your Launch Sale end date (IST). Update if needed.
+  const offerEnd = useMemo(() => new Date('2025-12-31T23:59:59+05:30').getTime(), []);
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => ({ days: 0, hours: 0, minutes: 0, seconds: 0 }));
   const [expired, setExpired] = useState(false);
 
@@ -43,16 +43,16 @@ export function DiwaliOfferBanner() {
         <div className="rounded-2xl bg-gradient-to-r from-kimber/15 via-blanket/15 to-kimber/10 backdrop-blur-md border border-blanket/30 shadow-lg shadow-kimber/10 ring-1 ring-blanket/20 px-3 sm:px-4 md:px-6 py-4 sm:py-5 md:py-7 flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-5">
         <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
           <div className="flex flex-wrap justify-center sm:justify-start gap-1.5 sm:gap-2 mb-2 sm:mb-0">
-            <span className="text-[9px] sm:text-[10px] md:text-xs uppercase tracking-[0.2em] text-autumnFern">Diwali Special</span>
+            <span className="text-[9px] sm:text-[10px] md:text-xs uppercase tracking-[0.2em] text-autumnFern">Grand Launch</span>
             <span className="rounded-full bg-blanket/25 text-kimber text-[9px] sm:text-[10px] md:text-xs px-1.5 sm:px-2 py-0.5">Limited Time</span>
-            <span className="rounded-full bg-blanket/25 text-kimber text-[9px] sm:text-[10px] md:text-xs px-1.5 sm:px-2 py-0.5">Sitewide</span>
+            <span className="rounded-full bg-blanket/25 text-kimber text-[9px] sm:text-[10px] md:text-xs px-1.5 sm:px-2 py-0.5">Exclusive</span>
           </div>
           <div className="text-left">
             <h3 className="text-lg sm:text-xl md:text-3xl lg:text-4xl font-semibold text-kimber drop-shadow-sm leading-tight">
-              Diwali Luxury Sale — 10% OFF on all products
+              Launch Sale — Special Introductory Prices
             </h3>
             <p className="text-xs sm:text-sm text-kimber/90 mt-1 leading-relaxed">
-              Elevate your home with our Luxury & Decorative collections. Offer auto‑applies at checkout.
+              Discover our handcrafted artisanal collection. Be among the first to experience luxury & sustainability.
             </p>
           </div>
         </div>
@@ -68,8 +68,8 @@ export function DiwaliOfferBanner() {
             <CountdownPill label="Secs" value={timeLeft.seconds} />
           </div>
 
-          <Button asChild size="sm" className="luxury-button w-full sm:w-auto" aria-label="Shop Diwali Offers">
-            <Link to="/category/kosha">Shop Diwali Offers</Link>
+          <Button asChild size="sm" className="luxury-button w-full sm:w-auto" aria-label="Shop Launch Sale">
+            <Link to="/category/kosha">Shop Launch Sale</Link>
           </Button>
         </div>
         </div>
