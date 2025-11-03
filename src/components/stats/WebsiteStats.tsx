@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Eye, Users, ShoppingBag, TrendingUp } from 'lucide-react';
+import { Eye, Users } from 'lucide-react';
 import axiosinstance from '@/axiosinstance/axiosinstance';
 
 export function WebsiteStats() {
@@ -103,54 +103,56 @@ export function WebsiteStats() {
           </p>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 max-w-6xl mx-auto">
+        {/* Stats Grid - 2 columns layout */}
+        <div className="grid grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto">
           {loading ? (
-            // Shimmer Loading State
-            Array.from({ length: 4 }).map((_, index) => (
+            // Shimmer Loading State - 2 placeholders
+            Array.from({ length: 2 }).map((_, index) => (
               <div
                 key={index}
-                className="relative rounded-xl bg-blanket/10 border border-blanket/20 backdrop-blur-sm p-6 sm:p-8 overflow-hidden"
+                className="relative rounded-xl bg-blanket/10 border border-blanket/20 backdrop-blur-sm p-5 sm:p-6 md:p-8 overflow-hidden h-full min-h-[180px]"
               >
                 {/* Shimmer Effect */}
                 <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
                 
                 {/* Icon Skeleton */}
-                <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-blanket/20 mb-4">
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-blanket/30 rounded"></div>
+                <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blanket/20 mb-3 sm:mb-4">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 bg-blanket/30 rounded"></div>
                 </div>
 
                 {/* Value Skeleton */}
-                <div className="h-10 sm:h-12 bg-blanket/20 rounded-lg mb-2 w-3/4"></div>
+                <div className="h-8 sm:h-10 bg-blanket/20 rounded-lg mb-2 w-2/3"></div>
 
                 {/* Label Skeleton */}
-                <div className="h-4 bg-blanket/20 rounded w-1/2"></div>
+                <div className="h-3 sm:h-4 bg-blanket/20 rounded w-1/2"></div>
               </div>
             ))
           ) : (
-            // Actual Stats
-            statItems.map((stat, index) => (
+            // Actual Stats - 2 cards
+            statItems.slice(0, 2).map((stat, index) => (
               <div
                 key={index}
-                className={`group relative rounded-xl ${stat.bgColor} ${stat.borderColor} border backdrop-blur-sm p-6 sm:p-8 transition-all duration-300 hover:shadow-lg hover:scale-105 hover:-translate-y-1`}
+                className={`group relative rounded-xl ${stat.bgColor} ${stat.borderColor} border backdrop-blur-sm p-5 sm:p-6 md:p-8 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1 h-full flex flex-col`}
               >
-                {/* Icon */}
-                <div className={`inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full ${stat.bgColor} ${stat.borderColor} border mb-4 transition-transform duration-300 group-hover:scale-110`}>
-                  <stat.icon className={`w-6 h-6 sm:w-7 sm:h-7 ${stat.color}`} strokeWidth={1.5} />
-                </div>
+                <div className="flex-grow">
+                  {/* Icon */}
+                  <div className={`inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full ${stat.bgColor} ${stat.borderColor} border mb-3 sm:mb-4 transition-transform duration-300 group-hover:scale-110`}>
+                    <stat.icon className={`w-5 h-5 sm:w-6 sm:h-6 ${stat.color}`} strokeWidth={1.5} />
+                  </div>
 
-                {/* Value */}
-                <div className={`text-3xl sm:text-4xl font-bold ${stat.color} mb-2 font-serif tabular-nums`}>
-                  {stat.value}
-                </div>
+                  {/* Value */}
+                  <div className={`text-2xl sm:text-3xl md:text-4xl font-bold ${stat.color} mb-1 sm:mb-2 font-serif tabular-nums`}>
+                    {stat.value}
+                  </div>
 
-                {/* Label */}
-                <div className="text-xs sm:text-sm text-kimber/60 uppercase tracking-wider font-medium">
-                  {stat.label}
+                  {/* Label */}
+                  <div className="text-xs sm:text-sm text-kimber/60 uppercase tracking-wider font-medium">
+                    {stat.label}
+                  </div>
                 </div>
 
                 {/* Decorative element */}
-                <div className={`absolute top-0 right-0 w-20 h-20 ${stat.bgColor} rounded-full blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-500 -z-10`}></div>
+                <div className={`absolute top-0 right-0 w-16 h-16 sm:w-20 sm:h-20 ${stat.bgColor} rounded-full blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-500 -z-10`}></div>
               </div>
             ))
           )}
