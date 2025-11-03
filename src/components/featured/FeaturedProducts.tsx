@@ -59,9 +59,9 @@ export function KoshaCollection() {
   </picture>
             
             {/* Text content with improved responsiveness */}
-            <div className="absolute inset-0 z-20 flex items-center">
+            <div className="absolute inset-0 z-20 flex items-start sm:items-center">
               <div className="w-full max-w-4xl mx-auto lg:mx-0 lg:ml-8 xl:ml-16 text-center lg:text-left p-4 sm:p-6 md:p-8 lg:p-10">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-white mb-2 sm:mb-3 md:mb-4
+                <h2 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-semibold sm:font-bold text-white mb-2 sm:mb-3 md:mb-4
                              tracking-wide drop-shadow-2xl">
                   Koshah Collection
                 </h2>
