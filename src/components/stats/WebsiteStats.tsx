@@ -72,22 +72,22 @@ export function WebsiteStats() {
       bgColor: 'bg-oak/10',
       borderColor: 'border-oak/20'
     },
-    {
-      icon: ShoppingBag,
-      label: 'Orders Placed',
-      value: stats.ordersPlaced.toLocaleString(),
-      color: 'text-khakiMoss',
-      bgColor: 'bg-khakiMoss/10',
-      borderColor: 'border-khakiMoss/20'
-    },
-    {
-      icon: TrendingUp,
-      label: 'Growth Rate',
-      value: `+${stats.growthRate}%`,
-      color: 'text-autumnFern',
-      bgColor: 'bg-autumnFern/10',
-      borderColor: 'border-autumnFern/20'
-    }
+    // {
+    //   icon: ShoppingBag,
+    //   label: 'Orders Placed',
+    //   value: stats.ordersPlaced.toLocaleString(),
+    //   color: 'text-khakiMoss',
+    //   bgColor: 'bg-khakiMoss/10',
+    //   borderColor: 'border-khakiMoss/20'
+    // },
+    // {
+    //   icon: TrendingUp,
+    //   label: 'Growth Rate',
+    //   value: `+${stats.growthRate}%`,
+    //   color: 'text-autumnFern',
+    //   bgColor: 'bg-autumnFern/10',
+    //   borderColor: 'border-autumnFern/20'
+    // }
   ];
 
   return (
