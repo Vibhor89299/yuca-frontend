@@ -55,34 +55,58 @@ const ethosData = [
 export default function OurStoryPage() {
   const [currentEthos, setCurrentEthos] = useState(0)
   const [scrollY, setScrollY] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
   const stackContainerRef = useRef<HTMLDivElement>(null)
   const observerRef = useRef<IntersectionObserver | null>(null)
   const navigate = useNavigate()
   
+  // Check if mobile on mount and window resize
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 1024) // lg breakpoint
+    }
+    
+    checkIfMobile()
+    window.addEventListener('resize', checkIfMobile)
+    return () => window.removeEventListener('resize', checkIfMobile)
+  }, [])
+  
   const handleScroll = useCallback(() => {
     setScrollY(window.scrollY)
 
-    if (stackContainerRef.current) {
-      const container = stackContainerRef.current
-      const containerTop = container.offsetTop
-      const containerHeight = container.offsetHeight
-      const windowHeight = window.innerHeight
-      
-      // Calculate scroll progress more accurately
-      const scrollableHeight = containerHeight - windowHeight
-      const scrollProgress = Math.max(0, Math.min(1, (window.scrollY - containerTop) / scrollableHeight))
+    if (isMobile) {
+      // Simple section tracking for mobile
+      if (stackContainerRef.current) {
+        const container = stackContainerRef.current
+        const containerTop = container.offsetTop
+        const windowHeight = window.innerHeight
+        const scrollPosition = window.scrollY - containerTop + windowHeight * 0.3
+        const sectionHeight = windowHeight
+        const currentIndex = Math.min(
+          Math.floor(scrollPosition / sectionHeight),
+          ethosData.length - 1
+        )
+        setCurrentEthos(Math.max(0, currentIndex))
+      }
+    } else {
+      // Original parallax logic for desktop
+      if (stackContainerRef.current) {
+        const container = stackContainerRef.current
+        const containerTop = container.offsetTop
+        const containerHeight = container.offsetHeight
+        const windowHeight = window.innerHeight
+        
+        const scrollableHeight = containerHeight - windowHeight
+        const scrollProgress = Math.max(0, Math.min(1, (window.scrollY - containerTop) / scrollableHeight))
+        const activeIndex = Math.floor(scrollProgress * (ethosData.length - 1))
+        const clampedIndex = Math.max(0, Math.min(activeIndex, ethosData.length - 1))
 
-      // Calculate which ethos should be active based on scroll progress
-      // Use (ethosData.length - 1) to prevent going beyond the last item
-      const activeIndex = Math.floor(scrollProgress * (ethosData.length - 1))
-      const clampedIndex = Math.max(0, Math.min(activeIndex, ethosData.length - 1))
-
-      // Only update if we're within the container bounds and index has changed
-      if (clampedIndex !== currentEthos && scrollProgress >= 0 && scrollProgress <= 1) {
-        setCurrentEthos(clampedIndex)
+        if (clampedIndex !== currentEthos && scrollProgress >= 0 && scrollProgress <= 1) {
+          setCurrentEthos(clampedIndex)
+        }
       }
     }
-  }, [currentEthos])
+  }, [currentEthos, isMobile])
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, { passive: true })
@@ -125,7 +149,7 @@ export default function OurStoryPage() {
   return (
     <div className="min-h-screen bg-blanket scrollbar-hide">
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center justify-center relative overflow-hidden luxury-gradient-hero">
+      <section className="min-h-[90vh] sm:min-h-[100vh] flex items-center justify-center relative overflow-hidden luxury-gradient-hero pt-16 md:pt-0 px-4 sm:px-6">
         <div
           className="absolute inset-0 parallax-slow"
           style={{ "--scroll-y": `${scrollY * 0.3}px` } as React.CSSProperties}
@@ -157,7 +181,7 @@ export default function OurStoryPage() {
           </div>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden sm:flex">
           <div className="flex flex-col items-center space-y-2 animate-bounce">
             <div className="w-6 h-10 border-2 border-oak rounded-full flex justify-center">
               <div className="w-1 h-3 bg-oak rounded-full mt-2 animate-pulse"></div>
@@ -166,23 +190,26 @@ export default function OurStoryPage() {
           </div>
         </div>
       </section>
-      <div ref={stackContainerRef} className="stack-container mb-6" style={{ height: `${(ethosData.length - 1) * 100 + 100}vh` }}>
+      <div ref={stackContainerRef} className="relative">
       {ethosData.map((ethos, index) => {
-          const isActive = index === currentEthos
-          const isPast = index < currentEthos
+          const isActive = isMobile ? true : index === currentEthos
+          const isPast = isMobile ? false : index < currentEthos
 
           return (
             <div
               key={ethos.id}
-              className={`stack-item ${isPast ? "exiting" : "entering"}`}
+              className={`relative w-full min-h-[90vh] sm:min-h-screen flex items-center justify-center py-16 sm:py-24 ${
+                isMobile ? 'opacity-100 relative' : `stack-item ${isPast ? "exiting" : "entering"} ${isActive ? 'opacity-100' : 'opacity-0 absolute inset-0 pointer-events-none'}`
+              } ${index === 0 ? 'pt-24 md:pt-32' : ''}`}
               style={{
-                zIndex: ethosData.length - index,
+                zIndex: isMobile ? 1 : (isActive ? 10 : 1),
                 background: index % 2 === 0 ? "#f2e0cf" : "#faf8f6",
+                transition: isMobile ? 'none' : 'opacity 0.5s ease-in-out',
               }}
             >
-              <div className="max-w-7xl mx-auto px-6 w-full">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full py-8 md:py-12">
                 <div
-                  className={`grid lg:grid-cols-2 gap-16 items-center ${
+                  className={`grid lg:grid-cols-2 gap-8 md:gap-16 items-center ${
                     index % 2 === 0 ? "" : "lg:grid-flow-col-dense"
                   }`}
                 >
@@ -235,8 +262,8 @@ export default function OurStoryPage() {
         })}
       </div>
       {/* Summary Section */}
-      <section className="py-[20] bg-kimber text-blanket relative z-10">
-        <div className="flex justify center items-center max-w-4xl h-[60vh] mx-auto mt-8  py-6 px-6 text-center">
+      <section className={`py-16 md:py-24 bg-kimber text-blanket relative ${isMobile ? 'z-10' : 'z-20'}`}>
+        <div className="flex justify-center items-center max-w-4xl min-h-[60vh] mx-auto py-8 px-6 text-center">
           <div className="scroll-reveal">
             <h2 className="text-4xl md:text-5xl font-serif font-semibold mb-8 text-balance">In Summary: YUCA is...</h2>
             <p className="text-xl leading-relaxed mb-12 text-pretty opacity-90">

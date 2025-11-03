@@ -190,7 +190,7 @@ export function Header() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="md:hidden h-8 px-2 text-blanket"
+                  className="hidden h-8 px-2 text-blanket"
                 >
                   <Menu className="h-4 w-4" />
                 </Button>
