@@ -112,7 +112,6 @@ export default function OrderHistoryPage() {
     )
   }
 
-  console.log(filteredOrders)
   return (
     <div className=" mx-auto pt-[90px] pb-8 px-4  min-h-screen backdrop-blur-sm">
       {/* Header */}

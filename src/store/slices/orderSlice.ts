@@ -39,10 +39,8 @@ export const fetchOrderById = createAsyncThunk(
   async (orderId: string, { rejectWithValue }) => {
     try {
       const response = await axiosinstance.get(`/api/orders/${orderId}`);
-      console.log('order',response)
       return response.data;
     } catch (error: any) {
-      console.log(error)
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch order');
     }
   }

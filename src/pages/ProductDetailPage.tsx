@@ -211,8 +211,8 @@ export function ProductDetailPage() {
       }
 
       if (isAuthenticated) {
-        // 🔹 API Call
-        const response = await axiosinstance.post(
+        // API Call to add to cart
+        await axiosinstance.post(
           "/api/cart",
           {
             productId,
@@ -220,24 +220,21 @@ export function ProductDetailPage() {
           },
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("yuca_auth_token")}`, // make sure token is stored in localStorage
+              Authorization: `Bearer ${localStorage.getItem("yuca_auth_token")}`,
             },
           }
         );
 
-        console.log("Cart updated:", response.data);
-
-        // 🔹 Also update Redux store (optional but recommended for UI sync)
+        // Also update Redux store for UI sync
         dispatch(addToCart({ productId, quantity }));
       } else {
         // Guest cart (local Redux store only)
         dispatch(addGuestCartItem({ product, quantity }));
       }
 
-      // ✅ Success feedback
-      console.log("Added to cart successfully");
-    } catch (err) {
-      console.error("Failed to add to cart:", err);
+      // Success toast is handled in ProductCard component
+    } catch {
+      // Error handled by axios interceptor
     } finally {
       setAddingToCart(false);
     }

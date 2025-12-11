@@ -66,8 +66,8 @@ export function OrderSummaryPage() {
           text: `Check out my order from Yuca Lifestyle`,
           url: window.location.href,
         });
-      } catch (error) {
-        console.log('Error sharing:', error);
+      } catch {
+        // Sharing failed or was cancelled
       }
     } else {
       // Fallback: copy to clipboard
@@ -120,7 +120,7 @@ export function OrderSummaryPage() {
     return sum + mrpEach * (it.quantity ?? 0);
   }, 0);
   const displayDiscount = Math.max(0, mrpTotal - orderTotal);
-  console.log('order', currentOrder)
+
   return (
     <div className="container mx-auto px-4 pt-[120px] text-white py-8 min-h-screen  backdrop-blur-sm">
       {/* Header */}

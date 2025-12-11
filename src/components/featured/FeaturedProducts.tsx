@@ -2,7 +2,7 @@
 // import { ArrowRight, Star, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ProductGrid } from '@/components/product/ProductGrid';
-import { useEffect } from 'react';
+import { useEffect, useCallback, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchProducts } from '@/services/actions';
 import koshahDesktop from "../../assets/banner-koshah.png"
@@ -14,15 +14,22 @@ export function KoshaCollection() {
 
   const dispatch = useAppDispatch();
   const { products, loading, error, page, totalPages } = useAppSelector((state) => state.products);
+
   useEffect(() => {
     dispatch(fetchProducts(page));
   }, [dispatch, page]);
 
-  const handlePageChange = (newPage: number) => {
+  const handlePageChange = useCallback((newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       dispatch(fetchProducts(newPage));
     }
-  };
+  }, [dispatch, totalPages]);
+
+  // Memoize pagination buttons array
+  const paginationButtons = useMemo(() =>
+    Array.from({ length: totalPages }, (_, i) => i + 1),
+    [totalPages]
+  );
   return (
     <section className="luxury-section luxury-gradient-section">
       <div className="container mx-auto px-4">
@@ -81,14 +88,14 @@ export function KoshaCollection() {
           <Button size="sm" variant="outline" onClick={() => handlePageChange(page - 1)} disabled={page === 1}>
             Previous
           </Button>
-          {Array.from({ length: totalPages }, (_, i) => (
+          {paginationButtons.map((pageNum) => (
             <Button
-              key={i + 1}
+              key={pageNum}
               size="sm"
-              variant={page === i + 1 ? 'default' : 'outline'}
-              onClick={() => handlePageChange(i + 1)}
+              variant={page === pageNum ? 'default' : 'outline'}
+              onClick={() => handlePageChange(pageNum)}
             >
-              {i + 1}
+              {pageNum}
             </Button>
           ))}
           <Button size="sm" variant="outline" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages}>

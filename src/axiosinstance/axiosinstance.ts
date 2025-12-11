@@ -1,15 +1,88 @@
-import axios from 'axios';
+import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import { showErrorToast, authToasts } from '@/lib/toast';
 
 const axiosinstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001',
-  // baseURL: 'https://api.yucalifestyle.com', // Production URL
 });
 
-// Add token if it exists in localStorage
-const token = localStorage.getItem('yuca_auth_token');
-if (token) {
-  axiosinstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-}
+// Request interceptor to add token
+axiosinstance.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => {
+    const token = localStorage.getItem('yuca_auth_token');
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor for centralized error handling
+axiosinstance.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError<{ message?: string; error?: string }>) => {
+    // Network error
+    if (!error.response) {
+      showErrorToast(
+        'Connection error',
+        'Unable to connect to server. Please check your internet connection.'
+      );
+      return Promise.reject(error);
+    }
+
+    const status = error.response.status;
+    const message =
+      error.response.data?.message ||
+      error.response.data?.error ||
+      'An unexpected error occurred';
+
+    switch (status) {
+      case 401:
+        // Unauthorized - token expired or invalid
+        localStorage.removeItem('yuca_auth_token');
+        authToasts.sessionExpired();
+        // Optionally redirect to login
+        if (window.location.pathname !== '/login') {
+          setTimeout(() => {
+            window.location.href = '/login';
+          }, 1500);
+        }
+        break;
+
+      case 403:
+        showErrorToast('Access denied', 'You do not have permission to perform this action.');
+        break;
+
+      case 404:
+        // Don't show toast for 404 - let components handle it
+        break;
+
+      case 422:
+        showErrorToast('Validation error', message);
+        break;
+
+      case 429:
+        showErrorToast('Too many requests', 'Please wait a moment before trying again.');
+        break;
+
+      case 500:
+      case 502:
+      case 503:
+        showErrorToast('Server error', 'Something went wrong on our end. Please try again later.');
+        break;
+
+      default:
+        // Only show toast for non-400 errors (400 errors are usually handled by forms)
+        if (status !== 400) {
+          showErrorToast('Error', message);
+        }
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 // Function to update the authorization header
 export const setAuthToken = (token: string | null) => {
