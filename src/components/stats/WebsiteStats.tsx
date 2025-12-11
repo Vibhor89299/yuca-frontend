@@ -16,8 +16,8 @@ export function WebsiteStats() {
     const trackVisit = async () => {
       try {
         await axiosinstance.post('/api/analytics/visit');
-      } catch (error) {
-        console.error('Error tracking visit:', error);
+      } catch {
+        // Silently fail visit tracking
       }
     };
 
@@ -26,7 +26,7 @@ export function WebsiteStats() {
       try {
         const response = await axiosinstance.get('/api/analytics/stats');
         const data = response.data;
-        
+
         setStats({
           totalVisits: data.allTime.totalVisits,
           activeUsers: data.today.activeUsers,
@@ -34,8 +34,7 @@ export function WebsiteStats() {
           growthRate: data.growth.rate
         });
         setLoading(false);
-      } catch (error) {
-        console.error('Error fetching stats:', error);
+      } catch {
         // Fallback to default values
         setStats({
           totalVisits: 1247,

@@ -21,6 +21,8 @@ import {
   Loader2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { profileToasts, authToasts } from "@/lib/toast";
+import { ProfilePageSkeleton } from "@/components/skeletons";
 interface UserData {
   _id: string;
   memberSince:string;
@@ -95,8 +97,7 @@ const navigate=useNavigate()
       } else {
         setError("Failed to fetch user profile");
       }
-    } catch (err) {
-      console.error("Error fetching user profile:", err);
+    } catch {
       setError("Network error while fetching profile");
     }
   };
@@ -117,12 +118,9 @@ const navigate=useNavigate()
         } else if (Array.isArray(data)) {
           setOrders(data);
         }
-      } else {
-        console.error("Failed to fetch orders");
-        // Keep empty array as fallback
       }
-    } catch (err) {
-      console.error("Error fetching orders:", err);
+      // Keep empty array as fallback for non-ok response
+    } catch {
       // Keep empty array as fallback
     } finally {
       setOrdersLoading(false);
@@ -145,14 +143,13 @@ const navigate=useNavigate()
         const data = await response.json();
         if (data.success && data.user) {
           setUserData(data.user);
-          alert("Profile updated successfully!");
+          profileToasts.updated();
         }
       } else {
-        alert("Failed to update profile");
+        profileToasts.error("Failed to update profile");
       }
-    } catch (err) {
-      console.error("Error updating profile:", err);
-      alert("Network error while updating profile");
+    } catch {
+      profileToasts.error("Network error while updating profile");
     } finally {
       setUpdateLoading(false);
     }
@@ -209,7 +206,7 @@ const navigate=useNavigate()
   const handleLogout = () => {
     // Show confirmation dialog
     const confirmed = window.confirm("Are you sure you want to logout?");
-    
+
     if (!confirmed) {
       return; // Do nothing if user clicks "No" or cancels
     }
@@ -231,7 +228,7 @@ const navigate=useNavigate()
       const name = eqPos > -1 ? c.substr(0, eqPos) : c;
       document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
     });
-    alert("user logged out successfully");
+    authToasts.logoutSuccess();
     // Redirect to login or home page
     window.location.href = "/"; // or "/" for home page
   };
@@ -265,14 +262,7 @@ const navigate=useNavigate()
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-[#f5f2e0] flex items-center justify-center">
-        <div className="flex items-center gap-2 text-amber-700">
-          <Loader2 className="w-6 h-6 animate-spin" />
-          <span>Loading profile...</span>
-        </div>
-      </div>
-    );
+    return <ProfilePageSkeleton />;
   }
 
   if (error && !userData) {

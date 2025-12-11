@@ -46,9 +46,8 @@ const RetailPOS: React.FC = () => {
       const response = await axiosinstance.get('/api/products');
       setProducts(response.data.products || response.data);
       setFilteredProducts(response.data.products || response.data);
-    } catch (error: any) {
+    } catch {
       toast.error('Failed to fetch products');
-      console.error('Error fetching products:', error);
     } finally {
       setLoading(false);
     }
@@ -173,7 +172,6 @@ const RetailPOS: React.FC = () => {
       }
 
     } catch (error: any) {
-      console.error('Error generating invoice:', error);
       if (error.response?.status === 403) {
         toast.error('Access denied. Admin privileges required.');
       } else if (error.response?.status === 404) {

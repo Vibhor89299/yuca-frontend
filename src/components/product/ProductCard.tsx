@@ -14,6 +14,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import type { Product } from "@/types"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
 import { addToCart, addGuestCartItem } from "@/store/slices/cartSlice"
+import { cartToasts } from "@/lib/toast"
 
 interface ProductCardProps {
   product: Product
@@ -44,7 +45,7 @@ export function ProductCard({ product }: ProductCardProps) {
     setIsAdding(true)
     const productId = product._id || product.id
     if (!productId) {
-      console.error("Product ID is missing")
+      cartToasts.error("Product ID is missing")
       setIsAdding(false)
       return
     }
@@ -53,11 +54,15 @@ export function ProductCard({ product }: ProductCardProps) {
         // Authenticated: call backend API via Redux thunk
         await dispatch(addToCart({ productId, quantity: 1 }))
         setIsInCart(true)
+        cartToasts.added(product.name)
       } else {
         // Guest: update Redux/localStorage
         dispatch(addGuestCartItem({ product, quantity: 1 }))
         setIsInCart(true)
+        cartToasts.added(product.name)
       }
+    } catch {
+      cartToasts.error("Failed to add item to cart")
     } finally {
       setIsAdding(false)
     }

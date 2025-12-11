@@ -13,6 +13,7 @@ import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { clearCart, fetchCart, clearGuestCart } from "@/store/slices/cartSlice";
 import { placeOrder } from "@/store/slices/orderSlice";
 import { paymentService } from "@/services/paymentService";
+import { orderToasts, showErrorToast } from "@/lib/toast";
 
 interface UserData {
   _id: string;
@@ -68,7 +69,6 @@ export function CheckoutPage() {
         const data = await response.json();
         if (data.success && data.user) {
           setUserData(data.user);
-          console.log("data", data.user);
           setForm((prevForm) => ({
             ...prevForm,
             guestEmail: data.user.email || prevForm.guestEmail,
@@ -85,15 +85,13 @@ export function CheckoutPage() {
       } else {
         setError("Failed to fetch user profile");
       }
-    } catch (err) {
-      console.error("Error fetching user profile:", err);
+    } catch {
       setError("Network error while fetching profile");
     }
   };
 
   useEffect(() => {
     const authToken = getAuthToken();
-    console.log("auth", authToken);
     if (authToken) {
       fetchUserProfile();
     }
@@ -124,7 +122,7 @@ export function CheckoutPage() {
 
     if (form.paymentMethod !== "razorpay") {
       // Handle other payment methods (if any)
-      alert("Only Razorpay payment is currently supported");
+      showErrorToast("Payment method not supported", "Only Razorpay payment is currently available");
       return;
     }
 
@@ -183,7 +181,6 @@ export function CheckoutPage() {
           userInfo,
           guestInfo
         );
-        paymentResult.payment.status
         if (paymentResult.payment.status === "paid") {
           // Clear the appropriate cart based on authentication status
           if (isAuthenticated) {
@@ -191,12 +188,12 @@ export function CheckoutPage() {
           } else {
             dispatch(clearGuestCart());
           }
+          orderToasts.paymentSuccess();
           navigate(`/order/${orderId}`);
         }
       }
     } catch (error: any) {
-      console.error("Payment failed:", error);
-      alert(`Payment failed: ${error.message}`);
+      orderToasts.paymentFailed(error.message);
     } finally {
       setProcessingPayment(false);
     }

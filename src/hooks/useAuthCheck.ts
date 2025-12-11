@@ -25,8 +25,8 @@ export function useAuthCheck() {
         try {
           const parsed = JSON.parse(data);
           dispatch(setGuestCart(parsed));
-        } catch (error) {
-          console.error('Error parsing guest cart from localStorage:', error);
+        } catch {
+          // Invalid cart data in localStorage, ignore
         }
       }
     }
