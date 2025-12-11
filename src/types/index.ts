@@ -44,9 +44,15 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
+  name?: string; // For compatibility
   avatar?: string;
   addresses?: Address[];
   orders?: Order[];
+  phone?: string;
+  location?: string;
+  memberSince?: string;
+  role?: string;
+  isAdmin?: boolean;
 }
 
 export interface Address {
@@ -68,7 +74,7 @@ export interface Order {
   id: string;
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
   items: CartItem[];
-  total: number;
+  totalPrice: number;
   shippingAddress: Address;
   billingAddress: Address;
   createdAt: string;

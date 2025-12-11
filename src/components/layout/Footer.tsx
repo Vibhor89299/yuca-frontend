@@ -1,7 +1,7 @@
-import {Instagram, Mail } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import YucaLogo from '../../assets/logo.jpg';
-
+import { Instagram, Mail } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import YucaLogo from "../../assets/logo.jpg";
+import { Link } from "react-router-dom";
 
 export function Footer() {
   return (
@@ -12,22 +12,46 @@ export function Footer() {
           <div className="space-y-4">
             <div className="flex items-center">
               <div className="rounded-full">
-                <img src={YucaLogo} alt="Yuca Logo" className="h-16 w-16 object-cover rounded-full" />
+                <img
+                  src={YucaLogo}
+                  alt="Yuca Logo"
+                  className="h-16 w-16 object-cover rounded-full"
+                />
               </div>
               <div>
-                <h3 className="text-xl font-serif font-bold text-blanket">YUCA</h3>
+                <h3 className="text-xl font-serif font-bold text-blanket">
+                  YUCA
+                </h3>
                 <p className="text-xs text-oak">Where Luxury Grows With You</p>
               </div>
             </div>
             <p className="text-sm text-blanket/80">
-              Sustainable luxury lifestyle products that connect you with nature's beauty and your inner well-being.
+              Sustainable luxury lifestyle products that connect you with
+              nature's beauty and your inner well-being.
             </p>
             <div className="flex space-x-4">
-              <Button variant="ghost" size="sm" className="p-2 text-blanket hover:text-oak" onClick={() => window.open('https://www.instagram.com/yuca.lifestyle/', '_blank')}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="p-2 text-blanket hover:text-oak"
+                onClick={() =>
+                  window.open(
+                    "https://www.instagram.com/yuca.lifestyle/",
+                    "_blank"
+                  )
+                }
+              >
                 <Instagram className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="sm" className="p-2 text-blanket hover:text-oak" onClick={() => window.open('mailto:enquire@yucalifestyle.com', '_blank')}>
-                <Mail  className="h-4 w-4" />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="p-2 text-blanket hover:text-oak"
+                onClick={() =>
+                  window.open("mailto:enquire@yucalifestyle.com", "_blank")
+                }
+              >
+                <Mail className="h-4 w-4" />
               </Button>
             </div>
           </div>
@@ -90,9 +114,24 @@ export function Footer() {
         </div>
 
         <div className="border-t border-oak mt-8 pt-8 flex flex-col md:flex-row items-center justify-between">
-          <p className="text-sm text-blanket/70">
-            © 2025 YUCA. All rights reserved.
-          </p>
+          <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-8">
+            <p className="text-sm text-blanket/70">
+              © 2025 YUCA. All rights reserved.
+            </p>
+            <div className="text-sm text-blanket/70">
+              <strong>Delivery Timeline:</strong> Delhi NCR: 2-3 business days |
+              Pan India: 7-8 business days 
+            </div>
+          </div>
+          <div className="flex space-x-6 mt-4 md:mt-0">
+            <Link
+              to="/privacy"
+              className="text-sm text-blanket/70 hover:text-oak transition-colors"
+            >
+              Privacy Policy
+            </Link>
+          </div>
+
           {/* <div className="flex space-x-6 mt-4 md:mt-0">
             <Link to="/privacy" className="text-sm text-blanket/70 hover:text-oak transition-colors">
               Privacy Policy

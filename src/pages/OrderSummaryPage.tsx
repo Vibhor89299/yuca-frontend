@@ -16,6 +16,7 @@ export function OrderSummaryPage() {
   const { currentOrder, loading, error } = useAppSelector(state => state.order);
 
   useEffect(() => {
+    
     if (id) {
       dispatch(fetchOrderById(id));
     }
@@ -109,12 +110,24 @@ export function OrderSummaryPage() {
     );
   }
 
+  const ship = (currentOrder?.shippingAddress || {}) as any;
+  // Compute MRP and discount for display (backend totals unchanged)
+  const itemsSafe = (currentOrder.items || []) as any[];
+  const orderTotal = (currentOrder.totalPrice ?? 0) as number;
+  const mrpTotal = itemsSafe.reduce((sum, it) => {
+    const unit = (it.product?.price ?? it.price ?? 0) as number;
+    const mrpEach = Math.round(unit / 0.9);
+    return sum + mrpEach * (it.quantity ?? 0);
+  }, 0);
+  const displayDiscount = Math.max(0, mrpTotal - orderTotal);
+  console.log('order', currentOrder)
   return (
-    <div className="container mx-auto px-4 py-8 min-h-screen bg-mushroom/95 backdrop-blur-sm">
+    <div className="container mx-auto px-4 pt-[120px] text-white py-8 min-h-screen  backdrop-blur-sm">
       {/* Header */}
+
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" onClick={() => navigate(-1)} className="p-0 luxury-button-ghost">
+          <Button variant="ghost" onClick={() => navigate('/orders')} className="p-0 luxury-button-ghost">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
@@ -132,7 +145,7 @@ export function OrderSummaryPage() {
       </div>
 
       {/* Order Status Banner */}
-      <Card className="luxury-card mb-8">
+      <Card className="luxury-card  bg-[#fbfaf8] mb-8">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -157,31 +170,61 @@ export function OrderSummaryPage() {
         {/* Order Details */}
         <div className="lg:col-span-2 space-y-6">
           {/* Order Items */}
-          <Card className="luxury-card">
+          <Card className="luxury-card  bg-[#fbfaf8] text-black">
             <CardHeader>
               <CardTitle className="font-serif luxury-text">Order Items</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {currentOrder.items.map((item, index) => (
+              {itemsSafe.map((item, index) => (
                 <div key={index} className="flex space-x-4">
                   <img
-                    src={item.product.image}
-                    alt={item.product.name}
+                    src={item.product?.image || (item as any).image}
+                    alt={item.product?.name || (item as any).name}
                     className="w-16 h-16 object-cover rounded-lg"
                   />
                   <div className="flex-1 min-w-0">
                     <h4 className="text-sm font-medium luxury-text truncate">
-                      {item.product.name}
+                      {item.product?.name || (item as any).name} 
                     </h4>
                     <p className="text-sm luxury-text-muted">
                       Quantity: {item.quantity}
                     </p>
-                    <p className="text-sm luxury-text-muted">
-                      Price: {formatIndianPrice(item.product.price)}
-                    </p>
+                    <div className="flex flex-col items-start gap-1">
+                      {(() => {
+                        const unit = (item.product?.price ?? (item as any).price ?? 0) as number;
+                        const mrpEach = Math.round(unit / 0.9);
+                        return (
+                          <>
+                            <span className="text-sm font-semibold text-foreground">
+                              {formatIndianPrice(unit)}
+                            </span>
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <span className="text-xs line-through">
+                                {formatIndianPrice(mrpEach)}
+                              </span>
+                              <span className="text-[10px] rounded-full px-2 py-0.5 bg-autumnFern/15 text-autumnFern font-medium">
+                                10% OFF
+                              </span>
+                            </div>
+                          </>
+                        );
+                      })()}
+                    </div>
                   </div>
-                  <div className="text-sm font-medium luxury-text">
-                    {formatIndianPrice(item.product.price * item.quantity)}
+                  <div className="text-sm font-medium luxury-text text-right">
+                    {(() => {
+                      const unit = (item.product?.price ?? (item as any).price ?? 0) as number;
+                      const qty = (item.quantity ?? 0) as number;
+                      const mrpEach = Math.round(unit / 0.9);
+                      const mrpLine = mrpEach * qty;
+                      const line = unit * qty;
+                      return (
+                        <div className="flex flex-col items-end gap-1">
+                          <span className="text-sm font-semibold text-foreground">{formatIndianPrice(line)}</span>
+                          <span className="line-through text-muted-foreground text-xs">{formatIndianPrice(mrpLine)}</span>
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
               ))}
@@ -189,7 +232,7 @@ export function OrderSummaryPage() {
           </Card>
 
           {/* Shipping Address */}
-          <Card className="luxury-card">
+          <Card className="luxury-card  bg-[#fbfaf8] text-black">
             <CardHeader>
               <CardTitle className="font-serif luxury-text flex items-center">
                 <MapPin className="h-5 w-5 mr-2" />
@@ -199,21 +242,21 @@ export function OrderSummaryPage() {
             <CardContent>
               <div className="luxury-text">
                 <p className="font-medium">
-                  {currentOrder.shippingAddress.firstName} {currentOrder.shippingAddress.lastName}
+                  {ship.firstName || ''} {ship.lastName || ''}
                 </p>
-                <p>{currentOrder.shippingAddress.address1}</p>
-                {currentOrder.shippingAddress.address2 && <p>{currentOrder.shippingAddress.address2}</p>}
+                <p>{ship.address || ship.address1 || ''}</p>
+                {ship.address2 && <p>{ship.address2}</p>}
                 <p>
-                  {currentOrder.shippingAddress.city}, {currentOrder.shippingAddress.province} {currentOrder.shippingAddress.postalCode}
+                  {(ship.city || '')}{ship.state ? `, ${ship.state}` : ''} {(ship.zip || ship.postalCode || '')}
                 </p>
-                <p>{currentOrder.shippingAddress.country}</p>
-                {currentOrder.shippingAddress.phone && <p>{currentOrder.shippingAddress.phone}</p>}
+                {ship.country && <p>{ship.country}</p>}
+                {ship.phone && <p>{ship.phone}</p>}
               </div>
             </CardContent>
           </Card>
 
           {/* Payment Information */}
-          <Card className="luxury-card">
+          <Card className="luxury-card  bg-[#fbfaf8] text-black">
             <CardHeader>
               <CardTitle className="font-serif luxury-text flex items-center">
                 <CreditCard className="h-5 w-5 mr-2" />
@@ -224,18 +267,18 @@ export function OrderSummaryPage() {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="luxury-text-muted">Payment Method:</span>
-                  <span className="luxury-text">Razorpay</span>
+                  <span className="luxury-text">{((currentOrder as any).paymentMethod || 'razorpay').toString().toUpperCase()}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="luxury-text-muted">Payment Status:</span>
-                  <Badge className={getStatusColor(currentOrder.status || 'paid')}>
-                    {currentOrder.status || 'Paid'}
+                  <Badge className={getStatusColor(((currentOrder as any).paymentStatus || currentOrder.status || 'paid'))}>
+                    {(((currentOrder as any).paymentStatus || currentOrder.status || 'paid')).toString()}
                   </Badge>
                 </div>
                 <div className="flex justify-between">
                   <span className="luxury-text-muted">Total Amount:</span>
                   <span className="luxury-text font-semibold">
-                    {formatIndianPrice(currentOrder.total)}
+                    {formatIndianPrice((currentOrder.totalPrice ?? 0) as number)}
                   </span>
                 </div>
               </div>
@@ -246,35 +289,41 @@ export function OrderSummaryPage() {
         {/* Order Summary Sidebar */}
         <div className="space-y-6">
           {/* Order Summary */}
-          <Card className="luxury-card">
+          <Card className="luxury-card  bg-[#fbfaf8] text-black">
             <CardHeader>
               <CardTitle className="font-serif luxury-text">Order Summary</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span>Subtotal</span>
-                  <span>{formatIndianPrice(currentOrder.total * 0.85)}</span>
+                  <span>MRP</span>
+                  <span className="line-through text-muted-foreground">{formatIndianPrice(mrpTotal)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Diwali Discount (10%)</span>
+                  <span className="text-autumnFern">- {formatIndianPrice(displayDiscount)}</span>
+                </div>
+                <Separator />
+                <div className="flex justify-between text-sm font-medium">
+                  <span>Subtotal (Inclusive of GST)</span>
+                  <span>{formatIndianPrice(orderTotal)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Shipping</span>
                   <span className="text-sage-600">Free</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span>GST (18%)</span>
-                  <span>{formatIndianPrice(currentOrder.total * 0.15)}</span>
-                </div>
                 <Separator />
                 <div className="flex justify-between text-lg font-bold luxury-text">
-                  <span>Total</span>
-                  <span>{formatIndianPrice(currentOrder.total)}</span>
+                  <span>Total Paid</span>
+                  <span>{formatIndianPrice(orderTotal)}</span>
                 </div>
+                <p className="text-xs text-muted-foreground text-right">Prices are inclusive of GST</p>
               </div>
             </CardContent>
           </Card>
 
           {/* Order Actions */}
-          <Card className="luxury-card">
+          <Card className="luxury-card  bg-[#fbfaf8] text-black">
             <CardContent className="p-6 space-y-4">
               <Button className="w-full luxury-button" asChild>
                 <Link to="/">Continue Shopping</Link>
@@ -293,7 +342,7 @@ export function OrderSummaryPage() {
           </Card>
 
           {/* Support */}
-          <Card className="luxury-card">
+          <Card className="luxury-card  bg-[#fbfaf8] text-black">
             <CardContent className="p-6">
               <h3 className="font-semibold luxury-text mb-2">Need Help?</h3>
               <p className="text-sm luxury-text-muted mb-4">

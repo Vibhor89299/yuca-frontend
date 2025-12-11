@@ -31,7 +31,7 @@ export function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-16 min-h-screen bg-mushroom/95 backdrop-blur-sm">
+      <div className="container mx-auto px-4 py-16 min-h-screen pt-[100px]">
         <div className="text-center space-y-6">
           <div className="bg-mushroom p-6 rounded-full w-24 h-24 mx-auto flex items-center justify-center">
             <ShoppingBag className="h-12 w-12 text-autumnFern" />
@@ -67,12 +67,19 @@ export function CartPage() {
     navigate('/checkout');
   };
 
+  // Pricing calculations for display-only discount (backend prices unchanged)
+  const mrpTotal = items.reduce((sum, item) => {
+    const mrpEach = Math.round(item.product.price / 0.9);
+    return sum + mrpEach * item.quantity;
+  }, 0);
+  const displayDiscount = Math.max(0, mrpTotal - total);
+
   return (
-    <div className="container mx-auto px-4 py-8 min-h-screen bg-mushroom/95 backdrop-blur-sm">
+    <div className="container mx-auto px-4 pt-[100px] min-h-screen bg-[#f2e0cf] backdrop-blur-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" onClick={() => navigate(-1)} className="p-0 luxury-button-ghost">
+          <Button variant="ghost" onClick={() => navigate('/')} className="p-0 luxury-button-ghost">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Continue Shopping
           </Button>
@@ -87,7 +94,7 @@ export function CartPage() {
         <div className="lg:col-span-2 space-y-4">
           {items.map((item) => (
             <Card key={item.id} className="luxury-card">
-              <CardContent className="p-6">
+              <div className="bg-[#fbfaf8] rounded-lg p-6">
                 <div className="flex space-x-4">
                   <div className="flex-shrink-0">
                     <img
@@ -138,6 +145,9 @@ export function CartPage() {
                         variant="outline"
                         size="sm"
                         onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                        disabled={
+                          (item.product.countInStock ? item.quantity >= item.product.countInStock : false)
+                        }
                         className="h-8 w-8 p-0 luxury-button-secondary"
                       >
                         <Plus className="h-3 w-3" />
@@ -149,7 +159,7 @@ export function CartPage() {
                     </p>
                   </div>
                 </div>
-              </CardContent>
+              </div>
             </Card>
           ))}
         </div>
@@ -157,43 +167,35 @@ export function CartPage() {
         {/* Order Summary */}
         <div className="space-y-6">
           <Card className="luxury-card">
-            <CardContent className="p-6">
+            <div className="bg-[#fbfaf8] rounded-lg p-6">
               <h2 className="text-xl luxury-heading mb-4">
                 Order Summary
               </h2>
               
               <div className="space-y-3">
                 <div className="flex justify-between text-sm luxury-text">
-                  <span>Subtotal ({itemCount} items)</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>MRP ({itemCount} items)</span>
+                  <span className="line-through text-muted-foreground">{formatIndianPrice(mrpTotal)}</span>
                 </div>
-                
+                <div className="flex justify-between text-sm luxury-text">
+                  <span>Diwali Discount (10%)</span>
+                  <span className="text-autumnFern">- {formatIndianPrice(displayDiscount)}</span>
+                </div>
+                <Separator className="luxury-divider" />
+                <div className="flex justify-between text-sm luxury-text font-medium">
+                  <span>Subtotal (Inclusive of GST)</span>
+                  <span>{formatIndianPrice(total)}</span>
+                </div>
                 <div className="flex justify-between text-sm luxury-text">
                   <span>Shipping</span>
                   <span className="text-khakiMoss">Free</span>
                 </div>
-                
-                <div className="flex justify-between text-sm luxury-text">
-                  <span>Tax</span>
-                  <span>${(total * 0.08).toFixed(2)}</span>
-                </div>
-                
                 <Separator className="luxury-divider" />
-                
-                                  <span>Subtotal</span>
+                <div className="flex justify-between text-lg font-bold luxury-accent">
+                  <span>Total Payable</span>
                   <span>{formatIndianPrice(total)}</span>
                 </div>
-
-                <div className="flex justify-between luxury-text">
-                  <span>GST (18%)</span>
-                  <span>{formatIndianPrice(total * 0.18)}</span>
-                </div>
-                
-                <Separator className="luxury-divider" />
-                
-                <div className="flex justify-between text-lg font-bold luxury-accent">
-                  <span>Total</span>
-                  <span>{formatIndianPrice(total * 1.18)}</span>
+                <p className="text-xs text-muted-foreground text-right">Prices are inclusive of GST</p>
               </div>
               
               <Button 
@@ -203,12 +205,12 @@ export function CartPage() {
               >
                 Proceed to Checkout
               </Button>
-            </CardContent>
+            </div>
           </Card>
           
           {/* Security Badge */}
           <Card className="luxury-card">
-            <CardContent className="p-4 text-center">
+            <CardContent className="bg-[#fbfaf8]  rounded-lg p-4 text-center">
               <p className="text-xs luxury-text-muted">
                 Secure checkout powered by industry-leading encryption
               </p>

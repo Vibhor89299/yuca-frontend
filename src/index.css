@@ -3,7 +3,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+/* Define Alice font */
+@font-face {
+  font-family: 'Alice';
+  src: url('/fonts/AliceRegular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 @layer base {
   :root {
     /* New YUCA Brand Color System */
@@ -62,13 +69,15 @@
     @apply border-border;
   }
   body {
-    @apply bg-blanket text-kimber font-sans;
+    @apply bg-blanket text-kimber;
+    font-family: 'Alice', serif;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif text-oak;
+    font-family: 'Alice', serif;
   }
   a {
     @apply text-autumnFern hover:underline transition-colors duration-200;
+    font-family: 'Alice', serif
   }
 }
 
@@ -260,23 +269,6 @@
   }
 }
 
-/* Custom scrollbar with new colors */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  @apply bg-mushroom;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-oak rounded-full;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-oak-600;
-}
-
 
 /* Added custom scrollbar hiding for horizontal scroll */
 .scrollbar-hide {
@@ -286,4 +278,136 @@
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-reveal-fast {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.scroll-reveal-fast.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+.parallax-slow {
+  transform: translateY(var(--scroll-y, 0));
+  transition: transform 0.1s ease-out;
+}
+
+
+@layer components {
+  /* Added YUCA luxury brand components */
+  .luxury-gradient {
+    @apply bg-gradient-to-br from-blanket via-mushroom to-blanket;
+  }
+
+  .luxury-gradient-hero {
+    @apply bg-gradient-to-br from-blanket-50 via-mushroom-100 to-blanket;
+  }
+
+  .luxury-border {
+    @apply border border-oak/30;
+  }
+
+  .luxury-shadow {
+    @apply shadow-lg shadow-oak/20;
+  }
+
+  .luxury-button {
+    @apply bg-autumnFern hover:bg-autumnFern-600 text-blanket transition-all duration-300 ease-in-out transform hover:scale-105 font-medium shadow-md hover:shadow-lg;
+  }
+
+  .luxury-text {
+    @apply text-kimber;
+  }
+
+  .luxury-text-muted {
+    @apply text-khakiMoss;
+  }
+
+  .luxury-accent {
+    @apply text-autumnFern;
+  }
+
+  .luxury-heading {
+    @apply text-oak font-serif font-semibold;
+  }
+
+  .luxury-heading-primary {
+    @apply text-autumnFern font-serif font-bold;
+  }
+
+  .luxury-card {
+    @apply bg-mushroom border border-oak/30 shadow-sm hover:shadow-md transition-all duration-300 rounded-xl;
+  }
+
+  .stack-container {
+    position: relative;
+  }
+
+  .stack-item {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .stack-item.exiting {
+    transform: translateY(-100vh);
+    opacity: 0;
+  }
+
+  .stack-item.entering {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .scroll-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .scroll-reveal-fast {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .scroll-reveal-fast.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .parallax-slow {
+    transform: translateY(var(--scroll-y, 0));
+    transition: transform 0.1s ease-out;
+  }
+
+  .header-blur {
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(242, 224, 207, 0.85);
+    border-bottom: 1px solid rgba(180, 137, 84, 0.2);
+  }
 }

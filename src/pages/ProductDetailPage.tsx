@@ -3,15 +3,12 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   ArrowLeft,
   ShoppingBag,
-  Heart,
   Star,
-  Share2,
   Minus,
   Plus,
   Truck,
-  Shield,
-  RotateCcw,
-  ThumbsUp,
+  // Shield,
+  // RotateCcw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,18 +18,13 @@ import { addToCart, addGuestCartItem } from "@/store/slices/cartSlice";
 import { formatIndianPrice } from "@/utils/currency";
 import axiosinstance from "@/axiosinstance/axiosinstance";
 import { Product } from "@/types";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/seo/SEO";
+import { generateProductSchema, generateBreadcrumbSchema } from "@/utils/seoSchemas";
+import { fetchProducts } from "@/services/actions";
+import { ProductCard } from "@/components/product/ProductCard";
 
 
-interface Review {
-  id: number;
-  name: string;
-  rating: number;
-  date: string;
-  comment: string;
-  verified: boolean;
-  helpful: number;
-}
+// interface Review {}
 
 export function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -47,146 +39,11 @@ export function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [addingToCart, setAddingToCart] = useState(false);
   // const [activeTab, setActiveTab] = useState("reviews");
-  const [visibleReviews, setVisibleReviews] = useState(2);
+  // Reviews UI disabled; re-enable to use state below
+  // const [visibleReviews, setVisibleReviews] = useState(2);
 
-  const relatedProducts: Product[] = [
-    {
-      _id: "68b488f78dbaffb39227034e",
-      name: "tea cup",
-      description: "Classic tea cup for a refined tea experience.",
-      price: 299,
-      countInStock: 10,
-      category: "kosha",
-      image: "/assets/kosha/TEA CUP/tea-cup/1.png",
-      images: [
-        "/assets/kosha/TEA CUP/tea-cup/1.png",
-        "/assets/kosha/TEA CUP/tea-cup/2.png",
-      ],
-      rating: 0,
-      numReviews: 0,
-      user: "68937dc830a98a8ec17eb3d1",
-      createdAt: "2025-08-31T17:40:07.665Z",
-      updatedAt: "2025-08-31T17:40:07.665Z",
-      id: "68b488f78dbaffb39227034e",
-    },
-    {
-      _id: "68b488f78dbaffb39227034f",
-      name: "wine",
-      description: "Luxury wine glass for celebrations and fine dining.",
-      price: 499,
-      countInStock: 10,
-      category: "kosha",
-      image: "/assets/kosha/WINE/wine/1.png",
-      images: [
-        "/assets/kosha/WINE/wine/1.png",
-        "/assets/kosha/WINE/wine/2.png",
-      ],
-      rating: 0,
-      numReviews: 0,
-      user: "68937dc830a98a8ec17eb3d1",
-      createdAt: "2025-08-31T17:40:07.665Z",
-      updatedAt: "2025-08-31T17:40:07.665Z",
-      id: "68b488f78dbaffb39227034f",
-    },
-    {
-      _id: "68b488f78dbaffb39227034a",
-      name: "glass",
-      description: "Premium glassware for a sophisticated dining experience.",
-      price: 399,
-      countInStock: 8,
-      category: "kosha",
-      image: "/assets/kosha/GLASS/glass/1.png",
-      images: [
-        "/assets/kosha/GLASS/glass/1.png",
-        "/assets/kosha/GLASS/glass/2.png",
-      ],
-      rating: 0,
-      numReviews: 0,
-      user: "68937dc830a98a8ec17eb3d1",
-      createdAt: "2025-08-31T17:40:07.665Z",
-      updatedAt: "2025-09-04T08:32:39.296Z",
-      id: "68b488f78dbaffb39227034a",
-    },
-    {
-      _id: "68b488f78dbaffb39227034d",
-      name: "spoon",
-      description: "Elegant spoon, perfect for daily use or special occasions.",
-      price: 99,
-      countInStock: 10,
-      category: "kosha",
-      image: "/assets/kosha/SPOON FOLK/spoon/1.png",
-      images: ["/assets/kosha/SPOON FOLK/spoon/1.png"],
-      rating: 0,
-      numReviews: 0,
-      user: "68937dc830a98a8ec17eb3d1",
-      createdAt: "2025-08-31T17:40:07.665Z",
-      updatedAt: "2025-08-31T17:40:07.665Z",
-      id: "68b488f78dbaffb39227034d",
-    },
-    {
-      _id: "68b488f78dbaffb39227034b",
-      name: "katori",
-      description:
-        "Traditional katori bowls, perfect for serving sides and desserts.",
-      price: 199,
-      countInStock: 10,
-      category: "kosha",
-      image: "/assets/kosha/KATORI/katori/1.png",
-      images: [
-        "/assets/kosha/KATORI/katori/1.png",
-        "/assets/kosha/KATORI/katori/2.png",
-      ],
-      rating: 0,
-      numReviews: 0,
-      user: "68937dc830a98a8ec17eb3d1",
-      createdAt: "2025-08-31T17:40:07.665Z",
-      updatedAt: "2025-08-31T17:40:07.665Z",
-      id: "68b488f78dbaffb39227034b",
-    },
-  ];
+// const customerReviews: Review[] = [];
 
-  const customerReviews: Review[] = [
-    {
-      id: 1,
-      name: "Priya Sharma",
-      rating: 5,
-      date: "2 weeks ago",
-      comment:
-        "Absolutely love this geo bowl! The geometric design is stunning and it's perfect for serving salads. The quality is excellent and it feels very sturdy. Highly recommended!",
-      verified: true,
-      helpful: 12,
-    },
-    {
-      id: 2,
-      name: "Rajesh Kumar",
-      rating: 4,
-      date: "1 month ago",
-      comment:
-        "Good quality wooden bowl. The design is unique and adds a modern touch to our dining table. Only minor issue is that it requires careful hand washing.",
-      verified: true,
-      helpful: 8,
-    },
-    {
-      id: 3,
-      name: "Anita Patel",
-      rating: 5,
-      date: "3 weeks ago",
-      comment:
-        "Beautiful craftsmanship! The bowl arrived well-packaged and exactly as shown in the pictures. Perfect size for family meals. Will definitely buy more from YUCA.",
-      verified: false,
-      helpful: 15,
-    },
-    {
-      id: 4,
-      name: "Vikram Singh",
-      rating: 4,
-      date: "1 week ago",
-      comment:
-        "Nice bowl with elegant design. The wooden utensils that come with it are a nice touch. Good value for money. Delivery was quick too.",
-      verified: true,
-      helpful: 6,
-    },
-  ];
 
   // const LuxuryOrnament = ({ className = "" }: { className?: string }) => (
   //   <svg
@@ -232,34 +89,34 @@ export function ProductDetailPage() {
   //   </svg>
   // );
 
-  // const LuxuryDivider = ({ className = "" }: { className?: string }) => (
-  //   <svg
-  //     className={className}
-  //     viewBox="0 0 200 4"
-  //     fill="none"
-  //     xmlns="http://www.w3.org/2000/svg"
-  //   >
-  //     <line
-  //       x1="0"
-  //       y1="2"
-  //       x2="80"
-  //       y2="2"
-  //       stroke="currentColor"
-  //       strokeWidth="1"
-  //       opacity="0.3"
-  //     />
-  //     <circle cx="100" cy="2" r="2" fill="currentColor" opacity="0.6" />
-  //     <line
-  //       x1="120"
-  //       y1="2"
-  //       x2="200"
-  //       y2="2"
-  //       stroke="currentColor"
-  //       strokeWidth="1"
-  //       opacity="0.3"
-  //     />
-  //   </svg>
-  // );
+  const LuxuryDivider = ({ className = "" }: { className?: string }) => (
+    <svg
+      className={className}
+      viewBox="0 0 200 4"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <line
+        x1="0"
+        y1="2"
+        x2="80"
+        y2="2"
+        stroke="currentColor"
+        strokeWidth="1"
+        opacity="0.3"
+      />
+      <circle cx="100" cy="2" r="2" fill="currentColor" opacity="0.6" />
+      <line
+        x1="120"
+        y1="2"
+        x2="200"
+        y2="2"
+        stroke="currentColor"
+        strokeWidth="1"
+        opacity="0.3"
+      />
+    </svg>
+  );
 
   // const QualityStamp = ({ className = "" }: { className?: string }) => (
   //   <svg
@@ -295,7 +152,10 @@ export function ProductDetailPage() {
   //     />
   //   </svg>
   // );
-
+  const { products,  page } = useAppSelector((state) => state.products);
+  useEffect(() => {
+    dispatch(fetchProducts(page));
+  }, [dispatch, page]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -389,15 +249,15 @@ export function ProductDetailPage() {
     navigate("/cart");
   };
 
-  const handleLoadMore = () => {
-    if (visibleReviews < customerReviews.length) {
-      setVisibleReviews((prev) => Math.min(prev + 2, customerReviews.length));
-    } else {
-      setVisibleReviews(2);
-    }
-  };
+  // const handleLoadMore = () => {
+  //   if (visibleReviews < customerReviews.length) {
+  //     setVisibleReviews((prev) => Math.min(prev + 2, customerReviews.length));
+  //   } else {
+  //     setVisibleReviews(2);
+  //   }
+  // };
 
-  const isShowingAll = visibleReviews >= customerReviews.length;
+  // const isShowingAll = visibleReviews >= customerReviews.length;
 
   const images =
     product?.images && product.images.length > 0
@@ -407,34 +267,14 @@ export function ProductDetailPage() {
       : [];
   const inStock =
     product?.inStock ??
-    (product?.countInStock ? product.countInStock > 0 : true);
+    (product?.countInStock !== undefined ? product.countInStock > 0 : true);
   const productBrand = product?.brand || "YUCA";
-  const pdescription = product?.description || "Product description";
-  const pname = product?.name || "Product";
-  const pimage = images?.[0] || "/fallback.jpg";
-  const purl = `${import.meta.env.VITE_UI_URL}/product/${id}`;
 
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `${pname}`,
-          text: `${pdescription}`,
-          url: `${import.meta.env.VITE_UI_URL}/product/${id}`,
-        });
-      } catch (err) {
-        console.error(" Error sharing:", err);
-      }
-    } else {
-      alert(
-        "Sharing not supported on this browser. Please copy the link manually."
-      );
-    }
-  };
+  // const handleShare = async () => {};
   // rgb(184 159 134)
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8 min-h-screen bg-mushroom/95 backdrop-blur-sm">
+      <div className="container mx-auto px-4 pt-[140px] min-h-screen bg-mushroom/95 backdrop-blur-sm">
         <div className="animate-pulse">
           <div className="h-8 bg-gray-200 rounded w-1/4 mb-8"></div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -452,7 +292,7 @@ export function ProductDetailPage() {
 
   if (error || !product) {
     return (
-      <div className="container mx-auto px-4 py-8 min-h-screen bg-mushroom/95 backdrop-blur-sm">
+      <div className="container mx-auto px-4 pt-[140px] min-h-screen bg-mushroom/95 backdrop-blur-sm">
         <div className="text-center space-y-6">
           <h1 className="text-2xl luxury-heading">Product Not Found</h1>
           <p className="luxury-text-muted">
@@ -486,24 +326,36 @@ export function ProductDetailPage() {
     if (!str) return "";
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   }
+
+  // Generate product schema
+  const productSchema = product ? generateProductSchema(product) : undefined;
+  
+  // Generate breadcrumb schema
+  const breadcrumbSchema = product ? generateBreadcrumbSchema([
+    { name: "Home", url: "https://yucalifestyle.com" },
+    { name: capitalizeFirst(product.category), url: `https://yucalifestyle.com/category/${product.category}` },
+    { name: product.name, url: `https://yucalifestyle.com/product/${product.id}` }
+  ]) : undefined;
+
   return (
     <>
-      <Helmet>
-        <title>{`${pname} | YUCA`}</title>
-        <meta name="description" content={pdescription} />
-
-        <meta property="og:title" content={pname} />
-        <meta property="og:description" content={pdescription} />
-        <meta property="og:image" content={pimage} />
-        <meta property="og:url" content={purl} />
-        <meta property="og:type" content="product" />
-
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={pname} />
-        <meta name="twitter:description" content={pdescription} />
-        <meta name="twitter:image" content={pimage} />
-      </Helmet>
-      <div className="container mx-auto px-4 mt-4 py-8 min-h-screen bg-white rounded backdrop-blur-sm">
+      {product && (
+        <SEO
+          title={`${product.name} | YUCA Lifestyle`}
+          description={product.description}
+          keywords={`${product.name}, ${product.category}, luxury home decor, handcrafted, artisanal, YUCA lifestyle`}
+          image={product.image}
+          url={`https://yucalifestyle.com/product/${product.id}`}
+          type="product"
+          schema={productSchema}
+        />
+      )}
+      {breadcrumbSchema && (
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbSchema)}
+        </script>
+      )}
+      <div className="container mx-auto px-4 mt-4 mt-[100px] py-8 min-h-screen bg-white rounded backdrop-blur-sm">
         {/* Breadcrumb */}
 
         <div className="flex items-center space-x-2 mb-8">
@@ -547,6 +399,11 @@ export function ProductDetailPage() {
                   }
                 }}
               />
+              {!inStock && (
+                <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center">
+                  <span className="text-base font-semibold text-red-700 bg-white/90 px-3 py-1 rounded">Out of Stock</span>
+                </div>
+              )}
               {product.featured && (
                 <Badge className="absolute top-4 left-4 bg-autumnFern text-blanket shadow-lg">
                   Featured
@@ -591,7 +448,7 @@ export function ProductDetailPage() {
                 <Badge variant="outline" className="border-oak/30 text-oak">
                   {capitalizeFirst(product.category)}
                 </Badge>
-                <div className="flex items-center space-x-2">
+                {/* <div className="flex items-center space-x-2">
                   <Button
                     onClick={handleShare}
                     variant="ghost"
@@ -607,7 +464,7 @@ export function ProductDetailPage() {
                   >
                     <Heart className="h-4 w-4" />
                   </Button>
-                </div>
+                </div> */}
               </div>
 
               <h1 className="text-3xl font-serif luxury-heading">
@@ -634,9 +491,27 @@ export function ProductDetailPage() {
               </div>
 
               <div className="space-y-2">
-                <p className="text-3xl font-bold luxury-accent">
-                  {formatIndianPrice(product.price)}
-                </p>
+                {(() => {
+                  const current = product.price
+                  const mrp = Math.round(current / 0.9)
+                  return (
+                    <>
+                      <div className="flex items-baseline gap-3">
+                        <p className="text-3xl font-bold luxury-accent">
+                          {formatIndianPrice(current)}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3 text-muted-foreground">
+                        <span className="text-base line-through">
+                          {formatIndianPrice(mrp)}
+                        </span>
+                        <span className="text-xs rounded-full px-2.5 py-1 bg-autumnFern/15 text-autumnFern font-medium">
+                          10% OFF
+                        </span>
+                      </div>
+                    </>
+                  )
+                })()}
                 <p className="text-sm luxury-text-muted">by {productBrand}</p>
               </div>
 
@@ -667,8 +542,13 @@ export function ProductDetailPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setQuantity(quantity + 1)}
-                    disabled={!inStock}
+                    onClick={() => {
+                      const maxQty = product?.countInStock ?? Number.POSITIVE_INFINITY;
+                      setQuantity((q) => Math.min(q + 1, maxQty));
+                    }}
+                    disabled={
+                      !inStock || (product?.countInStock ? quantity >= product.countInStock : false)
+                    }
                     className="h-8 w-8 p-0 luxury-button-secondary"
                   >
                     <Plus className="h-3 w-3" />
@@ -685,7 +565,11 @@ export function ProductDetailPage() {
                       handleAddToCart();
                     }
                   }}
-                  disabled={!inStock || addingToCart}
+                  disabled={
+                    !inStock ||
+                    addingToCart ||
+                    (product?.countInStock ? quantity > product.countInStock : false)
+                  }
                   className="flex-1 luxury-button"
                   size="lg"
                 >
@@ -700,7 +584,11 @@ export function ProductDetailPage() {
                 </Button>
                 <Button
                   onClick={handleBuyNow}
-                  disabled={!inStock || addingToCart}
+                  disabled={
+                    !inStock ||
+                    addingToCart ||
+                    (product?.countInStock ? quantity > product.countInStock : false)
+                  }
                   variant="outline"
                   className="flex-1 luxury-button-secondary"
                   size="lg"
@@ -721,17 +609,17 @@ export function ProductDetailPage() {
                 <div className="flex items-center space-x-3">
                   <Truck className="h-5 w-5 text-autumnFern" />
                   <span className="luxury-text">
-                    Free shipping on orders over ₹2,000
+                    Free shipping on all orders.
                   </span>
                 </div>
-                <div className="flex items-center space-x-3">
+                {/* <div className="flex items-center space-x-3">
                   <Shield className="h-5 w-5 text-autumnFern" />
                   <span className="luxury-text">1-year warranty included</span>
-                </div>
-                <div className="flex items-center space-x-3">
+                </div> */}
+                {/* <div className="flex items-center space-x-3">
                   <RotateCcw className="h-5 w-5 text-autumnFern" />
                   <span className="luxury-text">30-day return policy</span>
-                </div>
+                </div> */}
               </div>
             </div>
 
@@ -752,11 +640,11 @@ export function ProductDetailPage() {
             </div>
           </div>
         </div>
-        {/* <div className="flex mt-8 justify-center" >
+        <div className="flex mt-8 justify-center" >
         {[...Array(5)].map((_, i) => (
-          <LuxuryOrnament key={i} className="h-4 text-amber-600" />
+          <LuxuryDivider key={i} className="h-4 text-amber-600" />
         ))}
-        </div> */}
+        </div>
         {/* Related Products Section */}
         <div className="mt-16">
           <section className="bg-white rounded-lg p-8 shadow-sm">
@@ -765,43 +653,11 @@ export function ProductDetailPage() {
             </h2>
 
             <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide">
-              {relatedProducts.map((product) => (
-                <div
-                  key={product.id}
-                  className="group cursor-pointer flex-shrink-0 w-64"
-                >
-                  <div className="relative bg-stone-50 rounded-lg p-4 mb-4 overflow-hidden">
-                    <img
-                      src={product.image || "/placeholder.svg"}
-                      alt={product.name}
-                      className="w-full h-48 object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Heart className="w-4 h-4 text-gray-600" />
-                    </button>
-                  </div>
-
-                  <div className="space-y-2">
-                    <p className="text-xs text-amber-600 font-medium uppercase tracking-wide">
-                      {capitalizeFirst(product.category)}
-                    </p>
-                    <h3 className="text-lg font-medium text-gray-800 group-hover:text-amber-700 transition-colors">
-                      {capitalizeFirst(product.name)}
-                    </h3>
-
-                    <div className="flex items-center gap-2">
-                      {renderStars(product.rating)}
-                      <span className="text-sm text-gray-500">
-                        ({product.numReviews})
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg font-semibold text-gray-800">
-                        ₹{product.price}
-                      </span>
-                    </div>
-                  </div>
+              {products.slice(0, 5).map((p) => (
+                <div key={p._id || p.id} className="flex-shrink-0 w-64">
+                  {/* Reuse the standard ProductCard for consistency */}
+                  {/* @ts-ignore types align at runtime between slices and ProductCard */}
+                  <ProductCard product={p as any} />
                 </div>
               ))}
             </div>
@@ -809,10 +665,10 @@ export function ProductDetailPage() {
         </div>
 
         {/* Customer Reviews Section */}
-        <section className="bg-white rounded-lg p-8 shadow-sm">
-          <div className="flex items-center justify-between mb-8">
+        {/* <section className="bg-white rounded-lg p-8 shadow-sm"> */}
+          {/* <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-medium text-amber-700">
-              Customer Reviews
+              Customer Testimonials for YUCA
             </h2>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
@@ -823,10 +679,10 @@ export function ProductDetailPage() {
                 </span>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Rating Breakdown */}
-          <div className="mb-8 p-6 bg-stone-50 rounded-lg">
+          {/* <div className="mb-8 p-6 bg-stone-50 rounded-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h3 className="font-medium text-gray-800 mb-4">
@@ -900,10 +756,10 @@ export function ProductDetailPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Individual Reviews */}
-          <div className="space-y-6">
+          {/* <div className="space-y-6">
             {customerReviews.slice(0, visibleReviews).map((review) => (
               <div
                 key={review.id}
@@ -959,18 +815,18 @@ export function ProductDetailPage() {
                 </div>
               </div>
             ))}
-          </div>
+          </div> */}
 
           {/* Load More Button */}
-          <div className="text-center mt-8">
+          {/* <div className="text-center mt-8">
             <button
               onClick={handleLoadMore}
               className="px-6 py-3 border border-amber-700 text-amber-700 rounded-lg hover:bg-amber-50 transition-colors"
             >
               {isShowingAll ? "Show Less" : "Load More Reviews"}
             </button>
-          </div>
-        </section>
+          </div> */}
+        {/* </section> */}
       </div>
     </>
   );
