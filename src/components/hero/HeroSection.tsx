@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -5,8 +6,21 @@ import desktopVideo from "../../assets/banner.mp4";
 import mobileVideo from "../../assets/mbBanner.mp4";
 
 export function HeroSection() {
+  const [desktopVideoLoaded, setDesktopVideoLoaded] = useState(false);
+  const [mobileVideoLoaded, setMobileVideoLoaded] = useState(false);
+
   return (
     <section className="relative overflow-hidden min-h-screen flex items-end justify-center">
+      {/* Shimmer Loading Effect */}
+      {(!desktopVideoLoaded || !mobileVideoLoaded) && (
+        <div className="absolute inset-0 z-0 bg-gradient-to-br from-blanket-100 via-mushroom to-blanket-200">
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-blanket/40 to-transparent" />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-kimber/40 via-transparent to-transparent" />
+        </div>
+      )}
+
       {/* Background Video */}
       <div className="absolute inset-0 z-0">
         {/* Desktop Video - Hidden on mobile */}
@@ -15,7 +29,10 @@ export function HeroSection() {
           muted
           loop
           playsInline
-          className="hidden md:block w-full h-full object-cover"
+          onLoadedData={() => setDesktopVideoLoaded(true)}
+          className={`hidden md:block w-full h-full object-cover transition-opacity duration-700 ${
+            desktopVideoLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
         >
           <source src={desktopVideo} type="video/mp4" />
         </video>
@@ -26,17 +43,13 @@ export function HeroSection() {
           muted
           loop
           playsInline
-          className="block md:hidden w-full h-full object-cover"
+          onLoadedData={() => setMobileVideoLoaded(true)}
+          className={`block md:hidden w-full h-full object-cover transition-opacity duration-700 ${
+            mobileVideoLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
         >
           <source src={mobileVideo} type="video/mp4" />
         </video>
-
-        {/* Fallback image if videos fail to load */}
-        <img
-          src="https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg"
-          alt="Luxury sustainable living"
-          className="w-full h-full object-cover absolute inset-0 -z-10"
-        />
 
         {/* Enhanced overlay with brand-inspired gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-kimber/60 via-kimber/30 to-transparent" />
