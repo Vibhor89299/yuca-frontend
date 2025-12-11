@@ -1,0 +1,7 @@
+{
+  "name": "yuca-luxury-ecommerce",
+
+  "assets": {
+    "directory": "./dist"
+  }
+}
