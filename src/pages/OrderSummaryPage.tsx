@@ -119,7 +119,7 @@ export function OrderSummaryPage() {
     const mrpEach = Math.round(unit / 0.9);
     return sum + mrpEach * (it.quantity ?? 0);
   }, 0);
-  const displayDiscount = Math.max(0, mrpTotal - orderTotal);
+  // const displayDiscount = Math.max(0, mrpTotal - orderTotal);
 
   return (
     <div className="container mx-auto px-4 pt-[120px] text-white py-8 min-h-screen  backdrop-blur-sm">

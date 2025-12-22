@@ -54,7 +54,7 @@ export function CartPage() {
   }, [navigate]);
 
   // Memoized pricing calculations for display-only discount (backend prices unchanged)
-  const { mrpTotal, displayDiscount } = useMemo(() => {
+  const { mrpTotal } = useMemo(() => {
     const mrp = items.reduce((sum, item) => {
       const mrpEach = Math.round(item.product.price / 0.9);
       return sum + mrpEach * item.quantity;

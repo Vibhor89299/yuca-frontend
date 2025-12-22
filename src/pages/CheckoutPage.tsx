@@ -103,7 +103,7 @@ export function CheckoutPage() {
 
   const subtotal = total;
   const mrpSubtotal = Math.round(subtotal / 0.9);
-  const discount = mrpSubtotal - subtotal; // 10% display discount
+  // const discount = mrpSubtotal - subtotal; // 10% display discount
   const shipping = 0;
   // Match cart breakdown (prices inclusive of GST)
   const tax = 0;
