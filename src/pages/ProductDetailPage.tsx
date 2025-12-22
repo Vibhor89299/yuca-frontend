@@ -503,7 +503,7 @@ export function ProductDetailPage() {
                           {formatIndianPrice(mrp)}
                         </span>
                         <span className="text-xs rounded-full px-2.5 py-1 bg-autumnFern/15 text-autumnFern font-medium">
-                          10% OFF
+                          MRP
                         </span>
                       </div>
                     </>

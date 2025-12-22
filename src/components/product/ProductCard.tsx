@@ -221,7 +221,7 @@ export function ProductCard({ product }: ProductCardProps) {
                             ? 'bg-autumnFern/15 text-autumnFern' 
                             : 'bg-gray-200 text-gray-500'
                         }`}>
-                          10% OFF
+                          MRP
                         </span>
                       </div>
                     </>

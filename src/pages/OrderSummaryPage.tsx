@@ -203,7 +203,7 @@ export function OrderSummaryPage() {
                                 {formatIndianPrice(mrpEach)}
                               </span>
                               <span className="text-[10px] rounded-full px-2 py-0.5 bg-autumnFern/15 text-autumnFern font-medium">
-                                10% OFF
+                                MRP
                               </span>
                             </div>
                           </>
