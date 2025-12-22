@@ -299,10 +299,6 @@ export function OrderSummaryPage() {
                   <span>MRP</span>
                   <span className="line-through text-muted-foreground">{formatIndianPrice(mrpTotal)}</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span>Diwali Discount (10%)</span>
-                  <span className="text-autumnFern">- {formatIndianPrice(displayDiscount)}</span>
-                </div>
                 <Separator />
                 <div className="flex justify-between text-sm font-medium">
                   <span>Subtotal (Inclusive of GST)</span>

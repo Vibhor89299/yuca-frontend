@@ -192,10 +192,7 @@ export function CartPage() {
                   <span>MRP ({itemCount} items)</span>
                   <span className="line-through text-muted-foreground">{formatIndianPrice(mrpTotal)}</span>
                 </div>
-                <div className="flex justify-between text-sm luxury-text">
-                  <span>Diwali Discount (10%)</span>
-                  <span className="text-autumnFern">- {formatIndianPrice(displayDiscount)}</span>
-                </div>
+              
                 <Separator className="luxury-divider" />
                 <div className="flex justify-between text-sm luxury-text font-medium">
                   <span>Subtotal (Inclusive of GST)</span>

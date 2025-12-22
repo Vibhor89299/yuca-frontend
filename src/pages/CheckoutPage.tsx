@@ -436,10 +436,6 @@ export function CheckoutPage() {
                   <span>MRP ({itemCountCalc} items)</span>
                   <span className="line-through text-muted-foreground">{formatIndianPrice(mrpSubtotal, { compact: false })}</span>
                 </div>
-                <div className="flex justify-between text-sm luxury-text">
-                  <span>Diwali Discount (10%)</span>
-                  <span className="text-autumnFern">- {formatIndianPrice(discount, { compact: false })}</span>
-                </div>
                 <Separator className="luxury-divider" />
                 <div className="flex justify-between text-sm luxury-text font-medium">
                   <span>Subtotal (Inclusive of GST)</span>
