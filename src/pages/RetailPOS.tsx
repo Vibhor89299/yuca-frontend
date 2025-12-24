@@ -78,7 +78,7 @@ const RetailPOS: React.FC = () => {
             : item
         );
       }
-      return [...prevCart, { product, quantity: 1, price: product.price }];
+      return [...prevCart, { product, quantity: 1, price: product.retailPrice }];
     });
     toast.success(`${product.name} added to cart`);
   };
@@ -234,7 +234,7 @@ const RetailPOS: React.FC = () => {
                           <p className="text-xs text-gray-600 line-clamp-2">{product.description}</p>
                         </div>
                         <Badge variant="outline" className="ml-2 text-xs">
-                          ₹{product.price}
+                          ₹{product.retailPrice}
                         </Badge>
                       </div>
                       <div className="flex items-center justify-between">

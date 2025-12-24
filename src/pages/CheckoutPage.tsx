@@ -102,7 +102,7 @@ export function CheckoutPage() {
   }, [dispatch]);
 
   const subtotal = total;
-  const mrpSubtotal = Math.round(subtotal / 0.9);
+  const mrpSubtotal = items.reduce((sum, item) => sum + item.product.mrp * item.quantity, 0);
   // const discount = mrpSubtotal - subtotal; // 10% display discount
   const shipping = 0;
   // Match cart breakdown (prices inclusive of GST)
@@ -142,7 +142,7 @@ export function CheckoutPage() {
         items: items.map((item) => ({
           productId: item.product._id || item.product.id,
           quantity: item.quantity,
-          price: item.product.price,
+          price: item.product.retailPrice,
         })),
         shippingAddress,
         paymentMethod: "razorpay",
@@ -425,7 +425,7 @@ export function CheckoutPage() {
                       </p>
                     </div>
                     <div className="text-sm font-medium luxury-text">
-                      {formatIndianPrice(item.product.price * item.quantity)}
+                      {formatIndianPrice(item.product.retailPrice * item.quantity)}
                     </div>
                   </div>
                 ))}

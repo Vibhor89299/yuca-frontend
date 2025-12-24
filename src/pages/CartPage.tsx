@@ -56,8 +56,7 @@ export function CartPage() {
   // Memoized pricing calculations for display-only discount (backend prices unchanged)
   const { mrpTotal } = useMemo(() => {
     const mrp = items.reduce((sum, item) => {
-      const mrpEach = Math.round(item.product.price / 0.9);
-      return sum + mrpEach * item.quantity;
+      return sum + item.product.mrp * item.quantity;
     }, 0);
     return {
       mrpTotal: mrp,
@@ -127,7 +126,7 @@ export function CartPage() {
                       {item.product.brand}
                     </p>
                     <p className="text-lg font-bold luxury-accent">
-                      {formatIndianPrice(item.product.price)}
+                      {formatIndianPrice(item.product.retailPrice)}
                     </p>
                   </div>
 
@@ -170,7 +169,7 @@ export function CartPage() {
                     </div>
 
                     <p className="text-sm font-medium luxury-accent">
-                      {formatIndianPrice(item.product.price * item.quantity)}
+                      {formatIndianPrice(item.product.retailPrice * item.quantity)}
                     </p>
                   </div>
                 </div>

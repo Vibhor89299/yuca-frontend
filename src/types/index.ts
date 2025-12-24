@@ -3,7 +3,8 @@ export interface Product {
   id?: string; // For backwards compatibility
   name: string;
   description: string;
-  price: number;
+  retailPrice: number;
+  mrp: number;
   countInStock: number;
   category: string;
   image: string;

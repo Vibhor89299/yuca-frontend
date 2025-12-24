@@ -237,7 +237,7 @@ export default function OrderHistoryPage() {
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium luxury-text truncate">{item?.product?.name || "Item"}</p>
                             <p className="text-xs luxury-text-muted">
-                              Qty: {item?.quantity ?? 0} × {formatIndianPrice(item?.product?.price ?? 0)}
+                              Qty: {item?.quantity ?? 0} × {formatIndianPrice(item?.product?.retailPrice ?? 0)}
                             </p>
                           </div>
                         </div>

@@ -110,7 +110,7 @@ const cartSlice = createSlice({
       } else {
         state.items.push({ id: product.id || product._id, product, quantity });
       }
-      state.total = state.items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
+      state.total = state.items.reduce((sum, i) => sum + i.product.retailPrice * i.quantity, 0);
       state.itemCount = state.items.reduce((sum, i) => sum + i.quantity, 0);
       saveCartToLocalStorage(state);
     },
@@ -118,13 +118,13 @@ const cartSlice = createSlice({
       const { id, quantity } = action.payload;
       const item = state.items.find(i => i.id === id);
       if (item) item.quantity = quantity;
-      state.total = state.items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
+      state.total = state.items.reduce((sum, i) => sum + i.product.retailPrice * i.quantity, 0);
       state.itemCount = state.items.reduce((sum, i) => sum + i.quantity, 0);
       saveCartToLocalStorage(state);
     },
     removeGuestCartItem(state, action) {
       state.items = state.items.filter(i => i.id !== action.payload);
-      state.total = state.items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
+      state.total = state.items.reduce((sum, i) => sum + i.product.retailPrice * i.quantity, 0);
       state.itemCount = state.items.reduce((sum, i) => sum + i.quantity, 0);
       saveCartToLocalStorage(state);
     },

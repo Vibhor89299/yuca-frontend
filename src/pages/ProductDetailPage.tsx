@@ -489,8 +489,8 @@ export function ProductDetailPage() {
 
               <div className="space-y-2">
                 {(() => {
-                  const current = product.price
-                  const mrp = Math.round(current / 0.9)
+                  const current = product.retailPrice
+                  const mrp = product.mrp
                   return (
                     <>
                       <div className="flex items-baseline gap-3">

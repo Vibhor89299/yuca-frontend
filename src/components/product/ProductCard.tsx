@@ -201,8 +201,8 @@ export function ProductCard({ product }: ProductCardProps) {
             <div className="flex items-end justify-between pt-3">
               <div className="space-y-1">
                 {(() => {
-                  const current = product.price
-                  const mrp = Math.round(current / 0.9)
+                  const current = product.retailPrice
+                  const mrp = product.mrp
                   return (
                     <>
                       <div className="flex items-baseline gap-2">
@@ -217,8 +217,8 @@ export function ProductCard({ product }: ProductCardProps) {
                       }`}>
                         <span className="text-xs line-through">₹{mrp.toFixed(2)}</span>
                         <span className={`text-[11px] rounded-full px-2 py-0.5 font-medium whitespace-nowrap ${
-                          inStock 
-                            ? 'bg-autumnFern/15 text-autumnFern' 
+                          inStock
+                            ? 'bg-autumnFern/15 text-autumnFern'
                             : 'bg-gray-200 text-gray-500'
                         }`}>
                           MRP

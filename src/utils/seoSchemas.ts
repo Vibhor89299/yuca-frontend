@@ -15,7 +15,7 @@ export const generateProductSchema = (product: any) => {
       "@type": "Offer",
       "url": `https://yucalifestyle.com/product/${product.id}`,
       "priceCurrency": "INR",
-      "price": product.price,
+      "price": product.retailPrice,
       "availability": product.countInStock > 0 
         ? "https://schema.org/InStock" 
         : "https://schema.org/OutOfStock",
@@ -83,7 +83,7 @@ export const generateCollectionSchema = (category: string, products: any[]) => {
           "image": product.image,
           "offers": {
             "@type": "Offer",
-            "price": product.price,
+            "price": product.retailPrice,
             "priceCurrency": "INR"
           }
         }

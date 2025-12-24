@@ -51,7 +51,7 @@ export const useStore = create<Store>()(
 
         // Update totals
         const newItems = get().items;
-        const newTotal = newItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+        const newTotal = newItems.reduce((sum, item) => sum + (item.product.retailPrice * item.quantity), 0);
         const newItemCount = newItems.reduce((sum, item) => sum + item.quantity, 0);
 
         set({ total: newTotal, itemCount: newItemCount });
@@ -64,7 +64,7 @@ export const useStore = create<Store>()(
         
         // Update totals
         const newItems = get().items;
-        const newTotal = newItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+        const newTotal = newItems.reduce((sum, item) => sum + (item.product.retailPrice * item.quantity), 0);
         const newItemCount = newItems.reduce((sum, item) => sum + item.quantity, 0);
         
         set({ total: newTotal, itemCount: newItemCount });
@@ -86,7 +86,7 @@ export const useStore = create<Store>()(
         
         // Update totals
         const newItems = get().items;
-        const newTotal = newItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+        const newTotal = newItems.reduce((sum, item) => sum + (item.product.retailPrice * item.quantity), 0);
         const newItemCount = newItems.reduce((sum, item) => sum + item.quantity, 0);
         
         set({ total: newTotal, itemCount: newItemCount });

@@ -115,8 +115,7 @@ export function OrderSummaryPage() {
   const itemsSafe = (currentOrder.items || []) as any[];
   const orderTotal = (currentOrder.totalPrice ?? 0) as number;
   const mrpTotal = itemsSafe.reduce((sum, it) => {
-    const unit = (it.product?.price ?? it.price ?? 0) as number;
-    const mrpEach = Math.round(unit / 0.9);
+    const mrpEach = (it.product?.mrp ?? it.mrp ?? it.product?.retailPrice ?? it.price ?? 0) as number;
     return sum + mrpEach * (it.quantity ?? 0);
   }, 0);
   // const displayDiscount = Math.max(0, mrpTotal - orderTotal);
@@ -191,8 +190,8 @@ export function OrderSummaryPage() {
                     </p>
                     <div className="flex flex-col items-start gap-1">
                       {(() => {
-                        const unit = (item.product?.price ?? (item as any).price ?? 0) as number;
-                        const mrpEach = Math.round(unit / 0.9);
+                        const unit = (item.product?.retailPrice ?? (item as any).price ?? 0) as number;
+                        const mrpEach = (item.product?.mrp ?? (item as any).mrp ?? unit) as number;
                         return (
                           <>
                             <span className="text-sm font-semibold text-foreground">
@@ -213,9 +212,9 @@ export function OrderSummaryPage() {
                   </div>
                   <div className="text-sm font-medium luxury-text text-right">
                     {(() => {
-                      const unit = (item.product?.price ?? (item as any).price ?? 0) as number;
+                      const unit = (item.product?.retailPrice ?? (item as any).price ?? 0) as number;
                       const qty = (item.quantity ?? 0) as number;
-                      const mrpEach = Math.round(unit / 0.9);
+                      const mrpEach = (item.product?.mrp ?? (item as any).mrp ?? unit) as number;
                       const mrpLine = mrpEach * qty;
                       const line = unit * qty;
                       return (
