@@ -129,11 +129,11 @@ export function LandingPage() {
                     {/* Product Gallery - Horizontal Scroll */}
                     <section className="py-20 md:py-32 relative bg-transparent overflow-hidden">
                         <div className="max-w-[1440px] mx-auto flex items-start">
-                            {/* Left Column - Vertical Label (Fixed Width, Tight Spacing) */}
-                            <div className="w-14 md:w-20 lg:w-28 flex-shrink-0 flex flex-col items-center pt-24 md:pt-32 lg:pt-40">
+                            {/* Left Column - Vertical Label (Fixed Width, Absolute Precision) */}
+                            <div className="w-12 md:w-16 lg:w-24 flex-shrink-0 flex flex-col items-center pt-24 md:pt-32 lg:pt-36">
                                 <div className="writing-mode-vertical transform -rotate-180">
                                     <span
-                                        className="text-kimber uppercase"
+                                        className="text-kimber uppercase whitespace-nowrap"
                                         style={{
                                             fontFamily: "'Philosopher', sans-serif",
                                             fontWeight: '400',
@@ -148,12 +148,12 @@ export function LandingPage() {
                                 </div>
                             </div>
 
-                            {/* Right Column - Scrolling Container (Clipped at the boundary) */}
+                            {/* Right Column - Scrolling Container (Hard Cut Clipping) */}
                             <div
                                 ref={scrollContainerRef}
-                                className="flex-grow overflow-x-auto overflow-y-hidden scrollbar-hide pr-4"
+                                className="flex-grow overflow-x-auto overflow-y-hidden scrollbar-hide"
                             >
-                                <div className="flex gap-4 md:gap-8 pb-10">
+                                <div className="flex gap-4 md:gap-6 pb-10">
                                     {[
                                         { name: '', price: '', image: bowls },
                                         { name: '', price: '', image: enamel },
