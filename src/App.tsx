@@ -10,6 +10,7 @@ import { PageLoadingFallback } from '@/components/PageLoadingFallback';
 
 // Eagerly loaded pages (critical path)
 import { HomePage } from '@/pages/HomePage';
+import { LandingPage } from '@/pages/LandingPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 
 // Lazily loaded pages (non-critical)
@@ -39,7 +40,8 @@ function App() {
           <main className="flex-1 z-10">
             <Suspense fallback={<PageLoadingFallback />}>
               <Routes>
-                <Route path="/" element={<HomePage />} />
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/landing" element={<HomePage />} />
                 <Route path="/product/:id" element={<ProductDetailPage />} />
                 <Route path="/category/kosha" element={<CategoryPage />} />
                 <Route path="/cart" element={<CartPage />} />

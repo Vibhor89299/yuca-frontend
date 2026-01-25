@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 export function Footer() {
   return (
-    <footer className="bg-kimber border-t border-oak mt-16">
+    <footer className="bg-kimber border-t border-oak">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand Section */}
@@ -120,7 +120,7 @@ export function Footer() {
             </p>
             <div className="text-sm text-blanket/70">
               <strong>Delivery Timeline:</strong> Delhi NCR: 2-3 business days |
-              Pan India: 7-8 business days 
+              Pan India: 7-8 business days
             </div>
           </div>
           <div className="flex space-x-6 mt-4 md:mt-0">
