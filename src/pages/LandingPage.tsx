@@ -2,7 +2,7 @@ import { SEO } from '@/components/seo/SEO';
 import { useEffect, useRef, useState } from 'react';
 import bgImgHero from '@/assets/hero-img.png';
 import candlesHero from '@/assets/candles_hero.jpeg';
-// import bowlHero from '@/assets/bowl_hero.jpeg'
+import bowlHero from '@/assets/bowl_hero.jpeg'
 import logo from '@/assets/logo.jpg';
 import bg from '@/assets/bg.svg';
 import { Button } from '@/components/ui/button';
@@ -266,9 +266,15 @@ export function LandingPage() {
 
                                 {/* Right - Dark Block */}
                                 <div
-                                    className="bg-[#331D12] scroll-reveal w-full order-1 md:order-2"
+                                    className="scroll-reveal w-full overflow-hidden order-1 md:order-2"
                                     style={{ aspectRatio: '840 / 600' }}
-                                />
+                                >
+                                    <img
+                                        src={bowlHero}
+                                        alt="Bowls collection"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
                                 
                             </div>
                         </div>
