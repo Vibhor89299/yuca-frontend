@@ -459,4 +459,61 @@
     writing-mode: vertical-rl;
     text-orientation: mixed;
   }
+
+  /* Header State Utilities */
+  .header-transparent {
+    background: transparent;
+    border-bottom-color: transparent;
+    backdrop-filter: none;
+  }
+
+  .header-solid {
+    background: rgba(44, 37, 33, 0.95);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border-bottom-color: rgba(180, 137, 84, 0.1);
+  }
+
+  /* Announcement Strip */
+  .announcement-strip {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+}
+
+/* Global Animations & Utilities */
+@layer utilities {
+  .page-enter {
+    @apply animate-fade-in;
+  }
+
+  .luxury-section-divider {
+    @apply flex items-center justify-center py-8;
+  }
+
+  .luxury-section-divider::before,
+  .luxury-section-divider::after {
+    content: '';
+    @apply flex-1 h-px bg-oak/20;
+  }
+
+  /* Product Card Hover Zoom */
+  .product-hover-zoom img {
+    @apply transition-transform duration-700;
+  }
+
+  .product-hover-zoom:hover img {
+    @apply scale-110;
+  }
+
+  /* Typography Utilities */
+  .text-hero {
+    @apply text-5xl md:text-7xl lg:text-8xl font-serif tracking-tight text-oak;
+    font-family: 'Butler', serif;
+  }
+
+  .text-section-title {
+    @apply text-4xl md:text-5xl text-kimber tracking-tight uppercase;
+    font-family: 'Philosopher', sans-serif;
+  }
 }

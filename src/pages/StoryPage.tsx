@@ -1,9 +1,10 @@
 import type React from "react"
-import { useCallback,  useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { ArrowDown, Leaf, Heart, Globe, Sparkles, Users} from "lucide-react"
+import { ArrowDown, Leaf, Heart, Globe, Sparkles, Users } from "lucide-react"
 
-import {  useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+import bg from "@/assets/bg.svg"
 const ethosData = [
   {
     id: 1,
@@ -59,18 +60,18 @@ export default function OurStoryPage() {
   const stackContainerRef = useRef<HTMLDivElement>(null)
   const observerRef = useRef<IntersectionObserver | null>(null)
   const navigate = useNavigate()
-  
+
   // Check if mobile on mount and window resize
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 1024) // lg breakpoint
     }
-    
+
     checkIfMobile()
     window.addEventListener('resize', checkIfMobile)
     return () => window.removeEventListener('resize', checkIfMobile)
   }, [])
-  
+
   const handleScroll = useCallback(() => {
     setScrollY(window.scrollY)
 
@@ -95,7 +96,7 @@ export default function OurStoryPage() {
         const containerTop = container.offsetTop
         const containerHeight = container.offsetHeight
         const windowHeight = window.innerHeight
-        
+
         const scrollableHeight = containerHeight - windowHeight
         const scrollProgress = Math.max(0, Math.min(1, (window.scrollY - containerTop) / scrollableHeight))
         const activeIndex = Math.floor(scrollProgress * (ethosData.length - 1))
@@ -147,7 +148,12 @@ export default function OurStoryPage() {
 
 
   return (
-    <div className="min-h-screen bg-blanket scrollbar-hide">
+    <div className="min-h-screen bg-blanket scrollbar-hide" style={{
+      backgroundImage: `url(${bg})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed'
+    }}>
       {/* Hero Section */}
       <section className="min-h-[90vh] sm:min-h-[100vh] flex items-center justify-center relative overflow-hidden luxury-gradient-hero pt-16 md:pt-0 px-4 sm:px-6">
         <div
@@ -191,27 +197,24 @@ export default function OurStoryPage() {
         </div>
       </section>
       <div ref={stackContainerRef} className="relative">
-      {ethosData.map((ethos, index) => {
+        {ethosData.map((ethos, index) => {
           const isActive = isMobile ? true : index === currentEthos
           const isPast = isMobile ? false : index < currentEthos
 
           return (
             <div
               key={ethos.id}
-              className={`relative w-full min-h-[90vh] sm:min-h-screen flex items-center justify-center py-16 sm:py-24 ${
-                isMobile ? 'opacity-100 relative' : `stack-item ${isPast ? "exiting" : "entering"} ${isActive ? 'opacity-100' : 'opacity-0 absolute inset-0 pointer-events-none'}`
-              } ${index === 0 ? 'pt-24 md:pt-32' : ''}`}
+              className={`relative w-full min-h-[90vh] sm:min-h-screen flex items-center justify-center py-16 sm:py-24 ${isMobile ? 'opacity-100 relative' : `stack-item ${isPast ? "exiting" : "entering"} ${isActive ? 'opacity-100' : 'opacity-0 absolute inset-0 pointer-events-none'}`
+                } ${index === 0 ? 'pt-24 md:pt-32' : ''} bg-white/40 backdrop-blur-md border-y border-oak/10`}
               style={{
                 zIndex: isMobile ? 1 : (isActive ? 10 : 1),
-                background: index % 2 === 0 ? "#f2e0cf" : "#faf8f6",
                 transition: isMobile ? 'none' : 'opacity 0.5s ease-in-out',
               }}
             >
               <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full py-8 md:py-12">
                 <div
-                  className={`grid lg:grid-cols-2 gap-8 md:gap-16 items-center ${
-                    index % 2 === 0 ? "" : "lg:grid-flow-col-dense"
-                  }`}
+                  className={`grid lg:grid-cols-2 gap-8 md:gap-16 items-center ${index % 2 === 0 ? "" : "lg:grid-flow-col-dense"
+                    }`}
                 >
                   {/* Content */}
                   <div className={`space-y-8 ${index % 2 === 0 ? "" : "lg:col-start-2"}`}>
@@ -262,16 +265,17 @@ export default function OurStoryPage() {
         })}
       </div>
       {/* Summary Section */}
-      <section className={`py-16 md:py-24 bg-kimber text-blanket relative ${isMobile ? 'z-10' : 'z-20'}`}>
-        <div className="flex justify-center items-center max-w-4xl min-h-[60vh] mx-auto py-8 px-6 text-center">
+      <section className={`py-16 md:py-24 relative ${isMobile ? 'z-10' : 'z-20'}`}>
+        <div className="absolute inset-0 bg-kimber/95 backdrop-blur-sm"></div>
+        <div className="relative z-10 flex justify-center items-center max-w-4xl min-h-[50vh] mx-auto py-8 px-6 text-center text-blanket">
           <div className="scroll-reveal">
-            <h2 className="text-4xl md:text-5xl font-serif font-semibold mb-8 text-balance">In Summary: YUCA is...</h2>
-            <p className="text-xl leading-relaxed mb-12 text-pretty opacity-90">
+            <h2 className="text-4xl md:text-5xl font-serif font-light mb-8 text-balance tracking-wide">In Summary: YUCA is...</h2>
+            <p className="text-xl leading-relaxed mb-12 text-pretty font-light opacity-90">
               A soulful lifestyle brand that invites you to live consciously, feel deeply, and stay rooted. It's for the
               modern seeker who loves India, but doesn't want it loud. It's for those who choose slow over speed,
               meaning over noise.
             </p>
-            <Button onClick={()=>navigate('/category/kosha')} className="bg-oak hover:bg-oak-600 text-blanket px-8 py-4 rounded-full text-lg transition-all duration-300 transform hover:scale-105">
+            <Button onClick={() => navigate('/category/kosha')} className="bg-autumnFern hover:bg-autumnFern-600 text-white px-10 py-6 h-auto rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-autumnFern/20 tracking-wider uppercase">
               Explore Our Products
             </Button>
           </div>
@@ -291,11 +295,10 @@ export default function OurStoryPage() {
                     window.scrollTo({ top: scrollTarget, behavior: "smooth" })
                   }
                 }}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  currentEthos === index
-                    ? "bg-autumnFern scale-125 shadow-lg"
-                    : "bg-oak/40 hover:bg-oak/60 hover:scale-110"
-                }`}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${currentEthos === index
+                  ? "bg-autumnFern scale-125 shadow-lg"
+                  : "bg-oak/40 hover:bg-oak/60 hover:scale-110"
+                  }`}
                 aria-label={`Go to ${ethos.title} section`}
                 aria-current={currentEthos === index ? "true" : "false"}
               />

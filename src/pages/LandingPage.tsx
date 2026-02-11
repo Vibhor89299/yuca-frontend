@@ -1,14 +1,40 @@
 import { SEO } from '@/components/seo/SEO';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import bgImgHero from '@/assets/hero-img.png';
+import candlesHero from '@/assets/candles_hero.jpeg';
+// import bowlHero from '@/assets/bowl_hero.jpeg'
 import logo from '@/assets/logo.jpg';
 import bg from '@/assets/bg.svg';
-import bowls from '@/assets/image 8.png';
-import enamel from '@/assets/image 2.png';
-import bowl from '@/assets/image 7.png';
+import { Button } from '@/components/ui/button';
+import axiosinstance from '@/axiosinstance/axiosinstance';
+
+import { useNavigate } from 'react-router-dom';
+import { formatIndianPrice } from '@/utils/currency';
+
+interface Product {
+    _id: string;
+    name: string;
+    retailPrice: number;
+    image: string;
+}
 
 export function LandingPage() {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const [newArrivals, setNewArrivals] = useState<Product[]>([]);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchNewArrivals = async () => {
+            try {
+                const response = await axiosinstance.get('/api/products/new-arrivals');
+                setNewArrivals(response.data);
+            } catch (error) {
+                console.error('Error fetching new arrivals:', error);
+            }
+        };
+
+        fetchNewArrivals();
+    }, []);
 
     useEffect(() => {
         const observerOptions = {
@@ -29,7 +55,7 @@ export function LandingPage() {
         });
 
         return () => observer.disconnect();
-    }, []);
+    }, [newArrivals]);
 
     const landingSchema = {
         "@context": "https://schema.org",
@@ -67,11 +93,11 @@ export function LandingPage() {
                     {/* Content */}
                     <div className="relative h-full flex flex-col items-center justify-center text-center px-4">
                         {/* YUCA Text - Top Left */}
-                        <div className="absolute top-8 left-8 md:top-12 md:left-12">
+                        {/* <div className="absolute top-8 left-8 md:top-12 md:left-12">
                             <h1 className="text-blanket text-2xl md:text-3xl tracking-[0.3em] font-light uppercase">
                                 YUCA
                             </h1>
-                        </div>
+                        </div> */}
 
                         {/* Center Content - Logo and Tagline */}
                         <div className="flex flex-col items-center">
@@ -154,16 +180,11 @@ export function LandingPage() {
                                 className="flex-grow overflow-x-auto overflow-y-hidden scrollbar-hide"
                             >
                                 <div className="flex gap-4 md:gap-6 pb-10">
-                                    {[
-                                        { name: '', price: '', image: bowls },
-                                        { name: '', price: '', image: enamel },
-                                        { name: '', price: '', image: bowl },
-                                        { name: '', price: '', image: enamel },
-                                        { name: '', price: '', image: bowl }
-                                    ].map((product, index) => (
+                                    {newArrivals.map((product) => (
                                         <div
-                                            key={index}
+                                            key={product._id}
                                             className="flex-shrink-0 w-64 md:w-80 lg:w-96 scroll-reveal-fast"
+                                            onClick={() => navigate(`/product/${product._id}`)}
                                         >
                                             <div className="bg-transparent overflow-hidden group cursor-pointer">
                                                 {/* Product Image */}
@@ -181,7 +202,7 @@ export function LandingPage() {
                                                         {product.name}
                                                     </h3>
                                                     <p className="text-kimber text-lg font-medium mt-1">
-                                                        {product.price}
+                                                        {formatIndianPrice(product.retailPrice)}
                                                     </p>
                                                 </div>
                                             </div>
@@ -198,9 +219,15 @@ export function LandingPage() {
                             <div className="grid md:grid-cols-[1.4fr_1fr] gap-12 md:gap-20 items-end">
                                 {/* Left - Dark Block */}
                                 <div
-                                    className="bg-[#331D12] scroll-reveal w-full"
+                                    className="scroll-reveal w-full overflow-hidden"
                                     style={{ aspectRatio: '840 / 600' }}
-                                />
+                                >
+                                    <img
+                                        src={candlesHero}
+                                        alt="Candles collection"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
 
                                 {/* Right - Content (Left Aligned, Bottom Aligned to the box) */}
                                 <div className="scroll-reveal text-left flex flex-col items-start">
@@ -210,10 +237,10 @@ export function LandingPage() {
                                     <p className="text-kimber/80 font-light leading-relaxed mb-10 max-w-sm" style={{ fontSize: '18px', lineHeight: '1.4' }}>
                                         Bring home the warmth of nature with our Fruity Coconut Shell Candle, hand-poured into real coconut shells. Infused with fresh, juicy fruit notes, this candle fills your space with a vibrant yet soothing aroma that feels uplifting and natural.
                                     </p>
-                                    <button className="flex items-center text-kimber text-sm tracking-[0.2em] font-medium uppercase group">
+                                    <Button onClick={() => navigate('/category/candles')} variant="link" className="p-0 flex items-center text-kimber text-sm tracking-[0.2em] font-medium uppercase group">
                                         <span>Shop All Candles</span>
                                         <span className="ml-4 transition-transform group-hover:translate-x-2">→</span>
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -231,10 +258,10 @@ export function LandingPage() {
                                     <p className="text-kimber/80 font-light leading-relaxed mb-10 max-w-sm" style={{ fontSize: '18px', lineHeight: '1.4' }}>
                                         Bring home the warmth of nature with our Fruity Coconut Shell Candle, hand-poured into real coconut shells. Infused with fresh, juicy fruit notes, this candle fills your space with a vibrant yet soothing aroma that feels uplifting and natural.
                                     </p>
-                                    <button className="flex items-center text-kimber text-sm tracking-[0.2em] font-medium uppercase group">
+                                    <Button onClick={() => navigate('/category/bowls')} variant="link" className="p-0 flex items-center text-kimber text-sm tracking-[0.2em] font-medium uppercase group">
                                         <span>Shop All Bowls</span>
                                         <span className="ml-4 transition-transform group-hover:translate-x-2">→</span>
-                                    </button>
+                                    </Button>
                                 </div>
 
                                 {/* Right - Dark Block */}
@@ -242,6 +269,7 @@ export function LandingPage() {
                                     className="bg-[#331D12] scroll-reveal w-full order-1 md:order-2"
                                     style={{ aspectRatio: '840 / 600' }}
                                 />
+                                
                             </div>
                         </div>
                     </section>
