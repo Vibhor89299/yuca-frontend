@@ -24,8 +24,7 @@ export function LogoModule({ variant = 'compact', isTransparent = false }: LogoM
                 />
             </div>
             <span
-                className={`text-xl font-semibold ${textColor} tracking-wider transition-opacity duration-200`}
-                style={{ fontFamily: "'Afacad', sans-serif" }}
+                className={`text-xl font-butler font-extralight ${textColor} tracking-wider transition-opacity duration-200`}
             >
                 YUCA
             </span>

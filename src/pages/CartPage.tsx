@@ -70,16 +70,34 @@ export function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-16 min-h-screen pt-[100px]">
-        <div className="text-center space-y-6">
-          <div className="bg-mushroom p-6 rounded-full w-24 h-24 mx-auto flex items-center justify-center">
-            <ShoppingBag className="h-12 w-12 text-autumnFern" />
+      <div className="min-h-screen flex items-center justify-center page-enter" style={{
+        backgroundImage: `url(${bg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}>
+        <div className="text-center space-y-8 animate-fade-in px-4">
+          <div className="relative mx-auto w-28 h-28">
+            <div className="absolute inset-0 bg-autumnFern/10 rounded-full animate-pulse" />
+            <div className="relative bg-white/50 backdrop-blur-md border border-kimber/10 rounded-full w-28 h-28 flex items-center justify-center shadow-[0_4px_20px_-10px_rgba(44,37,33,0.1)]">
+              <ShoppingBag className="h-12 w-12 text-autumnFern" strokeWidth={1.5} />
+            </div>
           </div>
-          <h1 className="text-2xl luxury-heading">Your Cart is Empty</h1>
-          <p className="luxury-text-muted">
-            Discover our beautiful collection of sustainable luxury products
+
+          <div className="space-y-3">
+            <h1 className="font-butler font-extralight text-4xl md:text-5xl text-kimber tracking-tight">
+              Your Cart is Empty
+            </h1>
+            <p className="text-khakiMoss tracking-[0.15em] uppercase text-sm font-medium">
+              Nothing here yet — let's change that
+            </p>
+          </div>
+
+          <p className="text-kimber/60 max-w-md mx-auto leading-relaxed font-light">
+            Discover our curated collection of sustainable luxury pieces, crafted with care for you and the planet.
           </p>
-          <Button asChild className="luxury-button">
+
+          <Button asChild className="bg-autumnFern hover:bg-autumnFern-600 text-blanket h-14 px-10 text-sm tracking-[0.2em] uppercase font-medium shadow-lg hover:shadow-autumnFern/20 transition-all duration-300">
             <Link to="/">Continue Shopping</Link>
           </Button>
         </div>

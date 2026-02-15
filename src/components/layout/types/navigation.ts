@@ -59,11 +59,9 @@ export const defaultFooterConfig: FooterConfig = {
 export const mainNavLinks: NavLink[] = [
     { label: 'Shop', href: '/category/kosha' },
     { label: 'Our Story', href: '/about' },
-    { label: 'Craft', href: '/about#craft' },
 ];
 
 export const shopNavLinks: NavLink[] = [
-    { label: 'All Products', href: '/products' },
     { label: 'Bowls', href: '/category/bowls' },
     { label: 'Candles', href: '/category/candles' },
     { label: 'Glassware', href: '/category/glassware' },
@@ -77,16 +75,12 @@ export const footerNavSections: NavSection[] = [
         links: [
             { label: 'Bowls', href: '/category/bowls' },
             { label: 'Candles', href: '/category/candles' },
-            { label: 'Planters', href: '/category/planters' },
         ],
     },
     {
         title: 'About',
         links: [
-            { label: 'Our Story', href: '/about' },
-            { label: 'The Craft', href: '/about#craft' },
-            { label: 'Sustainability', href: '/about#sustainability' },
-        ],
+            { label: 'Our Story', href: '/about' },        ],
     },
 ];
 
