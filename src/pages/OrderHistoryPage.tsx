@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react"
 import { useNavigate, Link } from "react-router-dom"
-import { ArrowLeft, Package, Truck, CheckCircle, Clock, Search, Filter, Eye, RefreshCw } from "lucide-react"
+import { ArrowLeft, Package, Truck, CheckCircle, Clock, Search, Filter, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,6 +11,7 @@ import { useAppSelector, useAppDispatch } from "@/store/hooks"
 import { fetchMyOrders } from "@/store/slices/orderSlice"
 import { formatIndianPrice } from "@/utils/currency"
 import type { Order } from "@/types"
+import bg from "@/assets/bg.svg"
 
 export default function OrderHistoryPage() {
   const navigate = useNavigate()
@@ -58,17 +59,17 @@ export default function OrderHistoryPage() {
     const s = (status ?? '').toLowerCase();
     switch (s) {
       case "paid":
-        return "bg-green-100 text-green-800"
+        return "border border-green-600/30 text-green-700 bg-green-50/30"
       case "processing":
-        return "bg-blue-100 text-blue-800"
+        return "border border-blue-600/30 text-blue-700 bg-blue-50/30"
       case "shipped":
-        return "bg-purple-100 text-purple-800"
+        return "border border-purple-600/30 text-purple-700 bg-purple-50/30"
       case "delivered":
-        return "bg-green-100 text-green-800"
+        return "border border-green-600/30 text-green-700 bg-green-50/30"
       case "cancelled":
-        return "bg-red-100 text-red-800"
+        return "border border-red-600/30 text-red-700 bg-red-50/30"
       default:
-        return "bg-gray-100 text-gray-800"
+        return "border border-gray-400/30 text-gray-600 bg-gray-50/30"
     }
   }
 
@@ -113,7 +114,12 @@ export default function OrderHistoryPage() {
   }
 
   return (
-    <div className=" mx-auto pt-[90px] pb-8 px-4  min-h-screen backdrop-blur-sm">
+    <div className="mx-auto pt-[90px] pb-8 px-4 min-h-screen page-enter" style={{
+      backgroundImage: `url(${bg})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed'
+    }}>
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-4">
@@ -132,44 +138,44 @@ export default function OrderHistoryPage() {
           <h1 className="text-3xl font-serif luxury-heading">Order History</h1>
         </div>
       </div>
-    
+
 
       {/* Filters and Search */}
       <div className=" mb-8 ">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <div className="luxury-card relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Search orders by ID or product name..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-white"
-                />
-              </div>
-            </div>
-            <div className="flex gap-4 border border-sage-200 rounded-[10px]  bg-[#fbfaf8]">
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-48">
-                  <Filter className="h-4 w-4 mr-2" />
-                  <SelectValue placeholder="Filter by status" />
-                </SelectTrigger>
-                <SelectContent className="bg-[#fbfaf8] cursor-pointer">
-                  <SelectItem className="cusor-pointer" value="all">All Orders</SelectItem>
-                  <SelectItem className="cusor-pointer" value="processing">Processing</SelectItem>
-                  <SelectItem className="cusor-pointer" value="paid">Paid</SelectItem>
-                  <SelectItem className="cusor-pointer" value="shipped">Shipped</SelectItem>
-                  <SelectItem className="cusor-pointer" value="delivered">Delivered</SelectItem>
-                  <SelectItem className="cusor-pointer" value="cancelled">Cancelled</SelectItem>
-                </SelectContent>
-              </Select>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex-1">
+            <div className="luxury-card relative bg-white/40 backdrop-blur-md border border-oak/10">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search orders by ID or product name..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 bg-white"
+              />
             </div>
           </div>
+          <div className="flex gap-4 border border-oak/10 rounded-[10px] bg-white/40 backdrop-blur-md">
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-48">
+                <Filter className="h-4 w-4 mr-2" />
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent className="bg-[#fbfaf8] cursor-pointer">
+                <SelectItem className="cusor-pointer" value="all">All Orders</SelectItem>
+                <SelectItem className="cusor-pointer" value="processing">Processing</SelectItem>
+                <SelectItem className="cusor-pointer" value="paid">Paid</SelectItem>
+                <SelectItem className="cusor-pointer" value="shipped">Shipped</SelectItem>
+                <SelectItem className="cusor-pointer" value="delivered">Delivered</SelectItem>
+                <SelectItem className="cusor-pointer" value="cancelled">Cancelled</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       </div>
 
       {/* Orders List */}
       {error && (
-        <Card className="luxury-card mb-8  bg-[#fbfaf8]">
+        <Card className="luxury-card mb-8 bg-white/40 backdrop-blur-md border-oak/10">
           <CardContent className="p-6">
             <div className="text-center text-red-600">
               <p>Error loading orders: {error}</p>
@@ -200,9 +206,9 @@ export default function OrderHistoryPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2  gap-3 h-[400px]space-y-6">
-          
+
           {filteredOrders.map((order: any) => (
-            <Card key={order?.id || order?._id} className="l bg-[#fbfaf8] uxury-card hover:shadow-lg transition-shadow">
+            <Card key={order?.id || order?._id} className="luxury-card bg-white/40 backdrop-blur-md border-oak/10 hover:bg-white/50 transition-colors shadow-none">
               <CardContent className="p-6">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                   {/* Order Info */}
@@ -211,7 +217,7 @@ export default function OrderHistoryPage() {
                       <div className="flex items-center space-x-4">
                         {getStatusIcon(order.status)}
                         <div>
-                          <h3 className="text-lg font-semibold luxury-text">Order #{order?.id || order?._id}</h3>
+                          <h3 className="text-xl font-serif text-oak">Order #{order?.id || order?._id}</h3>
                           <p className="text-sm luxury-text-muted">
                             Placed on{" "}
                             {new Date(order.createdAt).toLocaleDateString("en-US", {
@@ -260,23 +266,20 @@ export default function OrderHistoryPage() {
                       </p>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <Button asChild variant="outline" className="luxury-button-secondary bg-transparent">
-                        <Link to={`/order/${order.id}`}>
-                          <Eye className="h-4 w-4 mr-2" />
-                          View Details
-                        </Link>
-                      </Button>
+                    <div className="flex flex-col sm:flex-row gap-2 justify-end items-center">
+                      <Link to={`/order/${order.id}`} className="text-sm font-medium text-autumnFern hover:text-autumnFern-700 hover:underline transition-all">
+                        View Details
+                      </Link>
 
                       {order.status === "delivered" && (
-                        <Button variant="outline" className="luxury-button-secondary bg-transparent">
+                        <Button variant="ghost" size="sm" className="text-xs uppercase tracking-wider text-oak hover:bg-oak/10">
                           Reorder
                         </Button>
                       )}
 
                       {order.status === "processing" && (
-                        <Button variant="outline" className="luxury-button-secondary bg-transparent">
-                          Cancel Order
+                        <Button variant="ghost" size="sm" className="text-xs uppercase tracking-wider text-red-600 hover:bg-red-50 hover:text-red-700">
+                          Cancel
                         </Button>
                       )}
                     </div>
@@ -298,7 +301,7 @@ export default function OrderHistoryPage() {
 
       {/* Order Statistics */}
       {orders.length > 0 && (
-        <Card className="luxury-card bg-[#fbfaf8] mt-8">
+        <Card className="luxury-card bg-white/40 backdrop-blur-md border-oak/10 mt-8">
           <CardHeader>
             <CardTitle className="font-serif luxury-text">Order Statistics</CardTitle>
           </CardHeader>

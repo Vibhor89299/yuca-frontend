@@ -2,6 +2,7 @@ import axiosinstance from '@/axiosinstance/axiosinstance';
 
 // Razorpay types
 interface RazorpayOptions {
+  modal: { ondismiss: () => void; };
   key: string;
   amount: number;
   currency: string;
@@ -85,12 +86,16 @@ class PaymentService {
     email: string;
     name: string;
     phone: string;
-  }): Promise<PaymentOrderResponse> {
+  }, guestCheckoutToken?: string): Promise<PaymentOrderResponse> {
     try {
       const requestData: any = { orderId };
-      
+
       if (guestInfo) {
         requestData.guestInfo = guestInfo;
+      }
+
+      if (guestCheckoutToken) {
+        requestData.guestCheckoutToken = guestCheckoutToken;
       }
 
       const response = await axiosinstance.post('/api/payments/create-order', requestData);
@@ -140,7 +145,8 @@ class PaymentService {
       email: string;
       name: string;
       phone: string;
-    }
+    },
+    guestCheckoutToken?: string
   ): Promise<PaymentVerificationResponse> {
     try {
       // Load Razorpay script
@@ -150,7 +156,7 @@ class PaymentService {
       }
 
       // Create payment order
-      const paymentOrder = await this.createPaymentOrder(orderId, guestInfo);
+      const paymentOrder = await this.createPaymentOrder(orderId, guestInfo, guestCheckoutToken);
 
       // Prepare Razorpay options
       const options: RazorpayOptions = {
@@ -186,6 +192,11 @@ class PaymentService {
             throw error;
           }
         },
+        modal: {
+          ondismiss: function (): void {
+            throw new Error('Function not implemented.');
+          }
+        }
       };
 
       // Open Razorpay checkout
@@ -204,6 +215,12 @@ class PaymentService {
             resolve(verificationResult);
           } catch (error) {
             reject(error);
+          }
+        };
+
+        options.modal = {
+          ondismiss: () => {
+            reject(new Error('Payment cancelled by user'));
           }
         };
 

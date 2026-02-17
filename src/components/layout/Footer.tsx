@@ -1,148 +1,69 @@
-import { Instagram, Mail } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import YucaLogo from "../../assets/logo.jpg";
-import { Link } from "react-router-dom";
+import { BrandBlock } from './footer/BrandBlock';
+import { NavigationBlock } from './footer/NavigationBlock';
+import { PoliciesBlock } from './footer/PoliciesBlock';
+import { SocialBlock } from './footer/SocialBlock';
 
-export function Footer() {
+interface FooterProps {
+  showBrand?: boolean;
+  showNavigation?: boolean;
+  showPolicies?: boolean;
+  showSocial?: boolean;
+}
+
+export function Footer({
+  showBrand = true,
+  showNavigation = true,
+  showPolicies = true,
+  showSocial = true,
+}: FooterProps) {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="bg-kimber border-t border-oak mt-16">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Brand Section */}
-          <div className="space-y-4">
-            <div className="flex items-center">
-              <div className="rounded-full">
-                <img
-                  src={YucaLogo}
-                  alt="Yuca Logo"
-                  className="h-16 w-16 object-cover rounded-full"
-                />
-              </div>
-              <div>
-                <h3 className="text-xl font-serif font-bold text-blanket">
-                  YUCA
-                </h3>
-                <p className="text-xs text-oak">Where Luxury Grows With You</p>
-              </div>
+    <footer className="bg-kimber border-t border-oak/10">
+      {/* Main Footer Content */}
+      <div className="container mx-auto px-4 py-12 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+          {/* Brand Block */}
+          {showBrand && (
+            <div className="flex justify-center md:justify-start">
+              <BrandBlock />
             </div>
-            <p className="text-sm text-blanket/80">
-              Sustainable luxury lifestyle products that connect you with
-              nature's beauty and your inner well-being.
-            </p>
-            <div className="flex space-x-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="p-2 text-blanket hover:text-oak"
-                onClick={() =>
-                  window.open(
-                    "https://www.instagram.com/yuca.lifestyle/",
-                    "_blank"
-                  )
-                }
-              >
-                <Instagram className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="p-2 text-blanket hover:text-oak"
-                onClick={() =>
-                  window.open("mailto:enquire@yucalifestyle.com", "_blank")
-                }
-              >
-                <Mail className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
+          )}
 
-          {/* Shop Section */}
-          {/* <div className="space-y-4">
-            <h4 className="font-serif font-semibold text-blanket">Shop</h4>
-            <div className="space-y-2">
-              <Link to="/category/living" className="block text-sm text-blanket/70 hover:text-oak transition-colors">
-                Living
-              </Link>
-              <Link to="/category/wellness" className="block text-sm text-blanket/70 hover:text-oak transition-colors">
-                Wellness
-              </Link>
-              <Link to="/category/fashion" className="block text-sm text-blanket/70 hover:text-oak transition-colors">
-                Fashion
-              </Link>
-              <Link to="/category/garden" className="block text-sm text-blanket/70 hover:text-oak transition-colors">
-                Garden
-              </Link>
+          {/* Navigation Block */}
+          {showNavigation && (
+            <div className="flex justify-center md:justify-center">
+              <NavigationBlock />
             </div>
-          </div> */}
+          )}
 
-          {/* Support Section */}
-          {/* <div className="space-y-4">
-            <h4 className="font-serif font-semibold text-blanket">Support</h4>
-            <div className="space-y-2">
-              <Link to="/help" className="block text-sm text-blanket/70 hover:text-oak transition-colors">
-                Help Center
-              </Link>
-              <Link to="/shipping" className="block text-sm text-blanket/70 hover:text-oak transition-colors">
-                Shipping Info
-              </Link>
-              <Link to="/returns" className="block text-sm text-blanket/70 hover:text-oak transition-colors">
-                Returns
-              </Link>
-              <Link to="/contact" className="block text-sm text-blanket/70 hover:text-oak transition-colors">
-                Contact Us
-              </Link>
+          {/* Social Block */}
+          {showSocial && (
+            <div className="flex justify-center md:justify-end items-start">
+              <SocialBlock />
             </div>
-          </div> */}
-
-          {/* Newsletter Section */}
-          {/* <div className="space-y-4">
-            <h4 className="font-serif font-semibold text-blanket">Stay Connected</h4>
-            <p className="text-sm text-blanket/70">
-              Subscribe to receive exclusive offers and updates on our latest sustainable luxury products.
-            </p>
-            <div className="flex space-x-2">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 bg-blanket border-oak/30"
-              />
-              <Button className="bg-autumnFern hover:bg-autumnFern-600 text-blanket">
-                <Mail className="h-4 w-4" />
-              </Button>
-            </div>
-          </div> */}
+          )}
         </div>
+      </div>
 
-        <div className="border-t border-oak mt-8 pt-8 flex flex-col md:flex-row items-center justify-between">
-          <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-8">
-            <p className="text-sm text-blanket/70">
-              © 2025 YUCA. All rights reserved.
-            </p>
-            <div className="text-sm text-blanket/70">
-              <strong>Delivery Timeline:</strong> Delhi NCR: 2-3 business days |
-              Pan India: 7-8 business days 
+      {/* Bottom Bar */}
+      <div className="border-t border-oak/10">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            {/* Copyright + Delivery Info */}
+            <div className="flex flex-col md:flex-row items-center gap-2 md:gap-6">
+              <p className="text-blanket/40 text-sm" style={{ fontFamily: "'Afacad', sans-serif" }}>
+                © {currentYear} YUCA. All rights reserved.
+              </p>
+              <span className="hidden md:inline text-blanket/20">·</span>
+              <p className="text-blanket/40 text-xs" style={{ fontFamily: "'Afacad', sans-serif" }}>
+                Delhi NCR: 2-3 days · Pan India: 7-8 days
+              </p>
             </div>
-          </div>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link
-              to="/privacy"
-              className="text-sm text-blanket/70 hover:text-oak transition-colors"
-            >
-              Privacy Policy
-            </Link>
-          </div>
 
-          {/* <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link to="/privacy" className="text-sm text-blanket/70 hover:text-oak transition-colors">
-              Privacy Policy
-            </Link>
-            <Link to="/terms" className="text-sm text-blanket/70 hover:text-oak transition-colors">
-              Terms of Service
-            </Link>
-            <Link to="/sustainability" className="text-sm text-blanket/70 hover:text-oak transition-colors">
-              Sustainability
-            </Link>
-          </div> */}
+            {/* Policies */}
+            {showPolicies && <PoliciesBlock />}
+          </div>
         </div>
       </div>
     </footer>

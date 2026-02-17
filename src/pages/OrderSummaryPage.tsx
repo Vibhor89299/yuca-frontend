@@ -8,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { fetchOrderById } from '@/store/slices/orderSlice';
 import { formatIndianPrice } from '@/utils/currency';
+import bg from '@/assets/bg.svg';
 
 export function OrderSummaryPage() {
   const { id } = useParams<{ id: string }>();
@@ -16,7 +17,7 @@ export function OrderSummaryPage() {
   const { currentOrder, loading, error } = useAppSelector(state => state.order);
 
   useEffect(() => {
-    
+
     if (id) {
       dispatch(fetchOrderById(id));
     }
@@ -25,17 +26,17 @@ export function OrderSummaryPage() {
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'paid':
-        return 'bg-green-100 text-green-800';
+        return 'border border-green-600/30 text-green-700 bg-green-50/30';
       case 'processing':
-        return 'bg-blue-100 text-blue-800';
+        return 'border border-blue-600/30 text-blue-700 bg-blue-50/30';
       case 'shipped':
-        return 'bg-purple-100 text-purple-800';
+        return 'border border-purple-600/30 text-purple-700 bg-purple-50/30';
       case 'delivered':
-        return 'bg-green-100 text-green-800';
+        return 'border border-green-600/30 text-green-700 bg-green-50/30';
       case 'cancelled':
-        return 'bg-red-100 text-red-800';
+        return 'border border-red-600/30 text-red-700 bg-red-50/30';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'border border-gray-400/30 text-gray-600 bg-gray-50/30';
     }
   };
 
@@ -121,7 +122,12 @@ export function OrderSummaryPage() {
   // const displayDiscount = Math.max(0, mrpTotal - orderTotal);
 
   return (
-    <div className="container mx-auto px-4 pt-[120px] text-white py-8 min-h-screen  backdrop-blur-sm">
+    <div className="mx-auto px-4 pt-[120px] pb-8 min-h-screen page-enter" style={{
+      backgroundImage: `url(${bg})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed'
+    }}>
       {/* Header */}
 
       <div className="flex items-center justify-between mb-8">
@@ -132,11 +138,11 @@ export function OrderSummaryPage() {
           </Button>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" onClick={handlePrint} className="luxury-button-secondary">
+          <Button variant="outline" onClick={handlePrint} className="luxury-button-secondary bg-white/40 text-oak border border-oak/10 hover:bg-white/60">
             <Download className="h-4 w-4 mr-2" />
             Print
           </Button>
-          <Button variant="outline" onClick={handleShare} className="luxury-button-secondary">
+          <Button variant="outline" onClick={handleShare} className="luxury-button-secondary bg-white/40 text-oak border border-oak/10 hover:bg-white/60">
             <Share2 className="h-4 w-4 mr-2" />
             Share
           </Button>
@@ -144,7 +150,7 @@ export function OrderSummaryPage() {
       </div>
 
       {/* Order Status Banner */}
-      <Card className="luxury-card  bg-[#fbfaf8] mb-8">
+      <Card className="luxury-card bg-white/40 backdrop-blur-md border border-oak/10 mb-8 shadow-none">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -169,7 +175,7 @@ export function OrderSummaryPage() {
         {/* Order Details */}
         <div className="lg:col-span-2 space-y-6">
           {/* Order Items */}
-          <Card className="luxury-card  bg-[#fbfaf8] text-black">
+          <Card className="luxury-card bg-white/40 backdrop-blur-md border border-oak/10 shadow-none text-black">
             <CardHeader>
               <CardTitle className="font-serif luxury-text">Order Items</CardTitle>
             </CardHeader>
@@ -183,7 +189,7 @@ export function OrderSummaryPage() {
                   />
                   <div className="flex-1 min-w-0">
                     <h4 className="text-sm font-medium luxury-text truncate">
-                      {item.product?.name || (item as any).name} 
+                      {item.product?.name || (item as any).name}
                     </h4>
                     <p className="text-sm luxury-text-muted">
                       Quantity: {item.quantity}
@@ -231,7 +237,7 @@ export function OrderSummaryPage() {
           </Card>
 
           {/* Shipping Address */}
-          <Card className="luxury-card  bg-[#fbfaf8] text-black">
+          <Card className="luxury-card bg-white/40 backdrop-blur-md border border-oak/10 shadow-none text-black">
             <CardHeader>
               <CardTitle className="font-serif luxury-text flex items-center">
                 <MapPin className="h-5 w-5 mr-2" />
@@ -255,7 +261,7 @@ export function OrderSummaryPage() {
           </Card>
 
           {/* Payment Information */}
-          <Card className="luxury-card  bg-[#fbfaf8] text-black">
+          <Card className="luxury-card bg-white/40 backdrop-blur-md border border-oak/10 shadow-none text-black">
             <CardHeader>
               <CardTitle className="font-serif luxury-text flex items-center">
                 <CreditCard className="h-5 w-5 mr-2" />
@@ -288,7 +294,7 @@ export function OrderSummaryPage() {
         {/* Order Summary Sidebar */}
         <div className="space-y-6">
           {/* Order Summary */}
-          <Card className="luxury-card  bg-[#fbfaf8] text-black">
+          <Card className="luxury-card bg-white/40 backdrop-blur-md border border-oak/10 shadow-none text-black">
             <CardHeader>
               <CardTitle className="font-serif luxury-text">Order Summary</CardTitle>
             </CardHeader>
@@ -318,7 +324,7 @@ export function OrderSummaryPage() {
           </Card>
 
           {/* Order Actions */}
-          <Card className="luxury-card  bg-[#fbfaf8] text-black">
+          <Card className="luxury-card bg-white/40 backdrop-blur-md border border-oak/10 shadow-none text-black">
             <CardContent className="p-6 space-y-4">
               <Button className="w-full luxury-button" asChild>
                 <Link to="/">Continue Shopping</Link>
@@ -337,7 +343,7 @@ export function OrderSummaryPage() {
           </Card>
 
           {/* Support */}
-          <Card className="luxury-card  bg-[#fbfaf8] text-black">
+          <Card className="luxury-card bg-white/40 backdrop-blur-md border border-oak/10 shadow-none text-black">
             <CardContent className="p-6">
               <h3 className="font-semibold luxury-text mb-2">Need Help?</h3>
               <p className="text-sm luxury-text-muted mb-4">

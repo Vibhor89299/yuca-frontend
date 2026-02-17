@@ -10,12 +10,14 @@ import { PageLoadingFallback } from '@/components/PageLoadingFallback';
 
 // Eagerly loaded pages (critical path)
 import { HomePage } from '@/pages/HomePage';
+import { LandingPage } from '@/pages/LandingPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 
 // Lazily loaded pages (non-critical)
 const CartPage = lazy(() => import('@/pages/CartPage').then(m => ({ default: m.CartPage })));
 const ProductDetailPage = lazy(() => import('@/pages/ProductDetailPage').then(m => ({ default: m.ProductDetailPage })));
 const CheckoutPage = lazy(() => import('@/pages/CheckoutPage').then(m => ({ default: m.CheckoutPage })));
+const OrderHistoryPage = lazy(() => import('@/pages/OrderHistoryPage'));
 const OrderSummaryPage = lazy(() => import('@/pages/OrderSummaryPage').then(m => ({ default: m.OrderSummaryPage })));
 const ProfilePage = lazy(() => import('./pages/Profile'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
@@ -39,10 +41,12 @@ function App() {
           <main className="flex-1 z-10">
             <Suspense fallback={<PageLoadingFallback />}>
               <Routes>
-                <Route path="/" element={<HomePage />} />
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/landing" element={<HomePage />} />
                 <Route path="/product/:id" element={<ProductDetailPage />} />
-                <Route path="/category/kosha" element={<CategoryPage />} />
+                <Route path="/category/:category" element={<CategoryPage />} />
                 <Route path="/cart" element={<CartPage />} />
+                <Route path="/orders" element={<OrderHistoryPage />} />
                 <Route path="/privacy" element={<PrivacyPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/about" element={<OurStoryPage />} />
