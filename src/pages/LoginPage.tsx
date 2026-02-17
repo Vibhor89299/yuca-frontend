@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { loginUser } from '@/store/slices/authSlice';
 import { syncGuestCart } from '@/store/slices/syncGuestCartThunk';
 import { clearGuestCart, fetchCart } from '@/store/slices/cartSlice';
-import bg from '@/assets/bg.svg';
+import bg from '@/assets/bg-bg.jpg';
 import YucaLogo from '../assets/logo.jpg';
 
 
@@ -50,13 +50,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center py-12 px-4 page-enter" style={{
-      backgroundImage: `url(${bg})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundAttachment: 'fixed'
-    }}>
-      <div className="w-full max-w-5xl bg-white/60 backdrop-blur-md rounded-3xl overflow-hidden shadow-2xl flex flex-col lg:flex-row min-h-[600px]">
+    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center py-12 px-4 page-enter relative">
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `url(${bg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          opacity: 0.5
+        }}
+      />
+      <div className="w-full max-w-5xl bg-white/60 backdrop-blur-md rounded-3xl overflow-hidden shadow-2xl flex flex-col lg:flex-row min-h-[600px] relative z-10">
         {/* Left Column: Brand Image (Hidden on mobile) */}
         <div className="hidden lg:block lg:w-1/2 relative overflow-hidden bg-kimber">
           <div
@@ -84,14 +89,14 @@ export default function LoginPage() {
                 <img src={YucaLogo} alt="YUCA" className="h-16 w-16 rounded-full object-cover mx-auto shadow-lg ring-4 ring-white/50" />
               </Link>
               <h1 className="text-3xl font-philosopher text-kimber">Welcome Back</h1>
-              <p className="text-kimber/60">Sign in to continue your journey</p>
+              <p className="text-kimber">Sign in to continue your journey</p>
             </div>
 
             <Card className="border-none shadow-none bg-transparent">
               <CardContent className="p-0">
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-xs uppercase tracking-widest text-kimber/60 font-medium">Email Address</Label>
+                    <Label htmlFor="email" className="text-xs uppercase tracking-widest text-kimber font-medium">Email Address</Label>
                     <Input
                       id="email"
                       type="email"
@@ -105,7 +110,7 @@ export default function LoginPage() {
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label htmlFor="password" className="text-xs uppercase tracking-widest text-kimber/60 font-medium">Password</Label>
+                      <Label htmlFor="password" className="text-xs uppercase tracking-widest text-kimber font-medium">Password</Label>
                       <Link to="/forgot-password" className="text-xs text-autumnFern hover:underline">Forgot?</Link>
                     </div>
                     <div className="relative">
@@ -123,7 +128,7 @@ export default function LoginPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-0 top-0 h-full px-3 text-oak/40 hover:text-oak hover:bg-transparent"
+                        className="absolute right-0 top-0 h-full px-3 text-oak/60 hover:text-oak hover:bg-transparent"
                       >
                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>
@@ -146,7 +151,7 @@ export default function LoginPage() {
                 </form>
 
                 <div className="mt-8 text-center">
-                  <p className="text-sm text-kimber/60">
+                  <p className="text-sm text-kimber">
                     Don't have an account?{' '}
                     <Link to="/register" className="text-autumnFern font-medium hover:underline">
                       Create Account
@@ -157,7 +162,7 @@ export default function LoginPage() {
             </Card>
 
             <div className="text-center">
-              <Link to="/" className="text-xs text-kimber/40 hover:text-autumnFern transition-colors flex items-center justify-center gap-2">
+              <Link to="/" className="text-xs text-kimber hover:text-autumnFern transition-colors flex items-center justify-center gap-2">
                 <ArrowLeft className="h-3 w-3" /> Back to Home
               </Link>
             </div>

@@ -19,7 +19,7 @@ export function Footer({
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-kimber border-t border-oak/10">
+    <footer className="bg-autumnFern-900 border-t border-oak/10">
       {/* Main Footer Content */}
       <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
@@ -52,11 +52,11 @@ export function Footer({
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             {/* Copyright + Delivery Info */}
             <div className="flex flex-col md:flex-row items-center gap-2 md:gap-6">
-              <p className="text-blanket/40 text-sm" style={{ fontFamily: "'Afacad', sans-serif" }}>
+              <p className="text-blanket/60 text-sm" style={{ fontFamily: "'Afacad', sans-serif" }}>
                 © {currentYear} YUCA. All rights reserved.
               </p>
               <span className="hidden md:inline text-blanket/20">·</span>
-              <p className="text-blanket/40 text-xs" style={{ fontFamily: "'Afacad', sans-serif" }}>
+              <p className="text-blanket/60 text-xs" style={{ fontFamily: "'Afacad', sans-serif" }}>
                 Delhi NCR: 2-3 days · Pan India: 7-8 days
               </p>
             </div>

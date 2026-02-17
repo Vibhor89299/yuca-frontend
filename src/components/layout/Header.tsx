@@ -61,7 +61,7 @@ export function Header({
   // Dynamic styles
   const headerStyles = isTransparent
     ? 'bg-transparent border-transparent'
-    : 'bg-kimber/95 backdrop-blur-lg border-oak/10 shadow-sm';
+    : 'bg-autumnFern-900/95 backdrop-blur-lg border-oak/10 shadow-sm';
 
   return (
     <>

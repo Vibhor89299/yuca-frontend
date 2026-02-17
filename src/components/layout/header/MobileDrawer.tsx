@@ -26,7 +26,7 @@ export function MobileDrawer({ isOpen, onOpenChange, isTransparent = false }: Mo
             </SheetTrigger>
             <SheetContent
                 side="right"
-                className="w-[300px] bg-kimber border-l border-oak/20 p-0"
+                className="w-[300px] bg-autumnFern-900 border-l border-oak/20 p-0"
             >
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-oak/10">

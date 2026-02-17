@@ -1,12 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Product } from '@/types';
-import { fetchFeaturedProducts, fetchProducts, fetchProductsByCategory, searchProducts } from '@/services/actions';
+import { fetchFeaturedProducts, fetchNewArrivals, fetchProducts, fetchProductsByCategory, searchProducts } from '@/services/actions';
 
 // Define the initial state
 
 interface ProductState {
   products: Product[];
   featuredProducts: Product[];
+  newArrivals: Product[];
   loading: boolean;
   error: string | null;
   page: number;
@@ -17,6 +18,7 @@ interface ProductState {
 const initialState: ProductState = {
   products: [],
   featuredProducts: [],
+  newArrivals: [],
   loading: false,
   error: null,
   page: 1,
@@ -34,6 +36,7 @@ const productSlice = createSlice({
     resetProducts: (state) => {
       state.products = [];
       state.featuredProducts = [];
+      state.newArrivals = [];
       state.error = null;
     },
   },
@@ -67,6 +70,21 @@ const productSlice = createSlice({
         state.featuredProducts = action.payload;
       })
       .addCase(fetchFeaturedProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+
+    // Fetch new arrivals
+    builder
+      .addCase(fetchNewArrivals.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchNewArrivals.fulfilled, (state, action) => {
+        state.loading = false;
+        state.newArrivals = action.payload;
+      })
+      .addCase(fetchNewArrivals.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

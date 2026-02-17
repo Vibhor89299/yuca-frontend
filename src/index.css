@@ -25,18 +25,18 @@
     /* autumnFern for primary actions */
     --primary-foreground: 34 29% 90%;
     /* blanket for primary text */
-    --secondary: 34 29% 55%;
-    /* oak for secondary elements */
-    --secondary-foreground: 15 17% 17%;
-    /* kimber for secondary text */
+    --secondary: 27 26% 29%;
+    /* oak (Dark Walnut #5C4736) */
+    --secondary-foreground: 0 0% 98%;
+    /* white for contrast on dark walnut */
     --muted: 26 20% 82%;
-    /* mushroom for muted backgrounds */
-    --muted-foreground: 21 15% 53%;
-    /* khakiMoss for muted text */
-    --accent: 34 29% 55%;
-    /* oak for accents */
-    --accent-foreground: 15 17% 17%;
-    /* kimber for accent text */
+    /* mushroom */
+    --muted-foreground: 104 26% 14%;
+    /* khakiMoss (Black Forest Green #222E1B) */
+    --accent: 27 26% 29%;
+    /* oak (Dark Walnut) */
+    --accent-foreground: 0 0% 98%;
+    /* white */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
     --border: 34 29% 55%;
@@ -468,7 +468,7 @@
   }
 
   .header-solid {
-    background: rgba(44, 37, 33, 0.95);
+    background: rgba(52, 28, 16, 0.95);
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
     border-bottom-color: rgba(180, 137, 84, 0.1);

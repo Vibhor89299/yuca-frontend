@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
 import YucaLogo from '../assets/logo.jpg';
-import bg from '@/assets/bg.svg';
+import bg from '@/assets/bg-bg.jpg';
 
 const RegisterPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -42,13 +42,18 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center py-12 px-4 page-enter" style={{
-      backgroundImage: `url(${bg})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundAttachment: 'fixed'
-    }}>
-      <div className="w-full max-w-5xl bg-white/60 backdrop-blur-md rounded-3xl overflow-hidden shadow-2xl flex flex-col lg:flex-row min-h-[600px]">
+    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center py-12 px-4 page-enter relative">
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `url(${bg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          opacity: 0.5
+        }}
+      />
+      <div className="w-full max-w-5xl bg-white/60 backdrop-blur-md rounded-3xl overflow-hidden shadow-2xl flex flex-col lg:flex-row min-h-[600px] relative z-10">
         {/* Left Column: Brand Image */}
         <div className="hidden lg:block lg:w-1/2 relative overflow-hidden bg-kimber">
           <div
@@ -76,14 +81,14 @@ const RegisterPage: React.FC = () => {
                 <img src={YucaLogo} alt="YUCA" className="h-16 w-16 rounded-full object-cover mx-auto shadow-lg ring-4 ring-white/50" />
               </Link>
               <h1 className="text-3xl font-philosopher text-kimber">Join the Collective</h1>
-              <p className="text-kimber/60">Enter your details to create an account</p>
+              <p className="text-kimber">Enter your details to create an account</p>
             </div>
 
             <Card className="border-none shadow-none bg-transparent">
               <CardContent className="p-0">
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-xs uppercase tracking-widest text-kimber/60 font-medium">Full Name</Label>
+                    <Label htmlFor="name" className="text-xs uppercase tracking-widest text-kimber font-medium">Full Name</Label>
                     <Input
                       id="name"
                       type="text"
@@ -96,7 +101,7 @@ const RegisterPage: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-xs uppercase tracking-widest text-kimber/60 font-medium">Email Address</Label>
+                    <Label htmlFor="email" className="text-xs uppercase tracking-widest text-kimber font-medium">Email Address</Label>
                     <Input
                       id="email"
                       type="email"
@@ -109,7 +114,7 @@ const RegisterPage: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="password" className="text-xs uppercase tracking-widest text-kimber/60 font-medium">Password</Label>
+                    <Label htmlFor="password" className="text-xs uppercase tracking-widest text-kimber font-medium">Password</Label>
                     <Input
                       id="password"
                       type="password"
@@ -122,7 +127,7 @@ const RegisterPage: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="text-xs uppercase tracking-widest text-kimber/60 font-medium">Confirm Password</Label>
+                    <Label htmlFor="confirmPassword" className="text-xs uppercase tracking-widest text-kimber font-medium">Confirm Password</Label>
                     <Input
                       id="confirmPassword"
                       type="password"
@@ -156,7 +161,7 @@ const RegisterPage: React.FC = () => {
                 </form>
 
                 <div className="mt-8 text-center">
-                  <p className="text-sm text-kimber/60">
+                  <p className="text-sm text-kimber">
                     Already have an account?{' '}
                     <Link to="/login" className="text-autumnFern font-medium hover:underline">
                       Sign In
@@ -167,7 +172,7 @@ const RegisterPage: React.FC = () => {
             </Card>
 
             <div className="text-center">
-              <Link to="/" className="text-xs text-kimber/40 hover:text-autumnFern transition-colors flex items-center justify-center gap-2">
+              <Link to="/" className="text-xs text-kimber hover:text-autumnFern transition-colors flex items-center justify-center gap-2">
                 <ArrowLeft className="h-3 w-3" /> Return to Home
               </Link>
             </div>

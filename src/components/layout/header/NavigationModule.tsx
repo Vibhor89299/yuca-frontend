@@ -30,7 +30,7 @@ export function NavigationModule({ isTransparent = false }: NavigationModuleProp
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                     align="start"
-                    className="bg-kimber/95 backdrop-blur-lg border-oak/20 min-w-[160px]"
+                    className="bg-autumnFern-900/95 backdrop-blur-lg border-oak/20 min-w-[160px]"
                 >
                     {shopNavLinks.map((link) => (
                         <DropdownMenuItem key={link.href} asChild>

@@ -1,10 +1,13 @@
 import { SEO } from '@/components/seo/SEO';
 import { useEffect, useRef, useState } from 'react';
-import bgImgHero from '@/assets/hero-img.png';
+import bg from '@/assets/bg-bg.jpg';
+import newBanne from '@/assets/new-banne.mp4';
 import candlesHero from '@/assets/candles_hero.jpeg';
 import bowlHero from '@/assets/bowl_hero.jpeg'
+import heroImg from '@/assets/hero-img.png';
 import logo from '@/assets/logo.jpg';
-import bg from '@/assets/bg.svg';
+
+
 import { Button } from '@/components/ui/button';
 import axiosinstance from '@/axiosinstance/axiosinstance';
 
@@ -77,51 +80,37 @@ export function LandingPage() {
 
             <div className="min-h-screen bg-blanket">
                 {/* Hero Section */}
+                {/* Hero Section */}
                 <section className="relative h-screen w-full overflow-hidden">
-                    {/* Background Image */}
-                    <div
-                        className="absolute inset-0 bg-cover bg-center"
-                        style={{
-                            backgroundImage: `url(${bgImgHero})`,
-                            filter: 'brightness(0.7)'
-                        }}
-                    />
+                    {/* Video - Desktop Only */}
+                    <video
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="hidden md:block absolute inset-0 w-full h-full object-cover"
+                    >
+                        <source src={newBanne} type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
 
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-kimber/60 via-kimber/40 to-kimber/70" />
-
-                    {/* Content */}
-                    <div className="relative h-full flex flex-col items-center justify-center text-center px-4">
-                        {/* YUCA Text - Top Left */}
-                        {/* <div className="absolute top-8 left-8 md:top-12 md:left-12">
-                            <h1 className="text-blanket text-2xl md:text-3xl tracking-[0.3em] font-light uppercase">
-                                YUCA
+                    {/* Image - Mobile Only */}
+                    <div className="md:hidden absolute inset-0">
+                        <img
+                            src={heroImg}
+                            alt="YUCA Lifestyle Hero"
+                            className="w-full h-full object-cover"
+                        />
+                        {/* Overlay with Logo and Text */}
+                        <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center text-center p-4">
+                            <div className="w-48 mb-6">
+                                <img src={logo} alt="YUCA Logo" className="w-full h-auto drop-shadow-lg rounded-full" />
+                            </div>
+                            <h1 className="text-4xl font-butler-regular text-blanket tracking-wider mb-2 drop-shadow-md">
+                                YUCA LIFESTYLE
                             </h1>
-                        </div> */}
-
-                        {/* Center Content - Logo and Tagline */}
-                        <div className="flex flex-col items-center">
-                            {/* Logo */}
-                            <div className="mb-6 md:mb-8 scroll-reveal">
-                                <img
-                                    src={logo}
-                                    alt="Brand logo"
-                                    className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 object-contain"
-                                />
-                            </div>
-
-                            {/* Tagline */}
-                            <div className="scroll-reveal">
-                                <p className="text-[#D4AF37] font-normal text-center" style={{ fontSize: '24px', lineHeight: '100%', letterSpacing: '2%' }}>
-                                    A new era of mindful living
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Bottom Left Text */}
-                        <div className="absolute bottom-12 left-8 md:bottom-16 md:left-12 max-w-sm md:max-w-md">
-                            <p className="text-blanket text-left" style={{ fontSize: '24px', fontWeight: '400', lineHeight: '100%', letterSpacing: '2%' }}>
-                                For those who choose slow over speed, meaning over noise.
+                            <p className="text-blanket/90 text-sm tracking-[0.3em] uppercase font-light drop-shadow-md">
+                                Artisanal Home Decor
                             </p>
                         </div>
                     </div>
@@ -146,139 +135,146 @@ export function LandingPage() {
                         </div>
                     </div>
                 </section>
-                <div style={{
-                    backgroundImage: `url(${bg})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundAttachment: 'fixed'
-                }}>
-                    {/* Product Gallery - Horizontal Scroll */}
-                    <section className="pt-20 md:pt-32 relative bg-transparent overflow-hidden">
-                        <div className="max-w-[1440px] mx-auto flex items-start">
-                            {/* Left Column - Vertical Label (Fixed Width, Absolute Precision) */}
-                            <div className="w-12 md:w-16 lg:w-24 flex-shrink-0 flex flex-col items-center pt-24 md:pt-32 lg:pt-36">
-                                <div className="writing-mode-vertical transform -rotate-180">
-                                    <span
-                                        className="text-kimber uppercase whitespace-nowrap"
-                                        style={{
-                                            fontFamily: "'Philosopher', sans-serif",
-                                            fontWeight: '400',
-                                            fontSize: '32px',
-                                            lineHeight: '100%',
-                                            letterSpacing: '0.05em',
-                                            textAlign: 'center'
-                                        }}
-                                    >
-                                        New For You
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* Right Column - Scrolling Container (Hard Cut Clipping) */}
-                            <div
-                                ref={scrollContainerRef}
-                                className="flex-grow overflow-x-auto overflow-y-hidden scrollbar-hide"
-                            >
-                                <div className="flex gap-4 md:gap-6 pb-10">
-                                    {newArrivals.map((product) => (
-                                        <div
-                                            key={product._id}
-                                            className="flex-shrink-0 w-64 md:w-80 lg:w-96 scroll-reveal-fast"
-                                            onClick={() => navigate(`/product/${product._id}`)}
+                <div className="relative">
+                    <div
+                        className="absolute inset-0 pointer-events-none"
+                        style={{
+                            backgroundImage: `url(${bg})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            backgroundAttachment: 'fixed',
+                            opacity: 0.5
+                        }}
+                    />
+                    <div className="relative z-10">
+                        {/* Product Gallery - Horizontal Scroll */}
+                        <section className="pt-20 md:pt-32 relative bg-transparent overflow-hidden">
+                            <div className="max-w-[1440px] mx-auto flex items-start">
+                                {/* Left Column - Vertical Label (Fixed Width, Absolute Precision) */}
+                                <div className="w-12 md:w-16 lg:w-24 flex-shrink-0 flex flex-col items-center pt-24 md:pt-32 lg:pt-36">
+                                    <div className="writing-mode-vertical transform -rotate-180">
+                                        <span
+                                            className="text-kimber uppercase whitespace-nowrap"
+                                            style={{
+                                                fontFamily: "'Philosopher', sans-serif",
+                                                fontWeight: '400',
+                                                fontSize: '32px',
+                                                lineHeight: '100%',
+                                                letterSpacing: '0.05em',
+                                                textAlign: 'center'
+                                            }}
                                         >
-                                            <div className="bg-transparent overflow-hidden group cursor-pointer">
-                                                {/* Product Image */}
-                                                <div className="relative aspect-[3/4] overflow-hidden bg-mushroom/10 border border-kimber/5">
-                                                    <img
-                                                        src={product.image}
-                                                        alt={product.name}
-                                                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                                                    />
-                                                </div>
+                                            New For You
+                                        </span>
+                                    </div>
+                                </div>
 
-                                                {/* Product Info */}
-                                                <div className="pt-6 text-center">
-                                                    <h3 className="text-kimber text-sm md:text-base font-light tracking-widest uppercase opacity-60 group-hover:opacity-100 transition-opacity">
-                                                        {product.name}
-                                                    </h3>
-                                                    <p className="text-kimber text-lg font-medium mt-1">
-                                                        {formatIndianPrice(product.retailPrice)}
-                                                    </p>
+                                {/* Right Column - Scrolling Container (Hard Cut Clipping) */}
+                                <div
+                                    ref={scrollContainerRef}
+                                    className="flex-grow overflow-x-auto overflow-y-hidden scrollbar-hide"
+                                >
+                                    <div className="flex gap-4 md:gap-6 pb-10">
+                                        {newArrivals.map((product) => (
+                                            <div
+                                                key={product._id}
+                                                className="flex-shrink-0 w-64 md:w-80 lg:w-96 scroll-reveal-fast"
+                                                onClick={() => navigate(`/product/${product._id}`)}
+                                            >
+                                                <div className="bg-transparent overflow-hidden group cursor-pointer">
+                                                    {/* Product Image */}
+                                                    <div className="relative aspect-[3/4] overflow-hidden bg-mushroom/10 border border-kimber/5">
+                                                        <img
+                                                            src={product.image}
+                                                            alt={product.name}
+                                                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                                        />
+                                                    </div>
+
+                                                    {/* Product Info */}
+                                                    <div className="pt-6 text-center">
+                                                        <h3 className="text-kimber text-sm md:text-base font-light tracking-widest uppercase opacity-60 group-hover:opacity-100 transition-opacity">
+                                                            {product.name}
+                                                        </h3>
+                                                        <p className="text-kimber text-lg font-medium mt-1">
+                                                            {formatIndianPrice(product.retailPrice)}
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </section>
+                        </section>
 
-                    {/* Candles Section - Split Layout */}
-                    <section className="py-20 md:py-32 px-4 md:px-8 lg:px-16 bg-transparent">
-                        <div className="max-w-[1440px] mx-auto">
-                            <div className="grid md:grid-cols-[1.4fr_1fr] gap-12 md:gap-20 items-end">
-                                {/* Left - Dark Block */}
-                                <div
-                                    className="scroll-reveal w-full overflow-hidden"
-                                    style={{ aspectRatio: '840 / 600' }}
-                                >
-                                    <img
-                                        src={candlesHero}
-                                        alt="Candles collection"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
+                        {/* Candles Section - Split Layout */}
+                        <section className="py-20 md:py-32 px-4 md:px-8 lg:px-16 bg-transparent">
+                            <div className="max-w-[1440px] mx-auto">
+                                <div className="grid md:grid-cols-[1.4fr_1fr] gap-12 md:gap-20 items-end">
+                                    {/* Left - Dark Block */}
+                                    <div
+                                        className="scroll-reveal w-full overflow-hidden"
+                                        style={{ aspectRatio: '840 / 600' }}
+                                    >
+                                        <img
+                                            src={candlesHero}
+                                            alt="Candles collection"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
 
-                                {/* Right - Content (Left Aligned, Bottom Aligned to the box) */}
-                                <div className="scroll-reveal text-left flex flex-col items-start">
-                                    <h2 className="text-5xl md:text-6xl text-kimber mb-6 tracking-tight uppercase" style={{ fontFamily: "'Philosopher', sans-serif" }}>
-                                        CANDLES
-                                    </h2>
-                                    <p className="text-kimber/80 font-light leading-relaxed mb-10 max-w-sm" style={{ fontSize: '18px', lineHeight: '1.4' }}>
-                                        Bring home the warmth of nature with our Fruity Coconut Shell Candle, hand-poured into real coconut shells. Infused with fresh, juicy fruit notes, this candle fills your space with a vibrant yet soothing aroma that feels uplifting and natural.
-                                    </p>
-                                    <Button onClick={() => navigate('/category/candles')} variant="link" className="p-0 flex items-center text-kimber text-sm tracking-[0.2em] font-medium uppercase group">
-                                        <span>Shop All Candles</span>
-                                        <span className="ml-4 transition-transform group-hover:translate-x-2">→</span>
-                                    </Button>
+                                    {/* Right - Content (Left Aligned, Bottom Aligned to the box) */}
+                                    <div className="scroll-reveal text-left flex flex-col items-start">
+                                        <h2 className="text-5xl md:text-6xl text-kimber mb-6 tracking-tight uppercase" style={{ fontFamily: "'Philosopher', sans-serif" }}>
+                                            CANDLES
+                                        </h2>
+                                        <p className="text-kimber font-light leading-relaxed mb-10 max-w-sm" style={{ fontSize: '18px', lineHeight: '1.4' }}>
+                                            Bring home the warmth of nature with our Fruity Coconut Shell Candle, hand-poured into real coconut shells. Infused with fresh, juicy fruit notes, this candle fills your space with a vibrant yet soothing aroma that feels uplifting and natural.
+                                        </p>
+                                        <Button onClick={() => navigate('/category/candles')} variant="link" className="p-0 flex items-center text-kimber text-sm tracking-[0.2em] font-medium uppercase group">
+                                            <span>Shop All Candles</span>
+                                            <span className="ml-4 transition-transform group-hover:translate-x-2">→</span>
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </section>
+                        </section>
 
-                    {/* Bowls Section - Split Layout (Reversed) */}
-                    <section className="py-20 md:py-32 px-4 md:px-8 lg:px-16 bg-transparent">
-                        <div className="max-w-[1440px] mx-auto">
-                            <div className="grid md:grid-cols-[1fr_1.4fr] gap-12 md:gap-20 items-end">
-                                {/* Left - Content (Right Aligned, Bottom Aligned to the box) */}
-                                <div className="scroll-reveal text-left md:text-right flex flex-col items-start md:items-end order-2 md:order-1">
-                                    <h2 className="text-5xl md:text-6xl text-kimber mb-6 tracking-tight uppercase" style={{ fontFamily: "'Philosopher', sans-serif" }}>
-                                        BOWLS
-                                    </h2>
-                                    <p className="text-kimber/80 font-light leading-relaxed mb-10 max-w-sm" style={{ fontSize: '18px', lineHeight: '1.4' }}>
-                                        Bring home the warmth of nature with our Fruity Coconut Shell Candle, hand-poured into real coconut shells. Infused with fresh, juicy fruit notes, this candle fills your space with a vibrant yet soothing aroma that feels uplifting and natural.
-                                    </p>
-                                    <Button onClick={() => navigate('/category/bowls')} variant="link" className="p-0 flex items-center text-kimber text-sm tracking-[0.2em] font-medium uppercase group">
-                                        <span>Shop All Bowls</span>
-                                        <span className="ml-4 transition-transform group-hover:translate-x-2">→</span>
-                                    </Button>
+                        {/* Bowls Section - Split Layout (Reversed) */}
+                        <section className="py-20 md:py-32 px-4 md:px-8 lg:px-16 bg-transparent">
+                            <div className="max-w-[1440px] mx-auto">
+                                <div className="grid md:grid-cols-[1fr_1.4fr] gap-12 md:gap-20 items-end">
+                                    {/* Left - Content (Right Aligned, Bottom Aligned to the box) */}
+                                    <div className="scroll-reveal text-left md:text-right flex flex-col items-start md:items-end order-2 md:order-1">
+                                        <h2 className="text-5xl md:text-6xl text-kimber mb-6 tracking-tight uppercase" style={{ fontFamily: "'Philosopher', sans-serif" }}>
+                                            BOWLS
+                                        </h2>
+                                        <p className="text-kimber font-light leading-relaxed mb-10 max-w-sm" style={{ fontSize: '18px', lineHeight: '1.4' }}>
+                                            Bring home the warmth of nature with our Fruity Coconut Shell Candle, hand-poured into real coconut shells. Infused with fresh, juicy fruit notes, this candle fills your space with a vibrant yet soothing aroma that feels uplifting and natural.
+                                        </p>
+                                        <Button onClick={() => navigate('/category/bowls')} variant="link" className="p-0 flex items-center text-kimber text-sm tracking-[0.2em] font-medium uppercase group">
+                                            <span>Shop All Bowls</span>
+                                            <span className="ml-4 transition-transform group-hover:translate-x-2">→</span>
+                                        </Button>
+                                    </div>
+
+                                    {/* Right - Dark Block */}
+                                    <div
+                                        className="scroll-reveal w-full overflow-hidden order-1 md:order-2"
+                                        style={{ aspectRatio: '840 / 600' }}
+                                    >
+                                        <img
+                                            src={bowlHero}
+                                            alt="Bowls collection"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+
                                 </div>
-
-                                {/* Right - Dark Block */}
-                                <div
-                                    className="scroll-reveal w-full overflow-hidden order-1 md:order-2"
-                                    style={{ aspectRatio: '840 / 600' }}
-                                >
-                                    <img
-                                        src={bowlHero}
-                                        alt="Bowls collection"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-
                             </div>
-                        </div>
-                    </section>
+                        </section>
+                    </div>
                 </div>
             </div>
         </>

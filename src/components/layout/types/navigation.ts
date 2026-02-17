@@ -64,9 +64,6 @@ export const mainNavLinks: NavLink[] = [
 export const shopNavLinks: NavLink[] = [
     { label: 'Bowls', href: '/category/bowls' },
     { label: 'Candles', href: '/category/candles' },
-    { label: 'Glassware', href: '/category/glassware' },
-    { label: 'Cutlery', href: '/category/cutlery' },
-    { label: 'Lifestyle', href: '/category/lifestyle' },
 ];
 
 export const footerNavSections: NavSection[] = [
@@ -80,7 +77,7 @@ export const footerNavSections: NavSection[] = [
     {
         title: 'About',
         links: [
-            { label: 'Our Story', href: '/about' },        ],
+            { label: 'Our Story', href: '/about' },],
     },
 ];
 

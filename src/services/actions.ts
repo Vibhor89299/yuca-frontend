@@ -25,6 +25,18 @@ export const fetchFeaturedProducts = createAsyncThunk(
   }
 );
 
+export const fetchNewArrivals = createAsyncThunk(
+  'products/fetchNewArrivals',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosinstance.get('/api/products/new-arrivals');
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch new arrivals');
+    }
+  }
+);
+
 export const fetchProductsByCategory = createAsyncThunk(
   'products/fetchProductsByCategory',
   async (category: string, { rejectWithValue }) => {

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowDown, Leaf, Heart, Globe, Sparkles, Users } from "lucide-react"
 
 import { useNavigate } from "react-router-dom"
-import bg from "@/assets/bg.svg"
+import bg from "@/assets/bg-bg.jpg"
 const ethosData = [
   {
     id: 1,
@@ -148,78 +148,84 @@ export default function OurStoryPage() {
 
 
   return (
-    <div className="min-h-screen bg-blanket scrollbar-hide" style={{
-      backgroundImage: `url(${bg})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundAttachment: 'fixed'
-    }}>
-      {/* Hero Section */}
-      <section className="min-h-[90vh] sm:min-h-[100vh] flex items-center justify-center relative overflow-hidden luxury-gradient-hero pt-16 md:pt-0 px-4 sm:px-6">
-        <div
-          className="absolute inset-0 parallax-slow"
-          style={{ "--scroll-y": `${scrollY * 0.3}px` } as React.CSSProperties}
-        >
-          <img
-            src="/serene-natural-landscape-with-bamboo-and-earth-ton.jpg"
-            alt="YUCA luxury natural background"
-            className="w-full h-full object-cover opacity-30"
-            loading="eager"
-          />
-        </div>
-
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
-          <div className="scroll-reveal">
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-light text-kimber mb-6 text-balance">
-              Our Story
-            </h1>
-            <p className="text-xl md:text-2xl text-khakiMoss mb-8 font-light max-w-2xl mx-auto text-pretty">
-              A soulful lifestyle brand that invites you to live consciously, feel deeply, and stay rooted.
-            </p>
-            <p className="text-lg text-kimber/70 mb-12 max-w-3xl mx-auto text-pretty leading-relaxed">
-              For the modern seeker who loves India, but doesn't want it loud. For those who choose slow over speed,
-              meaning over noise.
-            </p>
-            <Button onClick={scrollToEthos} className="luxury-button px-8 py-4 rounded-full text-lg group">
-              Discover Our Ethos
-              <ArrowDown className="ml-2 h-5 w-5 group-hover:translate-y-1 transition-transform duration-300" />
-            </Button>
+    <div className="min-h-screen bg-blanket scrollbar-hide relative">
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `url(${bg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          opacity: 0.5
+        }}
+      />
+      <div className="relative z-10">
+        {/* Hero Section */}
+        <section className="min-h-[90vh] sm:min-h-[100vh] flex items-center justify-center relative overflow-hidden luxury-gradient-hero pt-16 md:pt-0 px-4 sm:px-6">
+          <div
+            className="absolute inset-0 parallax-slow"
+            style={{ "--scroll-y": `${scrollY * 0.3}px` } as React.CSSProperties}
+          >
+            <img
+              src="/serene-natural-landscape-with-bamboo-and-earth-ton.jpg"
+              alt="YUCA luxury natural background"
+              className="w-full h-full object-cover opacity-30"
+              loading="eager"
+            />
           </div>
-        </div>
 
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden sm:flex">
-          <div className="flex flex-col items-center space-y-2 animate-bounce">
-            <div className="w-6 h-10 border-2 border-oak rounded-full flex justify-center">
-              <div className="w-1 h-3 bg-oak rounded-full mt-2 animate-pulse"></div>
+          <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
+            <div className="scroll-reveal">
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-light text-kimber mb-6 text-balance">
+                Our Story
+              </h1>
+              <p className="text-xl md:text-2xl text-khakiMoss mb-8 font-light max-w-2xl mx-auto text-pretty">
+                A soulful lifestyle brand that invites you to live consciously, feel deeply, and stay rooted.
+              </p>
+              <p className="text-lg text-kimber mb-12 max-w-3xl mx-auto text-pretty leading-relaxed">
+                For the modern seeker who loves India, but doesn't want it loud. For those who choose slow over speed,
+                meaning over noise.
+              </p>
+              <Button onClick={scrollToEthos} className="luxury-button px-8 py-4 rounded-full text-lg group">
+                Discover Our Ethos
+                <ArrowDown className="ml-2 h-5 w-5 group-hover:translate-y-1 transition-transform duration-300" />
+              </Button>
             </div>
-            <span className="text-xs text-oak font-medium tracking-wider uppercase">Scroll</span>
           </div>
-        </div>
-      </section>
-      <div ref={stackContainerRef} className="relative">
-        {ethosData.map((ethos, index) => {
-          const isActive = isMobile ? true : index === currentEthos
-          const isPast = isMobile ? false : index < currentEthos
 
-          return (
-            <div
-              key={ethos.id}
-              className={`relative w-full min-h-[90vh] sm:min-h-screen flex items-center justify-center py-16 sm:py-24 ${isMobile ? 'opacity-100 relative' : `stack-item ${isPast ? "exiting" : "entering"} ${isActive ? 'opacity-100' : 'opacity-0 absolute inset-0 pointer-events-none'}`
-                } ${index === 0 ? 'pt-24 md:pt-32' : ''} bg-white/40 backdrop-blur-md border-y border-oak/10`}
-              style={{
-                zIndex: isMobile ? 1 : (isActive ? 10 : 1),
-                transition: isMobile ? 'none' : 'opacity 0.5s ease-in-out',
-              }}
-            >
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full py-8 md:py-12">
-                <div
-                  className={`grid lg:grid-cols-2 gap-8 md:gap-16 items-center ${index % 2 === 0 ? "" : "lg:grid-flow-col-dense"
-                    }`}
-                >
-                  {/* Content */}
-                  <div className={`space-y-8 ${index % 2 === 0 ? "" : "lg:col-start-2"}`}>
-                    <div className={`scroll-reveal-fast ${isActive ? "revealed" : ""}`}>
-                      {/* <div className="flex items-center space-x-4 mb-6">
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden sm:flex">
+            <div className="flex flex-col items-center space-y-2 animate-bounce">
+              <div className="w-6 h-10 border-2 border-oak rounded-full flex justify-center">
+                <div className="w-1 h-3 bg-oak rounded-full mt-2 animate-pulse"></div>
+              </div>
+              <span className="text-xs text-oak font-medium tracking-wider uppercase">Scroll</span>
+            </div>
+          </div>
+        </section>
+        <div ref={stackContainerRef} className="relative">
+          {ethosData.map((ethos, index) => {
+            const isActive = isMobile ? true : index === currentEthos
+            const isPast = isMobile ? false : index < currentEthos
+
+            return (
+              <div
+                key={ethos.id}
+                className={`relative w-full min-h-[90vh] sm:min-h-screen flex items-center justify-center py-16 sm:py-24 ${isMobile ? 'opacity-100 relative' : `stack-item ${isPast ? "exiting" : "entering"} ${isActive ? 'opacity-100' : 'opacity-0 absolute inset-0 pointer-events-none'}`
+                  } ${index === 0 ? 'pt-24 md:pt-32' : ''} bg-white/40 backdrop-blur-md border-y border-oak/10`}
+                style={{
+                  zIndex: isMobile ? 1 : (isActive ? 10 : 1),
+                  transition: isMobile ? 'none' : 'opacity 0.5s ease-in-out',
+                }}
+              >
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full py-8 md:py-12">
+                  <div
+                    className={`grid lg:grid-cols-2 gap-8 md:gap-16 items-center ${index % 2 === 0 ? "" : "lg:grid-flow-col-dense"
+                      }`}
+                  >
+                    {/* Content */}
+                    <div className={`space-y-8 ${index % 2 === 0 ? "" : "lg:col-start-2"}`}>
+                      <div className={`scroll-reveal-fast ${isActive ? "revealed" : ""}`}>
+                        {/* <div className="flex items-center space-x-4 mb-6">
                         <div className="w-12 h-12 bg-autumnFern rounded-full flex items-center justify-center">
                           <IconComponent className="h-6 w-6 text-blanket" />
                         </div>
@@ -228,84 +234,85 @@ export default function OurStoryPage() {
                         </span>
                       </div> */}
 
-                      <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-semibold text-oak mb-6 text-balance">
-                        {ethos.title}
-                      </h2>
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-semibold text-oak mb-6 text-balance">
+                          {ethos.title}
+                        </h2>
 
-                      <p className="text-xl md:text-2xl text-autumnFern font-medium mb-8 text-pretty">
-                        "{ethos.subtitle}"
-                      </p>
+                        <p className="text-xl md:text-2xl text-autumnFern font-medium mb-8 text-pretty">
+                          "{ethos.subtitle}"
+                        </p>
 
-                      <p className="text-lg text-kimber/80 leading-relaxed text-pretty max-w-xl">{ethos.description}</p>
+                        <p className="text-lg text-kimber leading-relaxed text-pretty max-w-xl">{ethos.description}</p>
 
-                      <div className="pt-8">
-                        <div className="w-20 h-1 bg-oak rounded-full"></div>
+                        <div className="pt-8">
+                          <div className="w-20 h-1 bg-oak rounded-full"></div>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Image */}
-                  <div className={`relative ${index % 2 === 0 ? "" : "lg:col-start-1"}`}>
-                    <div className={`scroll-reveal-fast ${isActive ? "revealed" : ""}`}>
-                      <div className="relative overflow-hidden rounded-2xl luxury-shadow">
-                        <img
-                          src={ethos.image || "/placeholder.svg"}
-                          alt={ethos.title}
-                          className="w-full h-[500px] md:h-[600px] object-cover transition-transform duration-700 hover:scale-105"
-                          loading="lazy"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-kimber/20 to-transparent"></div>
+                    {/* Image */}
+                    <div className={`relative ${index % 2 === 0 ? "" : "lg:col-start-1"}`}>
+                      <div className={`scroll-reveal-fast ${isActive ? "revealed" : ""}`}>
+                        <div className="relative overflow-hidden rounded-2xl luxury-shadow">
+                          <img
+                            src={ethos.image || "/placeholder.svg"}
+                            alt={ethos.title}
+                            className="w-full h-[500px] md:h-[600px] object-cover transition-transform duration-700 hover:scale-105"
+                            loading="lazy"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-kimber/20 to-transparent"></div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+            )
+          })}
+        </div>
+        {/* Summary Section */}
+        <section className={`py-16 md:py-24 relative ${isMobile ? 'z-10' : 'z-20'}`}>
+          <div className="absolute inset-0 bg-kimber/95 backdrop-blur-sm"></div>
+          <div className="relative z-10 flex justify-center items-center max-w-4xl min-h-[50vh] mx-auto py-8 px-6 text-center text-blanket">
+            <div className="scroll-reveal">
+              <h2 className="text-4xl md:text-5xl font-serif font-light mb-8 text-balance tracking-wide">In Summary: YUCA is...</h2>
+              <p className="text-xl leading-relaxed mb-12 text-pretty font-light opacity-90">
+                A soulful lifestyle brand that invites you to live consciously, feel deeply, and stay rooted. It's for the
+                modern seeker who loves India, but doesn't want it loud. It's for those who choose slow over speed,
+                meaning over noise.
+              </p>
+              <Button onClick={() => navigate('/category/kosha')} className="bg-autumnFern hover:bg-autumnFern-600 text-white px-10 py-6 h-auto rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-autumnFern/20 tracking-wider uppercase">
+                Explore Our Products
+              </Button>
             </div>
-          )
-        })}
-      </div>
-      {/* Summary Section */}
-      <section className={`py-16 md:py-24 relative ${isMobile ? 'z-10' : 'z-20'}`}>
-        <div className="absolute inset-0 bg-kimber/95 backdrop-blur-sm"></div>
-        <div className="relative z-10 flex justify-center items-center max-w-4xl min-h-[50vh] mx-auto py-8 px-6 text-center text-blanket">
-          <div className="scroll-reveal">
-            <h2 className="text-4xl md:text-5xl font-serif font-light mb-8 text-balance tracking-wide">In Summary: YUCA is...</h2>
-            <p className="text-xl leading-relaxed mb-12 text-pretty font-light opacity-90">
-              A soulful lifestyle brand that invites you to live consciously, feel deeply, and stay rooted. It's for the
-              modern seeker who loves India, but doesn't want it loud. It's for those who choose slow over speed,
-              meaning over noise.
-            </p>
-            <Button onClick={() => navigate('/category/kosha')} className="bg-autumnFern hover:bg-autumnFern-600 text-white px-10 py-6 h-auto rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-autumnFern/20 tracking-wider uppercase">
-              Explore Our Products
-            </Button>
           </div>
-        </div>
-      </section>
-      <nav
-        className="fixed right-4 top-1/2 transform -translate-y-1/2 z-40 hidden lg:block"
-        aria-label="Ethos navigation"
-      >
-        <div className="space-y-4">
-          {ethosData.map((ethos, index) => (
-            <div key={index} className="flex items-center group">
-              <button
-                onClick={() => {
-                  if (stackContainerRef.current) {
-                    const scrollTarget = stackContainerRef.current.offsetTop + index * window.innerHeight
-                    window.scrollTo({ top: scrollTarget, behavior: "smooth" })
-                  }
-                }}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${currentEthos === index
-                  ? "bg-autumnFern scale-125 shadow-lg"
-                  : "bg-oak/40 hover:bg-oak/60 hover:scale-110"
-                  }`}
-                aria-label={`Go to ${ethos.title} section`}
-                aria-current={currentEthos === index ? "true" : "false"}
-              />
-            </div>
-          ))}
-        </div>
-      </nav>
+        </section>
+        <nav
+          className="fixed right-4 top-1/2 transform -translate-y-1/2 z-40 hidden lg:block"
+          aria-label="Ethos navigation"
+        >
+          <div className="space-y-4">
+            {ethosData.map((ethos, index) => (
+              <div key={index} className="flex items-center group">
+                <button
+                  onClick={() => {
+                    if (stackContainerRef.current) {
+                      const scrollTarget = stackContainerRef.current.offsetTop + index * window.innerHeight
+                      window.scrollTo({ top: scrollTarget, behavior: "smooth" })
+                    }
+                  }}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${currentEthos === index
+                    ? "bg-autumnFern scale-125 shadow-lg"
+                    : "bg-oak/40 hover:bg-oak/60 hover:scale-110"
+                    }`}
+                  aria-label={`Go to ${ethos.title} section`}
+                  aria-current={currentEthos === index ? "true" : "false"}
+                />
+              </div>
+            ))}
+          </div>
+        </nav>
+      </div>
     </div>
-  )
+  );
 }
