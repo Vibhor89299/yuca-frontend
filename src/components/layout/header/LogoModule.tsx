@@ -13,7 +13,7 @@ export function LogoModule({ variant = 'compact', isTransparent = false }: LogoM
     return (
         <Link
             to="/"
-            className="flex items-center gap-2 flex-shrink-0 group"
+            className="flex items-end gap-1 flex-shrink-0 group relative"
             aria-label="YUCA Home"
         >
             <div className={`rounded-full ${logoSize} overflow-hidden transition-transform duration-300 group-hover:scale-105`}>
@@ -24,7 +24,7 @@ export function LogoModule({ variant = 'compact', isTransparent = false }: LogoM
                 />
             </div>
             <span
-                className={`text-xl font-butler font-extralight ${textColor} tracking-wider transition-opacity duration-200`}
+                className={`text-xl font-butler font-extralight ${textColor} tracking-wider leading-none mb-0.5 transition-opacity duration-200`}
             >
                 YUCA
             </span>

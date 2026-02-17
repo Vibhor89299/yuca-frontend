@@ -153,7 +153,7 @@ export function LandingPage() {
                     backgroundAttachment: 'fixed'
                 }}>
                     {/* Product Gallery - Horizontal Scroll */}
-                    <section className="py-20 md:py-32 relative bg-transparent overflow-hidden">
+                    <section className="pt-20 md:pt-32 relative bg-transparent overflow-hidden">
                         <div className="max-w-[1440px] mx-auto flex items-start">
                             {/* Left Column - Vertical Label (Fixed Width, Absolute Precision) */}
                             <div className="w-12 md:w-16 lg:w-24 flex-shrink-0 flex flex-col items-center pt-24 md:pt-32 lg:pt-36">
@@ -275,7 +275,7 @@ export function LandingPage() {
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
-                                
+
                             </div>
                         </div>
                     </section>
