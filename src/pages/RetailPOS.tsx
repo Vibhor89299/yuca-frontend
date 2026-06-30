@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import axiosinstance from '@/axiosinstance/axiosinstance';
 import { Product } from '@/types';
+import { posCustomerSchema } from '@/lib/validation/schemas';
 import { toast } from 'sonner';
 
 interface CartItem {
@@ -116,21 +117,14 @@ const RetailPOS: React.FC = () => {
       return;
     }
 
-    if (!customerInfo.name || !customerInfo.email) {
-      toast.error('Please provide customer name and email');
-      return;
-    }
-
-    // Validate phone if provided
-    if (customerInfo.phone && !/^[6-9]\d{9}$/.test(customerInfo.phone.replace(/\D/g, ''))) {
-      toast.error('Please enter a valid 10-digit phone number');
-      return;
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(customerInfo.email)) {
-      toast.error('Please enter a valid email address');
+    // Validate customer details against the shared schema (YL-001)
+    const parsed = posCustomerSchema.safeParse({
+      customerName: customerInfo.name,
+      customerEmail: customerInfo.email,
+      customerPhone: customerInfo.phone,
+    });
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0]?.message || 'Please check the customer details');
       return;
     }
 

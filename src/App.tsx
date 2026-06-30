@@ -4,6 +4,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Toaster } from '@/components/ui/sonner';
 import { useAuthCheck } from '@/hooks/useAuthCheck';
+import { usePageTracking } from '@/hooks/usePageTracking';
 import { ScrollToTop } from '@/components/layout/ScrollToTop';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { PageLoadingFallback } from '@/components/PageLoadingFallback';
@@ -23,20 +24,19 @@ const ProfilePage = lazy(() => import('./pages/Profile'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const CategoryPage = lazy(() => import('./pages/Category').then(m => ({ default: m.CategoryPage })));
+const SearchResultsPage = lazy(() => import('./pages/SearchResultsPage'));
 const OurStoryPage = lazy(() => import('./pages/StoryPage'));
 const PrivacyPage = lazy(() => import('./pages/Privacy'));
 const RetailPOS = lazy(() => import('./pages/RetailPOS'));
 const AdminProtectedRoute = lazy(() => import('@/components/AdminProtectedRoute'));
 
-function App() {
-  // Check authentication status on app load
+function AppInner() {
   useAuthCheck();
+  usePageTracking();
 
   return (
-    <ErrorBoundary>
-      <Router>
-        <div className="min-h-screen flex flex-col">
-          <ScrollToTop />
+    <div className="min-h-screen flex flex-col">
+      <ScrollToTop />
           <Header />
           <main className="flex-1 z-10">
             <Suspense fallback={<PageLoadingFallback />}>
@@ -45,6 +45,7 @@ function App() {
                 <Route path="/landing" element={<HomePage />} />
                 <Route path="/product/:id" element={<ProductDetailPage />} />
                 <Route path="/category/:category" element={<CategoryPage />} />
+                <Route path="/search" element={<SearchResultsPage />} />
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/orders" element={<OrderHistoryPage />} />
                 <Route path="/privacy" element={<PrivacyPage />} />
@@ -68,6 +69,14 @@ function App() {
           <Footer />
           <Toaster />
         </div>
+  );
+}
+
+function App() {
+  return (
+    <ErrorBoundary>
+      <Router>
+        <AppInner />
       </Router>
     </ErrorBoundary>
   );

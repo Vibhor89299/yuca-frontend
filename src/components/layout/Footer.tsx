@@ -2,6 +2,7 @@ import { BrandBlock } from './footer/BrandBlock';
 import { NavigationBlock } from './footer/NavigationBlock';
 import { PoliciesBlock } from './footer/PoliciesBlock';
 import { SocialBlock } from './footer/SocialBlock';
+import { NewsletterBlock } from './footer/NewsletterBlock';
 
 interface FooterProps {
   showBrand?: boolean;
@@ -20,6 +21,13 @@ export function Footer({
 
   return (
     <footer className="bg-autumnFern-900 border-t border-oak/10">
+      {/* Newsletter band */}
+      <div className="border-b border-oak/10">
+        <div className="container mx-auto px-4 py-10 flex justify-center md:justify-start">
+          <NewsletterBlock />
+        </div>
+      </div>
+
       {/* Main Footer Content */}
       <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">

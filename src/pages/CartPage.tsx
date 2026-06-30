@@ -8,6 +8,7 @@ import { updateCartItem, removeFromCart, fetchCart, setGuestCart, updateGuestCar
 import { useEffect, useMemo, useCallback } from 'react';
 import { cartToasts } from '@/lib/toast';
 import { CartPageSkeleton } from '@/components/skeletons';
+import { posthog } from '@/lib/posthog';
 
 export function CartPage() {
   const dispatch = useAppDispatch();
@@ -29,6 +30,15 @@ export function CartPage() {
       }
     }
   }, [dispatch, isAuthenticated]);
+
+  useEffect(() => {
+    posthog.capture('cart_viewed', {
+      itemCount,
+      cartValue: total,
+      cartType: isAuthenticated ? 'authenticated' : 'guest',
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // All hooks must be called before any early returns
   const handleUpdateQuantity = useCallback((id: string, quantity: number) => {
@@ -253,7 +263,7 @@ export function CartPage() {
 
                   <p className="text-xs text-center text-kimber leading-relaxed">
                     Shipping taxes and duties calculated at next step. <br />
-                    Secure checkout powered by Stripe.
+                    Secure checkout powered by Razorpay.
                   </p>
                 </div>
               </div>

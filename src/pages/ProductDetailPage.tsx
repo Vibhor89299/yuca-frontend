@@ -21,6 +21,7 @@ import { Product } from "@/types";
 import { SEO } from "@/components/seo/SEO";
 import { generateProductSchema, generateBreadcrumbSchema } from "@/utils/seoSchemas";
 import { fetchNewArrivals } from "@/services/actions";
+import { posthog } from "@/lib/posthog";
 
 
 
@@ -137,6 +138,14 @@ export function ProductDetailPage() {
         setLoading(true);
         const response = await axiosinstance.get(`/api/products/${id}`);
         setProduct(response.data);
+        const p = response.data;
+        posthog.capture('product_viewed', {
+          productId: p._id || p.id,
+          name: p.name,
+          category: p.category,
+          price: p.retailPrice,
+          inStock: p.countInStock > 0,
+        });
       } catch (err: any) {
         setError(err.response?.data?.message || "Failed to fetch product");
       } finally {
@@ -431,6 +440,15 @@ export function ProductDetailPage() {
                     </div>
                   </div>
                 </div>
+
+                {/* Low-stock urgency nudge (YL-001) */}
+                {typeof product.countInStock === 'number' &&
+                  product.countInStock > 0 &&
+                  product.countInStock <= 5 && (
+                    <p className="text-sm font-medium tracking-wide text-red-700" role="status">
+                      Only {product.countInStock} left in stock — order soon
+                    </p>
+                  )}
 
                 {/* Description */}
                 <div className="prose prose-stone prose-lg">
