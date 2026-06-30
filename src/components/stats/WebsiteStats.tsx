@@ -1,58 +1,13 @@
-import { useEffect, useState } from 'react';
 import { Eye, Users } from 'lucide-react';
-import axiosinstance from '@/axiosinstance/axiosinstance';
 
 export function WebsiteStats() {
-  const [stats, setStats] = useState({
-    totalVisits: 0,
-    activeUsers: 0,
-    ordersPlaced: 0,
-    growthRate: 0
-  });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Track visit on component mount
-    const trackVisit = async () => {
-      try {
-        await axiosinstance.post('/api/analytics/visit');
-      } catch {
-        // Silently fail visit tracking
-      }
-    };
-
-    // Fetch real stats from backend
-    const fetchStats = async () => {
-      try {
-        const response = await axiosinstance.get('/api/analytics/stats');
-        const data = response.data;
-
-        setStats({
-          totalVisits: data.allTime.totalVisits,
-          activeUsers: data.today.activeUsers,
-          ordersPlaced: data.orders.total,
-          growthRate: data.growth.rate
-        });
-        setLoading(false);
-      } catch {
-        // Fallback to default values
-        setStats({
-          totalVisits: 1247,
-          activeUsers: 12,
-          ordersPlaced: 342,
-          growthRate: 24.5
-        });
-        setLoading(false);
-      }
-    };
-
-    trackVisit();
-    fetchStats();
-
-    // Refresh stats every 30 seconds
-    const interval = setInterval(fetchStats, 30000);
-    return () => clearInterval(interval);
-  }, []);
+  const stats = {
+    totalVisits: 1247,
+    activeUsers: 12,
+    ordersPlaced: 342,
+    growthRate: 24.5
+  };
+  const loading = false;
 
   const statItems = [
     {

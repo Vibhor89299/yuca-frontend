@@ -1,7 +1,7 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { CreditCard, Lock, ArrowLeft, User, Mail } from "lucide-react";
+import { CreditCard, Lock, ArrowLeft, User, Mail, ShieldCheck } from "lucide-react";
 import { formatIndianPrice } from "@/utils/currency";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,9 @@ import { clearCart, fetchCart, clearGuestCart, setGuestCart } from "@/store/slic
 import { placeOrder } from "@/store/slices/orderSlice";
 import { paymentService } from "@/services/paymentService";
 import { orderToasts, showErrorToast } from "@/lib/toast";
+import { guestContactSchema, shippingAddressSchema } from "@/lib/validation/schemas";
 import bg from "@/assets/bg-bg.jpg";
+import { posthog } from "@/lib/posthog";
 
 interface UserData {
   _id: string;
@@ -32,6 +34,7 @@ export function CheckoutPage() {
   const [processingPayment, setProcessingPayment] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const [form, setForm] = useState({
     // Guest information
@@ -102,7 +105,7 @@ export function CheckoutPage() {
       dispatch(fetchCart());
     } else {
       // load guest cart 
-      const data = localStorage.getItem('yuca-guest_cart');
+      const data = localStorage.getItem('yuca_guest_cart');
       if (data) {
         try {
           const parsed = JSON.parse(data);
@@ -123,7 +126,57 @@ export function CheckoutPage() {
   const finalTotal = subtotal + shipping + tax;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.id]: e.target.value });
+    const { id, value } = e.target;
+    setForm({ ...form, [id]: value });
+    if (fieldErrors[id]) {
+      setFieldErrors((prev) => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
+    }
+  };
+
+  // Validate guest contact (guests only) + shipping address against the shared
+  // zod schemas. Returns true if valid; otherwise populates fieldErrors keyed by
+  // the input id so errors render inline. (YL-001)
+  const validateForm = (): boolean => {
+    const errs: Record<string, string> = {};
+
+    if (!isAuthenticated) {
+      const guest = guestContactSchema.safeParse({
+        fullName: form.guestName,
+        email: form.guestEmail,
+        phone: form.guestPhone,
+      });
+      if (!guest.success) {
+        const f = guest.error.flatten().fieldErrors;
+        if (f.fullName?.[0]) errs.guestName = f.fullName[0];
+        if (f.email?.[0]) errs.guestEmail = f.email[0];
+        if (f.phone?.[0]) errs.guestPhone = f.phone[0];
+      }
+    }
+
+    const ship = shippingAddressSchema.safeParse({
+      firstName: form.firstName,
+      lastName: form.lastName,
+      street: form.address,
+      city: form.city,
+      state: form.state,
+      postalCode: form.zip,
+    });
+    if (!ship.success) {
+      const f = ship.error.flatten().fieldErrors;
+      if (f.firstName?.[0]) errs.firstName = f.firstName[0];
+      if (f.lastName?.[0]) errs.lastName = f.lastName[0];
+      if (f.street?.[0]) errs.address = f.street[0];
+      if (f.city?.[0]) errs.city = f.city[0];
+      if (f.state?.[0]) errs.state = f.state[0];
+      if (f.postalCode?.[0]) errs.zip = f.postalCode[0];
+    }
+
+    setFieldErrors(errs);
+    return Object.keys(errs).length === 0;
   };
 
   const handlePaymentMethod = (val: string) => {
@@ -132,6 +185,11 @@ export function CheckoutPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      showErrorToast("Please check your details", "Some fields need correcting before you can continue");
+      return;
+    }
 
     if (form.paymentMethod !== "razorpay") {
       // Handle other payment methods (if any)
@@ -190,6 +248,11 @@ export function CheckoutPage() {
           : undefined;
 
         // Open Razorpay checkout
+        posthog.capture('payment_initiated', {
+          amount: finalTotal,
+          currency: 'INR',
+          method: 'razorpay',
+        });
         const paymentResult = await paymentService.openRazorpayCheckout(
           orderId,
           userInfo,
@@ -197,6 +260,11 @@ export function CheckoutPage() {
           guestCheckoutToken
         );
         if (paymentResult.payment.status === "paid") {
+          posthog.capture('payment_completed', {
+            orderId,
+            amount: finalTotal,
+            method: 'razorpay',
+          });
           // Clear the appropriate cart based on authentication status
           if (isAuthenticated) {
             dispatch(clearCart());
@@ -208,6 +276,10 @@ export function CheckoutPage() {
         }
       }
     } catch (error: any) {
+      posthog.capture('payment_failed', {
+        amount: finalTotal,
+        errorCode: error.message,
+      });
       orderToasts.paymentFailed(error.message);
     } finally {
       setProcessingPayment(false);
@@ -220,6 +292,15 @@ export function CheckoutPage() {
       navigate("/cart");
     }
   }, [items.length, navigate]);
+
+  useEffect(() => {
+    posthog.capture('checkout_started', {
+      itemCount: items.reduce((s, i) => s + i.quantity, 0),
+      cartValue: total,
+      cartType: isAuthenticated ? 'authenticated' : 'guest',
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // const itemCountCalc = items.reduce((sum, i) => sum + i.quantity, 0);
 
@@ -281,21 +362,24 @@ export function CheckoutPage() {
                         placeholder="John Doe"
                         value={form.guestName}
                         onChange={handleChange}
-                        required
+                        aria-invalid={!!fieldErrors.guestName}
                         className="bg-white/30 border-oak/20 focus:border-autumnFern focus:ring-autumnFern/20 h-12"
                       />
+                      {fieldErrors.guestName && <p className="text-xs font-medium text-destructive" role="alert">{fieldErrors.guestName}</p>}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="guestPhone" className="text-xs uppercase tracking-widest text-kimber">Phone</Label>
                       <Input
                         id="guestPhone"
                         type="tel"
+                        inputMode="numeric"
                         placeholder="9876543210"
                         value={form.guestPhone}
                         onChange={handleChange}
-                        required
+                        aria-invalid={!!fieldErrors.guestPhone}
                         className="bg-white/50 border-oak/20 focus:border-autumnFern focus:ring-autumnFern/20 h-12"
                       />
+                      {fieldErrors.guestPhone && <p className="text-xs font-medium text-destructive" role="alert">{fieldErrors.guestPhone}</p>}
                     </div>
                     <div className="space-y-2 md:col-span-2">
                       <Label htmlFor="guestEmail" className="text-xs uppercase tracking-widest text-kimber">Email Address</Label>
@@ -305,10 +389,12 @@ export function CheckoutPage() {
                         placeholder="john@example.com"
                         value={form.guestEmail}
                         onChange={handleChange}
-                        required
+                        aria-invalid={!!fieldErrors.guestEmail}
                         className="bg-white/50 border-oak/20 focus:border-autumnFern focus:ring-autumnFern/20 h-12"
                       />
-                      <p className="text-xs text-kimber pt-1">We'll send your order confirmation here.</p>
+                      {fieldErrors.guestEmail
+                        ? <p className="text-xs font-medium text-destructive" role="alert">{fieldErrors.guestEmail}</p>
+                        : <p className="text-xs text-kimber pt-1">We'll send your order confirmation here.</p>}
                     </div>
                   </div>
                 </section>
@@ -321,7 +407,7 @@ export function CheckoutPage() {
                   <Mail className="h-5 w-5 text-autumnFern opacity-70" />
                 </div>
 
-                <form id="checkout-form" onSubmit={handleSubmit} className="space-y-6">
+                <form id="checkout-form" onSubmit={handleSubmit} className="space-y-6" noValidate>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="firstName" className="text-xs uppercase tracking-widest text-kimber">First Name</Label>
@@ -330,9 +416,10 @@ export function CheckoutPage() {
                         placeholder="John"
                         value={form.firstName}
                         onChange={handleChange}
-                        required
+                        aria-invalid={!!fieldErrors.firstName}
                         className="bg-white/50 border-oak/20 focus:border-autumnFern focus:ring-autumnFern/20 h-12"
                       />
+                      {fieldErrors.firstName && <p className="text-xs font-medium text-destructive" role="alert">{fieldErrors.firstName}</p>}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="lastName" className="text-xs uppercase tracking-widest text-kimber">Last Name</Label>
@@ -341,53 +428,59 @@ export function CheckoutPage() {
                         placeholder="Doe"
                         value={form.lastName}
                         onChange={handleChange}
-                        required
+                        aria-invalid={!!fieldErrors.lastName}
                         className="bg-white/50 border-oak/20 focus:border-autumnFern focus:ring-autumnFern/20 h-12"
                       />
+                      {fieldErrors.lastName && <p className="text-xs font-medium text-destructive" role="alert">{fieldErrors.lastName}</p>}
                     </div>
                     <div className="space-y-2 md:col-span-2">
                       <Label htmlFor="address" className="text-xs uppercase tracking-widest text-kimber">Street Address</Label>
                       <Input
                         id="address"
-                        placeholder="123 Luxury Lane"
+                        placeholder="123 MG Road, Apartment 4B"
                         value={form.address}
                         onChange={handleChange}
-                        required
+                        aria-invalid={!!fieldErrors.address}
                         className="bg-white/50 border-oak/20 focus:border-autumnFern focus:ring-autumnFern/20 h-12"
                       />
+                      {fieldErrors.address && <p className="text-xs font-medium text-destructive" role="alert">{fieldErrors.address}</p>}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="city" className="text-xs uppercase tracking-widest text-kimber">City</Label>
                       <Input
                         id="city"
-                        placeholder="New York"
+                        placeholder="Bengaluru"
                         value={form.city}
                         onChange={handleChange}
-                        required
+                        aria-invalid={!!fieldErrors.city}
                         className="bg-white/50 border-oak/20 focus:border-autumnFern focus:ring-autumnFern/20 h-12"
                       />
+                      {fieldErrors.city && <p className="text-xs font-medium text-destructive" role="alert">{fieldErrors.city}</p>}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="state" className="text-xs uppercase tracking-widest text-kimber">State</Label>
                       <Input
                         id="state"
-                        placeholder="NY"
+                        placeholder="Karnataka"
                         value={form.state}
                         onChange={handleChange}
-                        required
+                        aria-invalid={!!fieldErrors.state}
                         className="bg-white/50 border-oak/20 focus:border-autumnFern focus:ring-autumnFern/20 h-12"
                       />
+                      {fieldErrors.state && <p className="text-xs font-medium text-destructive" role="alert">{fieldErrors.state}</p>}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="zip" className="text-xs uppercase tracking-widest text-kimber">Postal Code</Label>
                       <Input
                         id="zip"
-                        placeholder="10001"
+                        inputMode="numeric"
+                        placeholder="560001"
                         value={form.zip}
                         onChange={handleChange}
-                        required
+                        aria-invalid={!!fieldErrors.zip}
                         className="bg-white/50 border-oak/20 focus:border-autumnFern focus:ring-autumnFern/20 h-12"
                       />
+                      {fieldErrors.zip && <p className="text-xs font-medium text-destructive" role="alert">{fieldErrors.zip}</p>}
                     </div>
                   </div>
                 </form>
@@ -484,11 +577,21 @@ export function CheckoutPage() {
                   {processingPayment ? "Processing..." : orderLoading ? "Creating Order..." : `Pay ${formatIndianPrice(finalTotal)}`}
                 </Button>
 
-                <div className="mt-6 flex justify-center space-x-4 opacity-50 grayscale hover:grayscale-0 transition-all duration-300">
-                  {/* Placeholder icons for trust/payments */}
-                  <div className="h-6 w-10 bg-oak/10 rounded" title="Visa" />
-                  <div className="h-6 w-10 bg-oak/10 rounded" title="Mastercard" />
-                  <div className="h-6 w-10 bg-oak/10 rounded" title="UPI" />
+                <div className="mt-6 flex flex-col items-center gap-3">
+                  <div className="flex items-center gap-2 text-xs text-sage-700">
+                    <ShieldCheck className="h-4 w-4 text-sage-600" />
+                    <span>100% secure payments via Razorpay</span>
+                  </div>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {["UPI", "Visa", "Mastercard", "RuPay", "Net Banking"].map((method) => (
+                      <span
+                        key={method}
+                        className="px-2.5 py-1 rounded border border-oak/15 bg-white/60 text-[11px] font-medium tracking-wide text-oak/80"
+                      >
+                        {method}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
 

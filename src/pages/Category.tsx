@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchProductsByCategory } from '@/services/actions';
 import { formatIndianPrice } from '@/utils/currency';
 import bg from '@/assets/bg-bg.jpg';
+import { posthog } from '@/lib/posthog';
 
 // Banner images (keep existing import or map dynamically)
 // Banner images
@@ -22,6 +23,16 @@ export function CategoryPage() {
       dispatch(fetchProductsByCategory(category));
     }
   }, [dispatch, category]);
+
+  useEffect(() => {
+    if (!loading && category) {
+      posthog.capture('category_viewed', {
+        category,
+        productCount: products.length,
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, category]);
 
 
 

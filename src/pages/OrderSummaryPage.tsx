@@ -9,6 +9,7 @@ import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { fetchOrderById } from '@/store/slices/orderSlice';
 import { formatIndianPrice } from '@/utils/currency';
 import bg from '@/assets/bg-bg.jpg';
+import { posthog } from '@/lib/posthog';
 
 export function OrderSummaryPage() {
   const { id } = useParams<{ id: string }>();
@@ -17,11 +18,21 @@ export function OrderSummaryPage() {
   const { currentOrder, loading, error } = useAppSelector(state => state.order);
 
   useEffect(() => {
-
     if (id) {
       dispatch(fetchOrderById(id));
     }
   }, [id, dispatch]);
+
+  useEffect(() => {
+    if (currentOrder) {
+      posthog.capture('order_viewed', {
+        orderId: currentOrder.id,
+        status: currentOrder.status,
+        total: currentOrder.totalPrice,
+        itemCount: (currentOrder.items || []).length,
+      });
+    }
+  }, [currentOrder]);
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {

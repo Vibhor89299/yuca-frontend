@@ -42,6 +42,7 @@ export interface CartItem {
 
 export interface User {
   id: string;
+  _id?: string; // MongoDB id as returned by the API
   email: string;
   firstName: string;
   lastName: string;
@@ -52,6 +53,7 @@ export interface User {
   phone?: string;
   location?: string;
   memberSince?: string;
+  createdAt?: string;
   role?: string;
   isAdmin?: boolean;
 }

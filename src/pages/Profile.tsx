@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
+import { profileSchema } from "@/lib/validation/schemas";
 import { profileToasts, authToasts } from "@/lib/toast";
 import { ProfilePageSkeleton } from "@/components/skeletons";
 import bg from "@/assets/bg-bg.jpg";
@@ -55,6 +56,7 @@ export default function ProfilePage() {
     name: "",
     phone: "",
   });
+  const [profileErrors, setProfileErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (window.innerWidth < 1040) {
@@ -125,6 +127,16 @@ export default function ProfilePage() {
   };
 
   const updateProfile = async () => {
+    const parsed = profileSchema.safeParse(formData);
+    if (!parsed.success) {
+      const f = parsed.error.flatten().fieldErrors;
+      setProfileErrors({
+        ...(f.name?.[0] ? { name: f.name[0] } : {}),
+        ...(f.phone?.[0] ? { phone: f.phone[0] } : {}),
+      });
+      return;
+    }
+    setProfileErrors({});
     setUpdateLoading(true);
     try {
       const response = await fetch("http://localhost:5001/api/auth/profile", {
@@ -555,22 +567,29 @@ export default function ProfilePage() {
                   <h2 className="text-3xl font-philosopher text-oak text-center mb-8">Account Settings</h2>
 
                   <div className="bg-white/60 backdrop-blur-md border border-oak/10 rounded-xl p-8 shadow-sm">
-                    <form className="space-y-6">
+                    <form className="space-y-6" noValidate>
                       <div className="space-y-2">
-                        <label className="text-xs uppercase tracking-widest text-kimber font-medium">Display Name</label>
+                        <label htmlFor="profile-name" className="text-xs uppercase tracking-widest text-kimber font-medium">Display Name</label>
                         <Input
+                          id="profile-name"
                           value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          onChange={(e) => { setFormData({ ...formData, name: e.target.value }); if (profileErrors.name) setProfileErrors((p) => { const n = { ...p }; delete n.name; return n; }); }}
+                          aria-invalid={!!profileErrors.name}
                           className="bg-white/50 border-oak/20 focus:border-autumnFern h-12 text-oak"
                         />
+                        {profileErrors.name && <p className="text-xs font-medium text-destructive" role="alert">{profileErrors.name}</p>}
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs uppercase tracking-widest text-kimber font-medium">Phone Number</label>
+                        <label htmlFor="profile-phone" className="text-xs uppercase tracking-widest text-kimber font-medium">Phone Number</label>
                         <Input
+                          id="profile-phone"
+                          inputMode="numeric"
                           value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                          onChange={(e) => { setFormData({ ...formData, phone: e.target.value }); if (profileErrors.phone) setProfileErrors((p) => { const n = { ...p }; delete n.phone; return n; }); }}
+                          aria-invalid={!!profileErrors.phone}
                           className="bg-white/50 border-oak/20 focus:border-autumnFern h-12 text-oak"
                         />
+                        {profileErrors.phone && <p className="text-xs font-medium text-destructive" role="alert">{profileErrors.phone}</p>}
                       </div>
 
                       <Button

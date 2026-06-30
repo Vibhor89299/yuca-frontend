@@ -1,25 +1,38 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { loginUser } from '@/store/slices/authSlice';
 import { syncGuestCart } from '@/store/slices/syncGuestCartThunk';
 import { clearGuestCart, fetchCart } from '@/store/slices/cartSlice';
+import { loginSchema, type LoginValues } from '@/lib/validation/schemas';
 import bg from '@/assets/bg-bg.jpg';
 import YucaLogo from '../assets/logo.jpg';
 
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { loading, error, isAuthenticated } = useAppSelector(state => state.auth);
+
+  const form = useForm<LoginValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: '', password: '' },
+  });
 
   React.useEffect(() => {
     if (isAuthenticated) {
@@ -44,9 +57,8 @@ export default function LoginPage() {
     }
   }, [isAuthenticated, navigate, dispatch]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    dispatch(loginUser({ email, password }));
+  const onSubmit = (values: LoginValues) => {
+    dispatch(loginUser({ email: values.email, password: values.password }));
   };
 
   return (
@@ -94,61 +106,77 @@ export default function LoginPage() {
 
             <Card className="border-none shadow-none bg-transparent">
               <CardContent className="p-0">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="text-xs uppercase tracking-widest text-kimber font-medium">Email Address</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="name@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="h-12 bg-white/50 border-oak/20 focus:border-autumnFern focus:ring-autumnFern/20 transition-all font-light"
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" noValidate>
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs uppercase tracking-widest text-kimber font-medium">Email Address</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="email"
+                              placeholder="name@example.com"
+                              autoComplete="email"
+                              className="h-12 bg-white/50 border-oak/20 focus:border-autumnFern focus:ring-autumnFern/20 transition-all font-light"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
 
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="password" className="text-xs uppercase tracking-widest text-kimber font-medium">Password</Label>
-                      <Link to="/forgot-password" className="text-xs text-autumnFern hover:underline">Forgot?</Link>
-                    </div>
-                    <div className="relative">
-                      <Input
-                        id="password"
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder="Enter your password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="h-12 bg-white/50 border-oak/20 focus:border-autumnFern focus:ring-autumnFern/20 transition-all font-light pr-10"
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-0 top-0 h-full px-3 text-oak/60 hover:text-oak hover:bg-transparent"
-                      >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </Button>
-                    </div>
-                  </div>
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="flex items-center justify-between">
+                            <FormLabel className="text-xs uppercase tracking-widest text-kimber font-medium">Password</FormLabel>
+                            <Link to="/forgot-password" className="text-xs text-autumnFern hover:underline">Forgot?</Link>
+                          </div>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                type={showPassword ? 'text' : 'password'}
+                                placeholder="Enter your password"
+                                autoComplete="current-password"
+                                className="h-12 bg-white/50 border-oak/20 focus:border-autumnFern focus:ring-autumnFern/20 transition-all font-light pr-10"
+                                {...field}
+                              />
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-0 top-0 h-full px-3 text-oak/60 hover:text-oak hover:bg-transparent"
+                              >
+                                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              </Button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  {error && (
-                    <div className="text-red-600 text-sm text-center bg-red-50 border border-red-200 rounded-md p-3">
-                      {error}
-                    </div>
-                  )}
+                    {error && (
+                      <div className="text-red-600 text-sm text-center bg-red-50 border border-red-200 rounded-md p-3" role="alert">
+                        {error}
+                      </div>
+                    )}
 
-                  <Button
-                    type="submit"
-                    className="w-full h-12 bg-autumnFern hover:bg-autumnFern-600 text-blanket font-medium tracking-wide shadow-lg hover:shadow-autumnFern/20 transition-all duration-300"
-                    disabled={loading}
-                  >
-                    {loading ? 'Signing in...' : 'Sign In'}
-                  </Button>
-                </form>
+                    <Button
+                      type="submit"
+                      className="w-full h-12 bg-autumnFern hover:bg-autumnFern-600 text-blanket font-medium tracking-wide shadow-lg hover:shadow-autumnFern/20 transition-all duration-300"
+                      disabled={loading}
+                    >
+                      {loading ? 'Signing in...' : 'Sign In'}
+                    </Button>
+                  </form>
+                </Form>
 
                 <div className="mt-8 text-center">
                   <p className="text-sm text-kimber">
