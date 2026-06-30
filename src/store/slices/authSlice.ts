@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosinstance, { setAuthToken } from '@/axiosinstance/axiosinstance';
 import { User } from '@/types';
+import { posthog } from '@/lib/posthog';
 
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
@@ -64,6 +65,8 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logout(state) {
+      posthog.capture('user_logged_out');
+      posthog.reset();
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
@@ -91,6 +94,13 @@ const authSlice = createSlice({
         localStorage.setItem('yuca_user', JSON.stringify(action.payload.user));
         // Set token in axios defaults
         setAuthToken(action.payload.token);
+        // PostHog identity + event
+        posthog.identify(action.payload.user._id, {
+          email: action.payload.user.email,
+          name: action.payload.user.name,
+          role: action.payload.user.role,
+        });
+        posthog.capture('user_logged_in');
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -110,6 +120,13 @@ const authSlice = createSlice({
         localStorage.setItem('yuca_user', JSON.stringify(action.payload.user));
         // Set token in axios defaults
         setAuthToken(action.payload.token);
+        // PostHog identity + event (merges anonymous session)
+        posthog.identify(action.payload.user._id, {
+          email: action.payload.user.email,
+          name: action.payload.user.name,
+          role: action.payload.user.role,
+        });
+        posthog.capture('user_registered', { method: 'email' });
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;

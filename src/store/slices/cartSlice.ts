@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosinstance from '@/axiosinstance/axiosinstance';
 import { CartItem } from '@/types';
+import { posthog } from '@/lib/posthog';
 // import { RootState } from '../store';
 
 export const fetchCart = createAsyncThunk(
@@ -113,6 +114,13 @@ const cartSlice = createSlice({
       state.total = state.items.reduce((sum, i) => sum + i.product.retailPrice * i.quantity, 0);
       state.itemCount = state.items.reduce((sum, i) => sum + i.quantity, 0);
       saveCartToLocalStorage(state);
+      posthog.capture('product_added_to_cart', {
+        productId: product.id || product._id,
+        name: product.name,
+        price: product.retailPrice,
+        quantity,
+        cartType: 'guest',
+      });
     },
     updateGuestCartItem(state, action) {
       const { id, quantity } = action.payload;
@@ -123,10 +131,18 @@ const cartSlice = createSlice({
       saveCartToLocalStorage(state);
     },
     removeGuestCartItem(state, action) {
+      const removed = state.items.find(i => i.id === action.payload);
       state.items = state.items.filter(i => i.id !== action.payload);
       state.total = state.items.reduce((sum, i) => sum + i.product.retailPrice * i.quantity, 0);
       state.itemCount = state.items.reduce((sum, i) => sum + i.quantity, 0);
       saveCartToLocalStorage(state);
+      if (removed) {
+        posthog.capture('product_removed_from_cart', {
+          productId: removed.id,
+          name: removed.product.name,
+          price: removed.product.retailPrice,
+        });
+      }
     },
     clearGuestCart(state) {
       state.items = [];
@@ -155,16 +171,28 @@ const cartSlice = createSlice({
         state.items = action.payload.items;
         state.total = action.payload.total;
         state.itemCount = action.payload.itemCount;
+        posthog.capture('product_added_to_cart', {
+          productId: action.meta.arg.productId,
+          quantity: action.meta.arg.quantity,
+          cartType: 'authenticated',
+        });
       })
       .addCase(updateCartItem.fulfilled, (state, action) => {
         state.items = action.payload.items;
         state.total = action.payload.total;
         state.itemCount = action.payload.itemCount;
+        posthog.capture('cart_quantity_updated', {
+          productId: action.meta.arg.productId,
+          newQty: action.meta.arg.quantity,
+        });
       })
       .addCase(removeFromCart.fulfilled, (state, action) => {
         state.items = action.payload.items;
         state.total = action.payload.total;
         state.itemCount = action.payload.itemCount;
+        posthog.capture('product_removed_from_cart', {
+          productId: action.meta.arg,
+        });
       })
       .addCase(clearCart.fulfilled, (state) => {
         state.items = [];
